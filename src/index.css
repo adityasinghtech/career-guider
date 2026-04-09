@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --background: 35 100% 98%;
+    --foreground: 220 30% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 30% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 30% 15%;
+
+    --primary: 25 95% 53%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 340 80% 55%;
+
+    --secondary: 220 60% 20%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 35 30% 93%;
+    --muted-foreground: 220 10% 45%;
+
+    --accent: 160 70% 42%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 35 20% 88%;
+    --input: 35 20% 88%;
+    --ring: 25 95% 53%;
+
+    --radius: 0.75rem;
+
+    --gradient-hero: linear-gradient(135deg, hsl(25, 95%, 53%), hsl(340, 80%, 55%));
+    --gradient-hero-subtle: linear-gradient(135deg, hsl(25, 95%, 53% / 0.08), hsl(340, 80%, 55% / 0.08));
+    --gradient-card: linear-gradient(145deg, hsl(0, 0%, 100%), hsl(35, 60%, 97%));
+    --gradient-accent: linear-gradient(135deg, hsl(160, 70%, 42%), hsl(180, 60%, 45%));
+    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.7), hsl(0 0% 100% / 0.3));
+    --shadow-card: 0 4px 20px -4px hsl(25 95% 53% / 0.1);
+    --shadow-elevated: 0 12px 40px -8px hsl(25 95% 53% / 0.2);
+    --shadow-glow: 0 0 60px -12px hsl(25 95% 53% / 0.25);
+
+    --font-display: 'Outfit', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 220 25% 8%;
+    --foreground: 35 30% 92%;
+
+    --card: 220 20% 12%;
+    --card-foreground: 35 30% 92%;
+
+    --popover: 220 20% 12%;
+    --popover-foreground: 35 30% 92%;
+
+    --primary: 25 95% 55%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 340 75% 50%;
+
+    --secondary: 220 40% 30%;
+    --secondary-foreground: 35 30% 92%;
+
+    --muted: 220 15% 18%;
+    --muted-foreground: 220 10% 55%;
+
+    --accent: 160 60% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 20%;
+    --input: 220 15% 20%;
+    --ring: 25 95% 55%;
+
+    --gradient-hero: linear-gradient(135deg, hsl(25, 95%, 55%), hsl(340, 75%, 50%));
+    --gradient-hero-subtle: linear-gradient(135deg, hsl(25, 95%, 55% / 0.1), hsl(340, 75%, 50% / 0.1));
+    --gradient-card: linear-gradient(145deg, hsl(220, 20%, 12%), hsl(220, 20%, 15%));
+    --gradient-accent: linear-gradient(135deg, hsl(160, 60%, 45%), hsl(180, 50%, 40%));
+    --gradient-glass: linear-gradient(135deg, hsl(220 20% 14% / 0.8), hsl(220 20% 14% / 0.4));
+    --shadow-card: 0 4px 20px -4px hsl(0 0% 0% / 0.3);
+    --shadow-elevated: 0 12px 40px -8px hsl(0 0% 0% / 0.4);
+    --shadow-glow: 0 0 60px -12px hsl(25 95% 55% / 0.15);
+
+    --sidebar-background: 220 20% 12%;
+    --sidebar-foreground: 35 30% 85%;
+    --sidebar-primary: 35 30% 92%;
+    --sidebar-primary-foreground: 220 20% 12%;
+    --sidebar-accent: 220 15% 18%;
+    --sidebar-accent-foreground: 35 30% 92%;
+    --sidebar-border: 220 15% 20%;
+    --sidebar-ring: 25 95% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .font-body {
+    font-family: var(--font-body);
+  }
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+  .gradient-hero-subtle {
+    background: var(--gradient-hero-subtle);
+  }
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+  .gradient-accent {
+    background: var(--gradient-accent);
+  }
+  .gradient-glass {
+    background: var(--gradient-glass);
+  }
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  .text-gradient-hero {
+    background: var(--gradient-hero);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
