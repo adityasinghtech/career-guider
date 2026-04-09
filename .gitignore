@@ -27,3 +27,6 @@ dist-ssr
 # ENV files (IMPORTANT)
 .env
 .env.*
+
+# Supabase temp files
+supabase/.temp/
