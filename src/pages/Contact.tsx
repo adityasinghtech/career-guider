@@ -73,7 +73,7 @@ const Contact = () => {
                 </div>
               </div>
               <a
-                href="https://wa.me/919876543210?text=Namaste%20PathFinder!%20Mujhe%20career%20guidance%20chahiye"
+                href="https://wa.me/919315861151?text=Namaste%20PathFinder!%20Mujhe%20career%20guidance%20chahiye"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block mt-2 gradient-hero text-primary-foreground font-display font-semibold px-4 py-2 rounded-lg text-sm hover:opacity-90 transition-opacity"
@@ -184,7 +184,7 @@ const Contact = () => {
                       value={formData.phone}
                       onChange={(e) => setFormData((p) => ({ ...p, phone: e.target.value }))}
                       className="w-full px-4 py-2.5 rounded-xl border-2 border-border bg-background text-foreground font-body focus:border-primary focus:outline-none"
-                      placeholder="9876543210"
+                      placeholder="9315861151"
                     />
                   </div>
                 </div>

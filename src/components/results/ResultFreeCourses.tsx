@@ -68,13 +68,15 @@ const ResultFreeCourses = ({ result }: { result: StreamResult }) => {
                 <p className="text-sm text-muted-foreground mt-1">{course.description}</p>
               </div>
               <a
-                href={course.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-shrink-0 w-9 h-9 rounded-lg gradient-hero flex items-center justify-center hover:opacity-90 transition-opacity"
-              >
-                <ExternalLink className="w-4 h-4 text-primary-foreground" />
-              </a>
+  href={course.link}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label={`Open ${course.name} course`}
+  className="flex-shrink-0 w-9 h-9 rounded-lg gradient-hero flex items-center justify-center hover:opacity-90 transition-opacity"
+>
+  <ExternalLink className="w-4 h-4 text-primary-foreground" />
+  <span className="sr-only">Open course</span>
+</a>
             </div>
           </div>
         ))}
