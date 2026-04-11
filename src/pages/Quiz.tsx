@@ -49,6 +49,14 @@ const Quiz = () => {
     const profile = buildQuizProfile(answers);
     const selectedClass = localStorage.getItem("selectedClass");
     const selectedInterest = localStorage.getItem("selectedInterest");
+    const dreamGoal = localStorage.getItem("dreamGoal") || "";
+    let situation: string[] = [];
+    try {
+      const parsed = JSON.parse(localStorage.getItem("situation") || "[]");
+      situation = Array.isArray(parsed) ? parsed : [];
+    } catch {
+      situation = [];
+    }
     const stream = profile.stream;
 
     // Store quiz profile for chatbot personalization
@@ -57,6 +65,8 @@ const Quiz = () => {
         ...profile,
         selectedClass,
         selectedInterest,
+        dreamGoal,
+        situation,
       }));
     } catch { /* silently fail */ }
 

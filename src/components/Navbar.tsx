@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Compass, Menu, X, Moon, Sun, LogIn, LayoutDashboard } from "lucide-react";
+import { Compass, Menu, X, Moon, Sun, LogIn, LayoutDashboard, Shield } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -12,7 +12,7 @@ const navLinks = [
 
 const Navbar = () => {
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, role, roleLoading } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dark, setDark] = useState(() => {
     if (typeof window !== "undefined") {
@@ -64,12 +64,33 @@ const Navbar = () => {
             </Link>
           )}
           {user ? (
-            <Link
-              to="/dashboard"
-              className="flex items-center gap-1.5 font-display font-semibold text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <LayoutDashboard className="w-4 h-4" /> Dashboard
-            </Link>
+            <div className="flex items-center gap-2 min-w-0">
+              <span
+                className="hidden lg:inline max-w-[160px] truncate text-xs text-muted-foreground font-body"
+                title={user.email ?? ""}
+              >
+                {user.email}
+              </span>
+              {!roleLoading && role === "admin" && (
+                <span className="inline-flex items-center gap-1 shrink-0">
+                  <Shield className="w-3.5 h-3.5 text-red-700 dark:text-red-400" aria-hidden />
+                  <span className="text-xs font-display font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-800 border border-red-200 dark:bg-red-950/50 dark:text-red-200 dark:border-red-800">
+                    Admin
+                  </span>
+                </span>
+              )}
+              {!roleLoading && role === "student" && (
+                <span className="text-xs font-display font-semibold px-2 py-0.5 rounded-full text-muted-foreground bg-muted/70 border border-border shrink-0">
+                  Student
+                </span>
+              )}
+              <Link
+                to="/dashboard"
+                className="flex items-center gap-1.5 font-display font-semibold text-sm text-muted-foreground hover:text-foreground transition-colors shrink-0"
+              >
+                <LayoutDashboard className="w-4 h-4" /> Dashboard
+              </Link>
+            </div>
           ) : (
             <Link
               to="/auth"
@@ -113,13 +134,33 @@ const Navbar = () => {
             </Link>
           ))}
           {user ? (
-            <Link
-              to="/dashboard"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-2 font-display font-semibold text-sm py-2 text-muted-foreground"
-            >
-              <LayoutDashboard className="w-4 h-4" /> Dashboard
-            </Link>
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground font-body truncate py-1" title={user.email ?? ""}>
+                {user.email}
+              </p>
+              {!roleLoading && role === "admin" && (
+                <div className="flex items-center gap-1.5 py-1">
+                  <Shield className="w-3.5 h-3.5 text-red-700 dark:text-red-400" aria-hidden />
+                  <span className="text-xs font-display font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-800 border border-red-200 dark:bg-red-950/50 dark:text-red-200 dark:border-red-800">
+                    Admin
+                  </span>
+                </div>
+              )}
+              {!roleLoading && role === "student" && (
+                <div className="py-1">
+                  <span className="text-xs font-display font-semibold px-2 py-0.5 rounded-full text-muted-foreground bg-muted/70 border border-border">
+                    Student
+                  </span>
+                </div>
+              )}
+              <Link
+                to="/dashboard"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-2 font-display font-semibold text-sm py-2 text-muted-foreground"
+              >
+                <LayoutDashboard className="w-4 h-4" /> Dashboard
+              </Link>
+            </div>
           ) : (
             <Link
               to="/auth"

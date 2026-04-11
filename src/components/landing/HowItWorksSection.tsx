@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import { Rocket } from "lucide-react";
 
 const steps = [
-  { step: "1", title: "Quiz Dijiye 📝", desc: "15 fun sawaal answer karein — sirf 5 minute lagenge. Emoji wale mazedaar options!", color: "from-primary to-primary-glow" },
-  { step: "2", title: "Result Dekhein 📊", desc: "Turant pata chalega kaunsa stream best hai — match percentage ke saath!", color: "from-accent to-accent/80" },
-  { step: "3", title: "Roadmap Follow Karein 🗺️", desc: "15-year plan milega — colleges, careers, courses, scholarships sab ek jagah", color: "from-primary-glow to-primary" },
-  { step: "4", title: "Share & Discuss 📱", desc: "PDF download karein, parents ko dikhayein, WhatsApp pe friends ko bhejein!", color: "from-secondary to-secondary/80" },
+  { step: "1", title: "Quiz Dijiye 📝", desc: "15 fun sawaal answer karein — sirf 5 minute lagenge. Emoji wale mazedaar options!" },
+  { step: "2", title: "Result Dekhein 📊", desc: "Turant pata chalega kaunsa stream best hai — match percentage ke saath!" },
+  { step: "3", title: "Roadmap Follow Karein 🗺️", desc: "15-year plan milega — colleges, careers, courses, scholarships sab ek jagah" },
+  { step: "4", title: "Share & Discuss 📱", desc: "PDF download karein, parents ko dikhayein, WhatsApp pe friends ko bhejein!" },
 ];
 
 const HowItWorksSection = () => (
@@ -39,10 +39,12 @@ const HowItWorksSection = () => (
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.12, duration: 0.5 }}
-            whileHover={{ y: -6 }}
+            whileHover={{ y: -4 }}
             className="relative group"
           >
-            <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center text-primary-foreground font-display font-bold text-2xl mx-auto mb-5 shadow-lg group-hover:scale-110 transition-transform duration-300 relative z-10`}>
+            <div
+              className="w-12 h-12 rounded-full gradient-hero text-primary-foreground font-display font-bold text-xl flex items-center justify-center mx-auto mb-5 relative z-10 shadow-[0_8px_24px_rgba(var(--primary-rgb),0.4)] ring-4 ring-primary/20 group-hover:scale-105 transition-transform duration-300"
+            >
               {s.step}
             </div>
             <div className="bg-card rounded-2xl p-5 shadow-card border border-border/50 group-hover:border-primary/25 group-hover:shadow-elevated transition-all">

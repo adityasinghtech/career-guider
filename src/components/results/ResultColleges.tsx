@@ -97,6 +97,56 @@ const admissionLabel: Record<NonNullable<College["admissionType"]>, string> = {
   management: "Management",
 };
 
+function CollegeCard({ college }: { college: College }) {
+  const kind = resolveCollegeType(college);
+  return (
+    <div className="bg-muted/50 rounded-xl p-4 border border-border">
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 gap-y-1">
+              <h3 className="font-display font-bold text-foreground">{college.name}</h3>
+              <span className="text-sm shrink-0">{college.rating}</span>
+            </div>
+            <span className="inline-flex items-center gap-1 mt-2 px-2 py-0.5 rounded-lg text-xs font-display font-semibold border border-border bg-background text-foreground">
+              <MapPin className="w-3 h-3 text-muted-foreground shrink-0" />
+              {college.location}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          <span
+            className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-display font-semibold border ${feesBadgeClass(college.fees)}`}
+          >
+            <IndianRupee className="w-3 h-3 shrink-0" />
+            {college.fees}
+          </span>
+          <span className={`inline-flex px-2 py-1 rounded-lg text-xs font-display font-semibold border ${typeBadgeClass[kind]}`}>
+            {typeLabel[kind]}
+          </span>
+          {college.courseDuration && (
+            <span className="inline-flex px-2 py-1 rounded-lg text-xs font-body border border-border bg-card text-muted-foreground">
+              {college.courseDuration}
+            </span>
+          )}
+          {college.admissionType && (
+            <span className="inline-flex px-2 py-1 rounded-lg text-xs font-display font-semibold border border-primary/30 bg-primary/5 text-foreground">
+              Admission: {admissionLabel[college.admissionType]}
+            </span>
+          )}
+        </div>
+
+        {college.cutoff && (
+          <p className="text-xs text-accent font-semibold flex items-center gap-1 font-body">
+            <Scissors className="w-3 h-3 shrink-0" /> Cutoff: {college.cutoff}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 const ResultColleges = ({ result }: { result: StreamResult }) => {
   const [activeTab, setActiveTab] = useState("Bihar");
   const [searchQuery, setSearchQuery] = useState("");
@@ -120,6 +170,15 @@ const ResultColleges = ({ result }: { result: StreamResult }) => {
     return colleges;
   }, [result.colleges, activeTab, searchQuery, categoryFilter]);
 
+  const { mainColleges, localColleges } = useMemo(() => {
+    if (categoryFilter !== "all") {
+      return { mainColleges: filteredColleges, localColleges: [] as College[] };
+    }
+    const locals = filteredColleges.filter((c) => resolveCollegeType(c) === "local");
+    const main = filteredColleges.filter((c) => resolveCollegeType(c) !== "local");
+    return { mainColleges: main, localColleges: locals };
+  }, [filteredColleges, categoryFilter]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -128,7 +187,7 @@ const ResultColleges = ({ result }: { result: StreamResult }) => {
       className="bg-card rounded-2xl p-6 shadow-card border border-border"
     >
       <h2 className="font-display font-bold text-xl text-foreground mb-4 flex items-center gap-2">
-        <GraduationCap className="w-5 h-5 text-primary" /> Top & Local Colleges — State Wise 🎓
+        <GraduationCap className="w-5 h-5 text-primary" /> Colleges — Top, Government & Local / Normal 🎓
       </h2>
 
       {/* Search */}
@@ -190,56 +249,30 @@ const ResultColleges = ({ result }: { result: StreamResult }) => {
       </p>
 
       <div className="space-y-3">
-        {filteredColleges.map((college, idx) => {
-          const kind = resolveCollegeType(college);
-          return (
-            <div
-              key={`${college.state}-${college.name}-${college.location}-${idx}`}
-              className="bg-muted/50 rounded-xl p-4 border border-border"
-            >
-              <div className="flex flex-col gap-3">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-2 gap-y-1">
-                      <h3 className="font-display font-bold text-foreground">{college.name}</h3>
-                      <span className="text-sm shrink-0">{college.rating}</span>
-                    </div>
-                    <span className="inline-flex items-center gap-1 mt-2 px-2 py-0.5 rounded-lg text-xs font-display font-semibold border border-border bg-background text-foreground">
-                      <MapPin className="w-3 h-3 text-muted-foreground shrink-0" />
-                      {college.location}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-display font-semibold border ${feesBadgeClass(college.fees)}`}>
-                    <IndianRupee className="w-3 h-3 shrink-0" />
-                    {college.fees}
-                  </span>
-                  <span className={`inline-flex px-2 py-1 rounded-lg text-xs font-display font-semibold border ${typeBadgeClass[kind]}`}>
-                    {typeLabel[kind]}
-                  </span>
-                  {college.courseDuration && (
-                    <span className="inline-flex px-2 py-1 rounded-lg text-xs font-body border border-border bg-card text-muted-foreground">
-                      {college.courseDuration}
-                    </span>
-                  )}
-                  {college.admissionType && (
-                    <span className="inline-flex px-2 py-1 rounded-lg text-xs font-display font-semibold border border-primary/30 bg-primary/5 text-foreground">
-                      Admission: {admissionLabel[college.admissionType]}
-                    </span>
-                  )}
-                </div>
-
-                {college.cutoff && (
-                  <p className="text-xs text-accent font-semibold flex items-center gap-1 font-body">
-                    <Scissors className="w-3 h-3 shrink-0" /> Cutoff: {college.cutoff}
-                  </p>
-                )}
+        {categoryFilter === "all" && localColleges.length > 0 ? (
+          <>
+            {mainColleges.length > 0 && (
+              <div className="space-y-3">
+                {mainColleges.map((college, idx) => (
+                  <CollegeCard key={`main-${college.state}-${college.name}-${idx}`} college={college} />
+                ))}
+              </div>
+            )}
+            <div>
+              <h3 className="font-display font-bold text-lg text-foreground mt-2 mb-3 flex items-center gap-2 border-b border-border pb-2">
+                Local / normal colleges
+              </h3>
+              <div className="space-y-3">
+                {localColleges.map((college, idx) => (
+                  <CollegeCard key={`local-${college.state}-${college.name}-${idx}`} college={college} />
+                ))}
               </div>
             </div>
-          );
-        })}
+          </>
+        ) : (
+          filteredColleges.map((college, idx) => <CollegeCard key={`${college.state}-${college.name}-${idx}`} college={college} />)
+        )}
+
         {filteredColleges.length === 0 && (
           <p className="text-muted-foreground text-center py-4 font-body">
             {searchQuery || categoryFilter !== "all"

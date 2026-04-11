@@ -346,39 +346,43 @@ export const streamResults: Record<string, StreamResult> = {
       { name: "BIT Mesra (Patna Campus)", location: "Patna, Bihar", fees: "₹2-3L/year", rating: "⭐⭐⭐⭐", state: "Bihar", cutoff: "JEE Main: 75-85 percentile" },
       { name: "Bhagalpur College of Engineering", location: "Bhagalpur, Bihar", fees: "₹70K-1L/year", rating: "⭐⭐⭐", state: "Bihar", cutoff: "BCECE: Top 10000 rank" },
       { name: "Gaya College of Engineering", location: "Gaya, Bihar", fees: "₹60K-90K/year", rating: "⭐⭐⭐", state: "Bihar", cutoff: "BCECE: Top 15000 rank", collegeType: "government", courseDuration: "4 years", admissionType: "entrance" },
-      { name: "Government Engineering College", location: "Patna (state capital), Bihar", fees: "₹20-50K/year", rating: "⭐⭐⭐", state: "Bihar", cutoff: "BCECE: Any rank", collegeType: "local", courseDuration: "4 years", admissionType: "entrance" },
+      { name: "Government Engineering College", location: "Patna (state capital), Bihar", fees: "₹20-50K/year", rating: "⭐⭐⭐", state: "Bihar", cutoff: "BCECE: Any rank", collegeType: "government", courseDuration: "4 years", admissionType: "entrance" },
+      { name: "District Engineering Institute", location: "Patna, Bihar", fees: "₹15-40K/year", rating: "⭐⭐⭐", state: "Bihar", cutoff: "State merit / lateral entry", collegeType: "local", courseDuration: "3 years", admissionType: "merit" },
       { name: "Government Polytechnic", location: "Patna, Bihar", fees: "₹8-20K/year", rating: "⭐⭐⭐", state: "Bihar", cutoff: "10th merit / polytechnic entrance", collegeType: "polytechnic", courseDuration: "3 years", admissionType: "merit" },
 
       // ===== UP =====
-      { name: "IIT (BHU) Varanasi", location: "Varanasi, UP", fees: "₹2-2.5L/year", rating: "⭐⭐⭐⭐⭐", state: "UP", cutoff: "JEE Advanced: Rank 2000-6000" },
-      { name: "IIT Kanpur", location: "Kanpur, UP", fees: "₹2-2.5L/year", rating: "⭐⭐⭐⭐⭐", state: "UP", cutoff: "JEE Advanced: Rank 500-3000" },
+      { name: "IIT (BHU) Varanasi", location: "Varanasi, UP", fees: "₹2-2.5L/year", rating: "⭐⭐⭐⭐⭐", state: "UP", cutoff: "JEE Advanced: Rank 2000-6000", collegeType: "top", courseDuration: "4 years", admissionType: "entrance" },
+      { name: "IIT Kanpur", location: "Kanpur, UP", fees: "₹2-2.5L/year", rating: "⭐⭐⭐⭐⭐", state: "UP", cutoff: "JEE Advanced: Rank 500-3000", collegeType: "top", courseDuration: "4 years", admissionType: "entrance" },
       { name: "MNNIT Allahabad", location: "Prayagraj, UP", fees: "₹1.5L/year", rating: "⭐⭐⭐⭐⭐", state: "UP", cutoff: "JEE Main: 90-97 percentile" },
       { name: "BHU (Banaras Hindu University)", location: "Varanasi, UP", fees: "₹10-50K/year", rating: "⭐⭐⭐⭐⭐", state: "UP", cutoff: "CUET: 85-95 percentile" },
       { name: "KGMU Lucknow", location: "Lucknow, UP", fees: "₹20-50K/year", rating: "⭐⭐⭐⭐⭐", state: "UP", cutoff: "NEET: 600+ marks" },
       { name: "AMU (Aligarh Muslim University)", location: "Aligarh, UP", fees: "₹15-40K/year", rating: "⭐⭐⭐⭐⭐", state: "UP", cutoff: "AMU Entrance: 70%+" },
       { name: "HBTU Kanpur", location: "Kanpur, UP", fees: "₹1-1.5L/year", rating: "⭐⭐⭐⭐", state: "UP", cutoff: "JEE Main: 80-90 percentile" },
       { name: "AKTU Lucknow (affiliated colleges)", location: "Lucknow, UP", fees: "₹80K-2L/year", rating: "⭐⭐⭐", state: "UP", cutoff: "UPSEE: 70-85 percentile", collegeType: "private", courseDuration: "4 years", admissionType: "entrance" },
-      { name: "Government Engineering College", location: "Lucknow (state capital), UP", fees: "₹25-55K/year", rating: "⭐⭐⭐", state: "UP", cutoff: "UPSEE / AKTU: State merit", collegeType: "local", courseDuration: "4 years", admissionType: "entrance" },
+      { name: "Government Engineering College", location: "Lucknow (state capital), UP", fees: "₹25-55K/year", rating: "⭐⭐⭐", state: "UP", cutoff: "UPSEE / AKTU: State merit", collegeType: "government", courseDuration: "4 years", admissionType: "entrance" },
+      { name: "District Engineering Institute", location: "Kanpur, UP", fees: "₹18-45K/year", rating: "⭐⭐⭐", state: "UP", cutoff: "JEECUP / merit", collegeType: "local", courseDuration: "3 years", admissionType: "merit" },
       { name: "Government Polytechnic", location: "Kanpur, UP", fees: "₹10-25K/year", rating: "⭐⭐⭐", state: "UP", cutoff: "JEECUP / 10th merit", collegeType: "polytechnic", courseDuration: "3 years", admissionType: "merit" },
 
       // ===== DELHI =====
-      { name: "IIT Delhi", location: "New Delhi", fees: "₹2-2.5L/year", rating: "⭐⭐⭐⭐⭐", state: "Delhi", cutoff: "JEE Advanced: Rank 100-2000" },
-      { name: "AIIMS Delhi", location: "New Delhi", fees: "₹1,628/year", rating: "⭐⭐⭐⭐⭐", state: "Delhi", cutoff: "NEET: 700+ marks" },
+      { name: "IIT Delhi", location: "New Delhi", fees: "₹2-2.5L/year", rating: "⭐⭐⭐⭐⭐", state: "Delhi", cutoff: "JEE Advanced: Rank 100-2000", collegeType: "top", courseDuration: "4 years", admissionType: "entrance" },
+      { name: "AIIMS Delhi", location: "New Delhi", fees: "₹1,628/year", rating: "⭐⭐⭐⭐⭐", state: "Delhi", cutoff: "NEET: 700+ marks", collegeType: "top", courseDuration: "5.5 years", admissionType: "entrance" },
       { name: "Delhi University (Science)", location: "New Delhi", fees: "₹10-30K/year", rating: "⭐⭐⭐⭐⭐", state: "Delhi", cutoff: "CUET: 90-98 percentile" },
       { name: "DTU (Delhi Technological University)", location: "New Delhi", fees: "₹1.5-2L/year", rating: "⭐⭐⭐⭐⭐", state: "Delhi", cutoff: "JEE Main: 95-99 percentile" },
       { name: "NSUT Delhi", location: "New Delhi", fees: "₹1.5-2L/year", rating: "⭐⭐⭐⭐⭐", state: "Delhi", cutoff: "JEE Main: 93-98 percentile" },
       { name: "IIIT Delhi", location: "New Delhi", fees: "₹3-3.5L/year", rating: "⭐⭐⭐⭐⭐", state: "Delhi", cutoff: "JEE Main: 95-99 percentile" },
       { name: "Maulana Azad Medical College", location: "New Delhi", fees: "₹10-20K/year", rating: "⭐⭐⭐⭐⭐", state: "Delhi", cutoff: "NEET: 690+ marks", collegeType: "government", courseDuration: "5.5 years", admissionType: "entrance" },
-      { name: "Government Engineering College", location: "Delhi NCR (state capital region)", fees: "₹30-60K/year", rating: "⭐⭐⭐", state: "Delhi", cutoff: "State quota / JEE Main", collegeType: "local", courseDuration: "4 years", admissionType: "entrance" },
+      { name: "Government Engineering College", location: "Delhi NCR (state capital region)", fees: "₹30-60K/year", rating: "⭐⭐⭐", state: "Delhi", cutoff: "State quota / JEE Main", collegeType: "government", courseDuration: "4 years", admissionType: "entrance" },
+      { name: "District Engineering Institute", location: "New Delhi", fees: "₹20-50K/year", rating: "⭐⭐⭐", state: "Delhi", cutoff: "CET / merit", collegeType: "local", courseDuration: "3 years", admissionType: "merit" },
       { name: "Government Polytechnic", location: "New Delhi", fees: "₹12-28K/year", rating: "⭐⭐⭐", state: "Delhi", cutoff: "CET / 10th merit", collegeType: "polytechnic", courseDuration: "3 years", admissionType: "merit" },
 
       // ===== MAHARASHTRA =====
-      { name: "IIT Bombay", location: "Mumbai", fees: "₹2-2.5L/year", rating: "⭐⭐⭐⭐⭐", state: "Maharashtra", cutoff: "JEE Advanced: Rank 1-1000" },
+      { name: "IIT Bombay", location: "Mumbai", fees: "₹2-2.5L/year", rating: "⭐⭐⭐⭐⭐", state: "Maharashtra", cutoff: "JEE Advanced: Rank 1-1000", collegeType: "top", courseDuration: "4 years", admissionType: "entrance" },
       { name: "COEP Pune", location: "Pune", fees: "₹1-1.5L/year", rating: "⭐⭐⭐⭐⭐", state: "Maharashtra", cutoff: "MHT CET: 99+ percentile / JEE: 90+" },
       { name: "VJTI Mumbai", location: "Mumbai", fees: "₹80K-1.2L/year", rating: "⭐⭐⭐⭐", state: "Maharashtra", cutoff: "MHT CET: 98+ percentile" },
       { name: "Grant Medical College Mumbai", location: "Mumbai", fees: "₹30-50K/year", rating: "⭐⭐⭐⭐⭐", state: "Maharashtra", cutoff: "NEET: 600+ marks" },
       { name: "Savitribai Phule Pune University", location: "Pune", fees: "₹20-60K/year", rating: "⭐⭐⭐⭐", state: "Maharashtra", cutoff: "MHT CET: 85-95 percentile", collegeType: "government", courseDuration: "3-5 years", admissionType: "entrance" },
-      { name: "Government Engineering College", location: "Mumbai (capital region), Maharashtra", fees: "₹25-50K/year", rating: "⭐⭐⭐", state: "Maharashtra", cutoff: "MHT CET: State rank", collegeType: "local", courseDuration: "4 years", admissionType: "entrance" },
+      { name: "Government Engineering College", location: "Mumbai (capital region), Maharashtra", fees: "₹25-50K/year", rating: "⭐⭐⭐", state: "Maharashtra", cutoff: "MHT CET: State rank", collegeType: "government", courseDuration: "4 years", admissionType: "entrance" },
+      { name: "District Engineering Institute", location: "Pune, Maharashtra", fees: "₹18-42K/year", rating: "⭐⭐⭐", state: "Maharashtra", cutoff: "Diploma merit", collegeType: "local", courseDuration: "3 years", admissionType: "merit" },
       { name: "Government Polytechnic", location: "Pune, Maharashtra", fees: "₹15-35K/year", rating: "⭐⭐⭐", state: "Maharashtra", cutoff: "Diploma CET / merit", collegeType: "polytechnic", courseDuration: "3 years", admissionType: "merit" },
 
       // ===== KARNATAKA =====
@@ -608,7 +612,8 @@ export const streamResults: Record<string, StreamResult> = {
       { name: "IIM Bodh Gaya", location: "Bodh Gaya, Bihar", fees: "₹12-15L/2 years", rating: "⭐⭐⭐⭐⭐", state: "Bihar", cutoff: "CAT: 90+ percentile" },
       { name: "AN College Patna", location: "Patna, Bihar", fees: "₹8-12K/year", rating: "⭐⭐⭐", state: "Bihar", cutoff: "Bihar Board: 65%+" },
       { name: "BN College Patna", location: "Patna, Bihar", fees: "₹5-10K/year", rating: "⭐⭐⭐", state: "Bihar", cutoff: "Bihar Board: 60%+", collegeType: "government", admissionType: "merit" },
-      { name: "Government Commerce College", location: "Patna, Bihar", fees: "₹5-15K/year", rating: "⭐⭐⭐", state: "Bihar", cutoff: "Bihar Board: 55%+", collegeType: "government", admissionType: "merit" },
+      { name: "Government Commerce College", location: "Patna, Bihar", fees: "₹5-15K/year", rating: "⭐⭐⭐", state: "Bihar", cutoff: "Bihar Board: 55%+", collegeType: "government", courseDuration: "3 years", admissionType: "merit" },
+      { name: "District Commerce College", location: "Patna, Bihar", fees: "₹4-10K/year", rating: "⭐⭐⭐", state: "Bihar", cutoff: "Merit: 50%+", collegeType: "local", courseDuration: "3 years", admissionType: "merit" },
 
       // ===== UP =====
       { name: "BHU Commerce Faculty", location: "Varanasi, UP", fees: "₹10-20K/year", rating: "⭐⭐⭐⭐⭐", state: "UP", cutoff: "CUET: 85-95 percentile" },
@@ -616,7 +621,8 @@ export const streamResults: Record<string, StreamResult> = {
       { name: "AMU Commerce Dept", location: "Aligarh, UP", fees: "₹15-30K/year", rating: "⭐⭐⭐⭐⭐", state: "UP", cutoff: "AMU Entrance: 65%+" },
       { name: "Allahabad University", location: "Prayagraj, UP", fees: "₹5-15K/year", rating: "⭐⭐⭐⭐", state: "UP", cutoff: "CUET: 70-80 percentile" },
       { name: "IIM Lucknow", location: "Lucknow, UP", fees: "₹19-22L/2 years", rating: "⭐⭐⭐⭐⭐", state: "UP", cutoff: "CAT: 97+ percentile", collegeType: "top", courseDuration: "2 years", admissionType: "entrance" },
-      { name: "Government Commerce College", location: "Lucknow, UP", fees: "₹5-15K/year", rating: "⭐⭐⭐", state: "UP", cutoff: "UP Board merit: 55%+", collegeType: "government", admissionType: "merit" },
+      { name: "Government Commerce College", location: "Lucknow, UP", fees: "₹5-15K/year", rating: "⭐⭐⭐", state: "UP", cutoff: "UP Board merit: 55%+", collegeType: "government", courseDuration: "3 years", admissionType: "merit" },
+      { name: "District Commerce College", location: "Lucknow, UP", fees: "₹4-12K/year", rating: "⭐⭐⭐", state: "UP", cutoff: "Merit: 50%+", collegeType: "local", courseDuration: "3 years", admissionType: "merit" },
 
       // ===== DELHI =====
       { name: "SRCC Delhi", location: "New Delhi", fees: "₹30-40K/year", rating: "⭐⭐⭐⭐⭐", state: "Delhi", cutoff: "CUET: 98-99+ percentile" },
@@ -624,7 +630,8 @@ export const streamResults: Record<string, StreamResult> = {
       { name: "Hansraj College Delhi", location: "New Delhi", fees: "₹20-30K/year", rating: "⭐⭐⭐⭐⭐", state: "Delhi", cutoff: "CUET: 93-97 percentile" },
       { name: "Lady Shri Ram College (LSR)", location: "New Delhi", fees: "₹20-30K/year", rating: "⭐⭐⭐⭐⭐", state: "Delhi", cutoff: "CUET: 95-98 percentile" },
       { name: "IIM Delhi (FMS)", location: "New Delhi", fees: "₹2L/2 years 🔥", rating: "⭐⭐⭐⭐⭐", state: "Delhi", cutoff: "CAT: 98+ percentile", collegeType: "top", courseDuration: "2 years", admissionType: "entrance" },
-      { name: "Government Commerce College", location: "New Delhi", fees: "₹8-18K/year", rating: "⭐⭐⭐", state: "Delhi", cutoff: "Merit: 60%+ / CUET", collegeType: "government", admissionType: "merit" },
+      { name: "Government Commerce College", location: "New Delhi", fees: "₹8-18K/year", rating: "⭐⭐⭐", state: "Delhi", cutoff: "Merit: 60%+ / CUET", collegeType: "government", courseDuration: "3 years", admissionType: "merit" },
+      { name: "District Commerce College", location: "New Delhi", fees: "₹5-14K/year", rating: "⭐⭐⭐", state: "Delhi", cutoff: "Merit: 50%+", collegeType: "local", courseDuration: "3 years", admissionType: "merit" },
 
       // ===== MAHARASHTRA =====
       { name: "St. Xavier's Mumbai", location: "Mumbai", fees: "₹15-25K/year", rating: "⭐⭐⭐⭐⭐", state: "Maharashtra", cutoff: "12th: 85%+ / Entrance" },
@@ -632,7 +639,8 @@ export const streamResults: Record<string, StreamResult> = {
       { name: "Symbiosis Pune (SIC)", location: "Pune", fees: "₹2-3L/year", rating: "⭐⭐⭐⭐", state: "Maharashtra", cutoff: "SET: 100+ marks" },
       { name: "NMIMS Mumbai", location: "Mumbai", fees: "₹4-6L/year", rating: "⭐⭐⭐⭐⭐", state: "Maharashtra", cutoff: "NPAT: 100+ marks" },
       { name: "IIM Mumbai (Jamnalal Bajaj)", location: "Mumbai", fees: "₹12-15L/2 years", rating: "⭐⭐⭐⭐⭐", state: "Maharashtra", cutoff: "CAT: 95+ percentile", collegeType: "top", courseDuration: "2 years", admissionType: "entrance" },
-      { name: "Government Commerce College", location: "Mumbai, Maharashtra", fees: "₹8-20K/year", rating: "⭐⭐⭐", state: "Maharashtra", cutoff: "12th: 55%+ merit", collegeType: "government", admissionType: "merit" },
+      { name: "Government Commerce College", location: "Mumbai, Maharashtra", fees: "₹8-20K/year", rating: "⭐⭐⭐", state: "Maharashtra", cutoff: "12th: 55%+ merit", collegeType: "government", courseDuration: "3 years", admissionType: "merit" },
+      { name: "District Commerce College", location: "Mumbai, Maharashtra", fees: "₹6-15K/year", rating: "⭐⭐⭐", state: "Maharashtra", cutoff: "Merit: 50%+", collegeType: "local", courseDuration: "3 years", admissionType: "merit" },
 
       // ===== KARNATAKA =====
       { name: "Christ University Bangalore", location: "Bangalore", fees: "₹1-2L/year", rating: "⭐⭐⭐⭐⭐", state: "Karnataka", cutoff: "Christ Entrance: 60%+" },
@@ -895,6 +903,8 @@ export interface QuizProfile {
   personality: string;
   selectedClass?: string;
   selectedInterest?: string;
+  dreamGoal?: string;
+  situation?: string[];
 }
 
 export function calculateStream(answers: number[][]): string {

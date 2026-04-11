@@ -13,6 +13,29 @@ const formSchema = z.object({
   interest: z
     .enum(["", "tech", "business", "creative", "sports", "undecided"])
     .refine((v) => v !== "", { message: "Kripya apna interest select karein" }),
+  dreamGoal: z
+    .string()
+    .refine(
+      (v) =>
+        v === "" ||
+        [
+          "doctor",
+          "engineer",
+          "ai_ml",
+          "ca",
+          "mba",
+          "startup",
+          "ias",
+          "lawyer",
+          "teacher",
+          "content_creator",
+          "defense",
+          "sports",
+          "designer",
+          "undecided",
+        ].includes(v),
+      { message: "Dream goal select karein ya optional chhod dein" },
+    ),
   class: z.string().min(1, "Kripya apni class select karein"),
 });
 
@@ -34,6 +57,33 @@ const interestOptions: { value: "tech" | "business" | "creative" | "sports" | "u
   { value: "undecided", label: "🤷 Abhi decide nahi" },
 ];
 
+const dreamGoalOptions: { value: string; label: string }[] = [
+  { value: "", label: "Select karo (optional)" },
+  { value: "doctor", label: "👨‍⚕️ Doctor / Medical" },
+  { value: "engineer", label: "💻 Engineer / Software Dev" },
+  { value: "ai_ml", label: "🤖 AI / Data Science" },
+  { value: "ca", label: "📊 CA / Finance" },
+  { value: "mba", label: "🏢 MBA / Business" },
+  { value: "startup", label: "🚀 Startup / Entrepreneur" },
+  { value: "ias", label: "🏛️ IAS / Government Officer" },
+  { value: "lawyer", label: "⚖️ Lawyer" },
+  { value: "teacher", label: "📚 Teacher / Professor" },
+  { value: "content_creator", label: "🎬 Content Creator / YouTuber" },
+  { value: "defense", label: "🎖️ Army / Navy / Air Force" },
+  { value: "sports", label: "🏏 Professional Sports" },
+  { value: "designer", label: "🎨 Designer / Artist" },
+  { value: "undecided", label: "🤷 Abhi decide nahi" },
+];
+
+const situationOptions = [
+  "💰 Padhai ke saath earning chahiye",
+  "📉 Maths mein thoda weak hoon",
+  "💸 Financial constraints hain",
+  "🔄 Stream change karna chahta/chahti hoon",
+  "👨‍👩‍👦 Family ne stream decide ki hai",
+  "😕 Confused hoon — guidance chahiye",
+] as const;
+
 const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
   const { user } = useAuth();
   const [form, setForm] = useState<FormData>({
@@ -42,8 +92,10 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
     email: "",
     city: "",
     interest: "",
+    dreamGoal: "",
     class: "",
   });
+  const [selectedSituations, setSelectedSituations] = useState<string[]>([]);
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitting, setSubmitting] = useState(false);
 
@@ -52,6 +104,12 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
+  };
+
+  const toggleSituation = (label: string) => {
+    setSelectedSituations((prev) =>
+      prev.includes(label) ? prev.filter((x) => x !== label) : [...prev, label],
+    );
   };
 
   const handleSubmit = async () => {
@@ -68,6 +126,8 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
 
     localStorage.setItem("selectedClass", form.class);
     localStorage.setItem("selectedInterest", result.data.interest);
+    localStorage.setItem("dreamGoal", form.dreamGoal || "");
+    localStorage.setItem("situation", JSON.stringify(selectedSituations));
 
     setSubmitting(true);
 
@@ -91,8 +151,6 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
     }
 
     setTimeout(() => {
-      localStorage.setItem("selectedClass", form.class);
-      localStorage.setItem("selectedInterest", result.data.interest);
       onSubmit();
     }, 500);
   };
@@ -101,6 +159,10 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
     `w-full px-4 py-3 rounded-xl border-2 bg-card font-body text-foreground placeholder:text-muted-foreground/50 outline-none transition-colors ${
       errors[field] ? "border-destructive" : "border-border focus:border-primary"
     }`;
+
+  const selectClass = `w-full border-2 rounded-xl px-4 py-3 bg-card font-body text-foreground outline-none transition-colors ${
+    errors.dreamGoal ? "border-destructive" : "border-border focus:border-primary"
+  } appearance-none cursor-pointer`;
 
   return (
     <motion.div
@@ -211,6 +273,57 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
           {errors.interest && (
             <p className="text-destructive text-xs mt-1 font-body">{errors.interest}</p>
           )}
+        </div>
+
+        {/* Dream Goal (optional) */}
+        <div>
+          <label className="flex items-center gap-2 text-sm font-display font-semibold text-foreground mb-1.5">
+            Tumhara dream career kya hai? (optional) 🌟
+          </label>
+          <select
+            value={form.dreamGoal}
+            onChange={(e) => updateField("dreamGoal", e.target.value)}
+            className={selectClass}
+          >
+            {dreamGoalOptions.map((opt) => (
+              <option key={opt.value || "empty"} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+          {errors.dreamGoal && (
+            <p className="text-destructive text-xs mt-1 font-body">{errors.dreamGoal}</p>
+          )}
+          <p className="text-xs text-muted-foreground mt-1 font-body">
+            Optional — skip kar sakte ho, report phir bhi personalized rahegi
+          </p>
+        </div>
+
+        {/* Situation (optional, multi-select) */}
+        <div>
+          <label className="text-sm font-display font-semibold text-foreground mb-1.5 block">
+            Koi khaas situation hai? (optional — jo bhi sahi ho select karo)
+          </label>
+          <div className="flex flex-col gap-1.5">
+            {situationOptions.map((label) => {
+              const on = selectedSituations.includes(label);
+              return (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => toggleSituation(label)}
+                  className={`text-left px-2.5 py-2 rounded-xl border-2 font-body text-xs transition-all ${
+                    on
+                      ? "border-primary bg-primary/10 text-foreground font-semibold"
+                      : "border-border bg-card text-muted-foreground hover:border-primary/40"
+                  }`}
+                >
+                  {on ? "✓ " : ""}
+                  {label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Class */}

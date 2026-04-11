@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, Lock, User, ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -7,14 +7,52 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+const OAUTH_PENDING_KEY = "pf_oauth_pending";
+
 const Auth = () => {
   const navigate = useNavigate();
-  const { signIn, signUp } = useAuth();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/dashboard";
+  const { signIn, signUp, user, loading: authLoading } = useAuth();
+  const handledByFormRef = useRef(false);
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [form, setForm] = useState({ email: "", password: "", name: "" });
+  const [showAdminLoginSuccess, setShowAdminLoginSuccess] = useState(false);
+
+  useEffect(() => {
+    if (authLoading || !user) return;
+    if (handledByFormRef.current) return;
+
+    const oauthPending = sessionStorage.getItem(OAUTH_PENDING_KEY) === "1";
+    if (!oauthPending) {
+      navigate(redirectTo, { replace: true });
+      return;
+    }
+    sessionStorage.removeItem(OAUTH_PENDING_KEY);
+
+    let cancelled = false;
+    (async () => {
+      const { data: rows } = await supabase.from("user_roles").select("role").eq("user_id", user.id);
+      if (cancelled) return;
+      const isAdmin = rows?.some((r) => r.role === "admin");
+      if (isAdmin) {
+        toast.success("Admin login safal! 🛡️ Admin dashboard khul raha hai...");
+        setShowAdminLoginSuccess(true);
+        await new Promise((r) => setTimeout(r, 2000));
+        if (!cancelled) navigate(redirectTo, { replace: true });
+      } else {
+        toast.success("Login safal! Swagat hai! 🎉");
+        navigate(redirectTo, { replace: true });
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [authLoading, user, navigate, redirectTo]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,36 +62,70 @@ const Auth = () => {
       const { error } = await signIn(form.email, form.password);
       if (error) {
         toast.error(error.message || "Login nahi ho paaya");
-      } else {
-        toast.success("Login safal! Swagat hai! 🎉");
-        navigate("/dashboard");
-      }
-    } else {
-      if (!form.name.trim()) {
-        toast.error("Kripya apna naam likhein!");
         setLoading(false);
         return;
       }
-      const { error } = await signUp(form.email, form.password, form.name);
-      if (error) {
-        toast.error(error.message || "Signup nahi ho paaya");
-      } else {
-        toast.success("Account ban gaya! Aapka swagat hai! 🎉");
-        navigate("/dashboard");
+      handledByFormRef.current = true;
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session?.user) {
+        toast.error("Session nahi mila");
+        setLoading(false);
+        handledByFormRef.current = false;
+        return;
       }
+
+      const { data: rows } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", session.user.id);
+      const isAdmin = rows?.some((r) => r.role === "admin");
+
+      if (isAdmin) {
+        toast.success("Admin login safal! 🛡️ Admin dashboard khul raha hai...");
+        setShowAdminLoginSuccess(true);
+        setLoading(false);
+        setTimeout(() => navigate(redirectTo), 2000);
+        return;
+      }
+
+      toast.success("Login safal! Swagat hai! 🎉");
+      navigate(redirectTo);
+      setLoading(false);
+      return;
+    }
+
+    if (!form.name.trim()) {
+      toast.error("Kripya apna naam likhein!");
+      setLoading(false);
+      return;
+    }
+
+    handledByFormRef.current = true;
+    const { error } = await signUp(form.email, form.password, form.name);
+    if (error) {
+      handledByFormRef.current = false;
+      toast.error(error.message || "Signup nahi ho paaya");
+    } else {
+      toast.success("Account ban gaya! Aapka swagat hai! 🎉");
+      navigate(redirectTo);
     }
     setLoading(false);
   };
 
   const handleGoogleLogin = async () => {
     setGoogleLoading(true);
+    sessionStorage.setItem(OAUTH_PENDING_KEY, "1");
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/dashboard`,
+        redirectTo: `${window.location.origin}/auth?redirect=${encodeURIComponent(redirectTo)}`,
       },
     });
     if (error) {
+      sessionStorage.removeItem(OAUTH_PENDING_KEY);
       toast.error(error.message);
       setGoogleLoading(false);
     }
@@ -81,6 +153,21 @@ const Auth = () => {
             </p>
           </div>
 
+          {showAdminLoginSuccess ? (
+            <div className="p-4 rounded-xl border-2 border-green-600/50 bg-green-500/10 flex flex-col items-center gap-3 text-center">
+              <span className="inline-flex items-center rounded-full bg-green-600 text-white px-3 py-1.5 text-xs font-display font-bold uppercase tracking-wide shadow-sm">
+                Admin Account
+              </span>
+              <p className="text-sm text-muted-foreground font-body">Thodi der mein dashboard khul jayega...</p>
+              <Link
+                to={redirectTo}
+                className="text-sm text-primary font-display font-semibold hover:underline"
+              >
+                Dashboard kholo →
+              </Link>
+            </div>
+          ) : (
+            <>
           <button
             type="button"
             onClick={handleGoogleLogin}
@@ -191,6 +278,8 @@ const Auth = () => {
               {isLogin ? "Account nahi hai? Sign Up karein" : "Pehle se account hai? Login karein"}
             </button>
           </div>
+            </>
+          )}
         </motion.div>
       </div>
     </div>

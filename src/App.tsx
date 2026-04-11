@@ -11,6 +11,8 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import AdminBootstrap from "./pages/AdminBootstrap";
+import AdminSetup from "./pages/AdminSetup";
 import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
 import CareerComparison from "./pages/CareerComparison";
@@ -32,6 +34,9 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/admin-setup" element={<AdminSetup />} />
+            <Route path="/admin/bootstrap" element={<AdminBootstrap />} />
+            <Route path="/team" element={<AdminBootstrap />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/install" element={<Install />} />
             <Route path="/career-comparison" element={<CareerComparison />} />

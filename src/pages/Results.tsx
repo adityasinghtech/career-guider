@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useRef, useMemo } from "react";
+import { generateGuidance, profileFromLocalStorage } from "@/utils/guidanceEngine";
 import { motion } from "framer-motion";
 import { Download, RotateCcw, Share2 } from "lucide-react";
 import { toast } from "sonner";
@@ -59,6 +60,15 @@ const Results = () => {
   const { stream } = useParams<{ stream: string }>();
   const result = streamResults[stream || "science"];
   const reportRef = useRef<HTMLDivElement>(null);
+
+  const guidanceUrgency = useMemo(() => {
+    try {
+      const s = stream || "science";
+      return generateGuidance(profileFromLocalStorage(s)).urgencyLevel;
+    } catch {
+      return "medium" as const;
+    }
+  }, [stream]);
 
   const quizProfile = useMemo<QuizProfile | null>(() => {
     try {
@@ -229,7 +239,7 @@ const Results = () => {
         </div>
 
         {/* Report content */}
-        <div ref={reportRef} className="space-y-6">
+        <div ref={reportRef} className="space-y-6" data-guidance-urgency={guidanceUrgency}>
           {show12thPassBanner && (
             <div className="rounded-2xl bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 p-6 md:p-8 text-white shadow-lg border border-amber-300/40">
               <h2 className="font-display font-bold text-xl md:text-2xl text-center mb-6 drop-shadow-sm">

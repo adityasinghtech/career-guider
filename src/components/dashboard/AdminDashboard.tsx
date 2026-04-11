@@ -1,6 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Users, BookOpen, BarChart3, Send, MessageSquare, Search, ChevronDown, ChevronUp, Mail, Eye, ShieldCheck, ShieldOff } from "lucide-react";
+import {
+  Users,
+  BookOpen,
+  BarChart3,
+  Send,
+  MessageSquare,
+  Search,
+  ChevronDown,
+  ChevronUp,
+  Mail,
+  Eye,
+  ShieldCheck,
+  ShieldOff,
+  CalendarDays,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -90,6 +105,28 @@ interface UserRole {
   role: string;
 }
 
+const CLASS_ORDER = ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "12th Pass"] as const;
+
+function isCreatedToday(iso: string): boolean {
+  const d = new Date(iso);
+  const t = new Date();
+  return (
+    d.getFullYear() === t.getFullYear() &&
+    d.getMonth() === t.getMonth() &&
+    d.getDate() === t.getDate()
+  );
+}
+
+function parseQuizScores(raw: unknown): { science: number; commerce: number; arts: number } | null {
+  if (!raw || typeof raw !== "object") return null;
+  const o = raw as Record<string, unknown>;
+  const science = Number(o.science);
+  const commerce = Number(o.commerce);
+  const arts = Number(o.arts);
+  if (![science, commerce, arts].every((n) => Number.isFinite(n))) return null;
+  return { science, commerce, arts };
+}
+
 const AdminDashboard = () => {
   const { user, signOut } = useAuth();
   const [students, setStudents] = useState<StudentData[]>([]);
@@ -103,6 +140,7 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<"students" | "analytics" | "messages">("students");
   const [messageIssueFilter, setMessageIssueFilter] = useState<MessageIssueFilter>("all");
   const [messagesUnreadOnly, setMessagesUnreadOnly] = useState(false);
+  const [grantAdminConfirm, setGrantAdminConfirm] = useState<{ id: string; name: string } | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -127,26 +165,24 @@ const AdminDashboard = () => {
 
   const isAdmin = (userId: string) => userRoles.some((r) => r.user_id === userId && r.role === "admin");
 
-  const toggleAdminRole = async (studentId: string) => {
-    const currentlyAdmin = isAdmin(studentId);
-    if (currentlyAdmin) {
-      // Remove admin role
-      const { error } = await supabase.from("user_roles").delete().eq("user_id", studentId).eq("role", "admin");
-      if (error) {
-        toast.error("Admin role hatane mein dikkat aayi");
-      } else {
-        setUserRoles((prev) => prev.filter((r) => !(r.user_id === studentId && r.role === "admin")));
-        toast.success("Admin role hata diya gaya ✅");
-      }
+  const grantAdminRole = async (studentId: string) => {
+    const { error } = await supabase.from("user_roles").insert({ user_id: studentId, role: "admin" } as any);
+    if (error) {
+      toast.error("Admin role dene mein dikkat aayi");
+      return;
+    }
+    setUserRoles((prev) => [...prev, { user_id: studentId, role: "admin" }]);
+    toast.success("Admin role de diya gaya! 🛡️");
+    setGrantAdminConfirm(null);
+  };
+
+  const removeAdminRole = async (studentId: string) => {
+    const { error } = await supabase.from("user_roles").delete().eq("user_id", studentId).eq("role", "admin");
+    if (error) {
+      toast.error("Admin role hatane mein dikkat aayi");
     } else {
-      // Add admin role
-      const { error } = await supabase.from("user_roles").insert({ user_id: studentId, role: "admin" } as any);
-      if (error) {
-        toast.error("Admin role dene mein dikkat aayi");
-      } else {
-        setUserRoles((prev) => [...prev, { user_id: studentId, role: "admin" }]);
-        toast.success("Admin role de diya gaya! 🛡️");
-      }
+      setUserRoles((prev) => prev.filter((r) => !(r.user_id === studentId && r.role === "admin")));
+      toast.success("Admin role hata diya gaya ✅");
     }
   };
 
@@ -194,6 +230,90 @@ const AdminDashboard = () => {
     }
   });
 
+  const analyticsExtra = useMemo(() => {
+    const studentList = students.filter((s) => s.id !== user?.id);
+
+    const cityAgg: Record<string, number> = {};
+    studentList.forEach((s) => {
+      if (s.city?.trim()) {
+        const city = s.city.trim();
+        cityAgg[city] = (cityAgg[city] || 0) + 1;
+      }
+    });
+
+    const classCounts: Record<string, number> = {};
+    CLASS_ORDER.forEach((c) => {
+      classCounts[c] = 0;
+    });
+    let classOther = 0;
+    let classUnset = 0;
+    studentList.forEach((s) => {
+      const c = s.class?.trim() || "";
+      if (!c) {
+        classUnset++;
+        return;
+      }
+      if (CLASS_ORDER.includes(c as (typeof CLASS_ORDER)[number])) {
+        classCounts[c]++;
+      } else {
+        classOther++;
+      }
+    });
+
+    const interestCounts = {
+      tech: 0,
+      business: 0,
+      creative: 0,
+      sports: 0,
+      undecided: 0,
+    };
+
+    quizResults.forEach((r) => {
+      const sc = parseQuizScores(r.scores);
+      if (sc) {
+        const { science: S, commerce: C, arts: A } = sc;
+        const tot = S + C + A;
+        if (tot > 0) {
+          const mx = Math.max(S, C, A);
+          const mn = Math.min(S, C, A);
+          if ((mx - mn) / tot <= 0.15) {
+            interestCounts.undecided++;
+            return;
+          }
+        }
+      }
+      const st = (r.stream || "").toLowerCase();
+      if (st === "science") interestCounts.tech++;
+      else if (st === "commerce") interestCounts.business++;
+      else if (st === "arts") interestCounts.creative++;
+      else interestCounts.undecided++;
+    });
+
+    const newStudentsToday = studentList.filter((s) => isCreatedToday(s.created_at)).length;
+    const quizzesToday = quizResults.filter((r) => isCreatedToday(r.created_at)).length;
+    const messagesToday = contactMessages.filter((m) => isCreatedToday(m.created_at)).length;
+
+    const top5Cities = Object.entries(cityAgg)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 5);
+    const topCityMax = top5Cities.length ? top5Cities[0][1] : 1;
+
+    const classTotal = studentList.length;
+
+    return {
+      classCounts,
+      classOther,
+      classUnset,
+      interestCounts,
+      newStudentsToday,
+      quizzesToday,
+      messagesToday,
+      top5Cities,
+      topCityMax,
+      classTotal,
+    };
+  }, [students, quizResults, contactMessages, user?.id]);
+
   const senderTypeLabels: Record<string, string> = {
     student: "👨‍🎓 Student",
     parent: "👨‍👩‍👦 Parent",
@@ -227,19 +347,41 @@ const AdminDashboard = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="font-display font-bold text-2xl md:text-3xl text-foreground">
-            Admin Dashboard 🛡️
-          </h1>
-          <p className="text-muted-foreground font-body text-sm">Students ko manage karein, messages padhein, aur suggestions dein</p>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
+          <div className="space-y-1 min-w-0">
+            <h1 className="font-display font-bold text-2xl md:text-3xl text-foreground flex items-center gap-2 flex-wrap">
+              <span>🛡️ Admin Panel</span>
+            </h1>
+            <p className="text-muted-foreground font-body text-sm">
+              Students ko manage karein, messages padhein, aur suggestions dein
+            </p>
+            {user?.email && (
+              <p className="text-xs font-body text-muted-foreground pt-1">
+                <span className="font-semibold text-foreground/80">Logged in:</span>{" "}
+                <span className="break-all">{user.email}</span>
+              </p>
+            )}
+            <p className="text-xs text-muted-foreground/90 font-body pt-1">
+              Sirf authorized admins yahan access kar sakte hain
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto shrink-0">
+            <Link
+              to="/admin-setup"
+              className="inline-flex items-center justify-center gap-2 gradient-hero text-primary-foreground font-display font-semibold px-4 py-2.5 rounded-xl text-sm hover:opacity-90 transition-opacity text-center"
+            >
+              Naya Admin Invite Code Banao
+            </Link>
+            <button
+              type="button"
+              onClick={signOut}
+              className="flex items-center justify-center gap-2 border-2 border-border text-foreground font-display font-semibold px-5 py-2.5 rounded-xl hover:bg-muted transition-colors text-sm"
+            >
+              Logout
+            </button>
+          </div>
         </div>
-        <button
-          onClick={signOut}
-          className="flex items-center gap-2 border-2 border-border text-foreground font-display font-semibold px-5 py-2.5 rounded-xl hover:bg-muted transition-colors text-sm"
-        >
-          Logout
-        </button>
       </div>
 
       {/* Stats */}
@@ -362,10 +504,45 @@ const AdminDashboard = () => {
 
                     {isExpanded && (
                       <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="border-t border-border p-4 bg-muted/20">
+                        {grantAdminConfirm?.id === student.id && (
+                          <div className="mb-4 p-4 rounded-xl border-2 border-border bg-card shadow-sm space-y-3">
+                            <p className="text-sm font-body text-foreground leading-relaxed">
+                              Kya aap <span className="font-display font-semibold">{grantAdminConfirm.name}</span> ko admin
+                              banana chahte hain? Woh poora admin panel access kar sakenge.
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                onClick={() => grantAdminRole(student.id)}
+                                className="text-xs font-display font-semibold px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+                              >
+                                Confirm
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setGrantAdminConfirm(null)}
+                                className="text-xs font-display font-semibold px-4 py-2 rounded-lg border-2 border-border text-foreground hover:bg-muted transition-colors"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
                         {/* Admin Role Toggle */}
-                        <div className="mb-4 flex items-center gap-3">
+                        <div className="mb-4 flex items-center gap-3 flex-wrap">
                           <button
-                            onClick={() => toggleAdminRole(student.id)}
+                            type="button"
+                            onClick={() => {
+                              if (studentIsAdmin) {
+                                removeAdminRole(student.id);
+                              } else {
+                                setGrantAdminConfirm({
+                                  id: student.id,
+                                  name: student.full_name?.trim() || "Is student",
+                                });
+                              }
+                            }}
                             className={`flex items-center gap-2 text-xs font-display font-semibold px-4 py-2 rounded-lg transition-colors ${
                               studentIsAdmin
                                 ? "bg-destructive/10 text-destructive hover:bg-destructive/20"
@@ -539,6 +716,18 @@ const AdminDashboard = () => {
 
       {activeTab === "analytics" && (
         <div className="space-y-4">
+          {/* Today's activity */}
+          <div className="rounded-2xl border-2 border-primary/25 bg-primary/5 px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <CalendarDays className="w-5 h-5 text-primary shrink-0" />
+            <p className="text-sm font-body text-foreground">
+              <span className="font-display font-semibold">Aaj:</span>{" "}
+              <span className="text-muted-foreground">
+                {analyticsExtra.newStudentsToday} new students joined • {analyticsExtra.quizzesToday} quizzes given •{" "}
+                {analyticsExtra.messagesToday} messages received
+              </span>
+            </p>
+          </div>
+
           <div className="bg-card border-2 border-border rounded-2xl p-6">
             <h3 className="font-display font-bold text-lg text-foreground mb-4">📊 Stream-wise Breakdown</h3>
             {Object.keys(streamCounts).length === 0 ? (
@@ -553,7 +742,9 @@ const AdminDashboard = () => {
                       <div key={stream}>
                         <div className="flex justify-between text-sm mb-1">
                           <span className="font-display font-semibold text-foreground capitalize">{stream}</span>
-                          <span className="text-muted-foreground">{count} ({Math.round(pct)}%)</span>
+                          <span className="text-muted-foreground">
+                            {count} ({Math.round(pct)}%)
+                          </span>
                         </div>
                         <div className="h-3 bg-muted rounded-full overflow-hidden">
                           <motion.div
@@ -569,20 +760,133 @@ const AdminDashboard = () => {
             )}
           </div>
 
+          {/* Class-wise */}
           <div className="bg-card border-2 border-border rounded-2xl p-6">
-            <h3 className="font-display font-bold text-lg text-foreground mb-4">🏙️ City-wise Students</h3>
-            {Object.keys(stateCounts).length === 0 ? (
-              <p className="text-muted-foreground text-sm">Abhi tak koi data nahi hai</p>
+            <h3 className="font-display font-bold text-lg text-foreground mb-4">📚 Class-wise Students</h3>
+            {analyticsExtra.classTotal === 0 ? (
+              <p className="text-muted-foreground text-sm">Abhi tak koi student data nahi hai</p>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {Object.entries(stateCounts)
-                  .sort(([, a], [, b]) => b - a)
-                  .map(([city, count]) => (
-                    <div key={city} className="bg-muted/50 rounded-xl p-3 text-center">
-                      <span className="font-display font-bold text-lg text-foreground">{count}</span>
-                      <p className="text-xs text-muted-foreground">{city}</p>
+              <div className="space-y-3">
+                {CLASS_ORDER.map((cls) => {
+                  const count = analyticsExtra.classCounts[cls] ?? 0;
+                  const pct = analyticsExtra.classTotal > 0 ? (count / analyticsExtra.classTotal) * 100 : 0;
+                  return (
+                    <div key={cls}>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="font-display font-semibold text-foreground">{cls}</span>
+                        <span className="text-muted-foreground">
+                          {count} students ({Math.round(pct)}%)
+                        </span>
+                      </div>
+                      <div className="h-3 bg-muted rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${pct}%` }}
+                          className="h-full gradient-hero rounded-full"
+                        />
+                      </div>
                     </div>
-                  ))}
+                  );
+                })}
+                {analyticsExtra.classUnset > 0 && (
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="font-display font-semibold text-foreground">Class not set</span>
+                      <span className="text-muted-foreground">
+                        {analyticsExtra.classUnset} students (
+                        {Math.round((analyticsExtra.classUnset / analyticsExtra.classTotal) * 100)}%)
+                      </span>
+                    </div>
+                    <div className="h-3 bg-muted rounded-full overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{
+                          width: `${analyticsExtra.classTotal > 0 ? (analyticsExtra.classUnset / analyticsExtra.classTotal) * 100 : 0}%`,
+                        }}
+                        className="h-full gradient-hero rounded-full"
+                      />
+                    </div>
+                  </div>
+                )}
+                {analyticsExtra.classOther > 0 && (
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="font-display font-semibold text-foreground">Other / unlisted</span>
+                      <span className="text-muted-foreground">
+                        {analyticsExtra.classOther} students (
+                        {Math.round((analyticsExtra.classOther / analyticsExtra.classTotal) * 100)}%)
+                      </span>
+                    </div>
+                    <div className="h-3 bg-muted rounded-full overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{
+                          width: `${analyticsExtra.classTotal > 0 ? (analyticsExtra.classOther / analyticsExtra.classTotal) * 100 : 0}%`,
+                        }}
+                        className="h-full gradient-hero rounded-full"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Interest distribution */}
+          <div className="bg-card border-2 border-border rounded-2xl p-6">
+            <h3 className="font-display font-bold text-lg text-foreground mb-2">🎯 Interest Distribution</h3>
+            <p className="text-xs text-muted-foreground font-body mb-4">
+              Har quiz ke liye: scores close ho to &quot;Undecided&quot;, warna stream → Tech / Business / Creative. Sports abhi quiz DB
+              se track nahi hota.
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+              {(
+                [
+                  { key: "tech", label: "💻 Tech", v: analyticsExtra.interestCounts.tech },
+                  { key: "business", label: "💼 Business", v: analyticsExtra.interestCounts.business },
+                  { key: "creative", label: "🎨 Creative", v: analyticsExtra.interestCounts.creative },
+                  { key: "sports", label: "🏏 Sports", v: analyticsExtra.interestCounts.sports },
+                  { key: "undecided", label: "🤷 Undecided", v: analyticsExtra.interestCounts.undecided },
+                ] as const
+              ).map((row) => (
+                <div
+                  key={row.key}
+                  className="rounded-xl border border-border bg-muted/30 px-3 py-3 text-center shadow-card"
+                >
+                  <p className="text-xs font-display font-semibold text-muted-foreground mb-1">{row.label}</p>
+                  <p className="font-display font-bold text-xl text-foreground">{row.v}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Top 5 cities */}
+          <div className="bg-card border-2 border-border rounded-2xl p-6">
+            <h3 className="font-display font-bold text-lg text-foreground mb-4">🏙️ Top 5 Cities</h3>
+            {analyticsExtra.top5Cities.length === 0 ? (
+              <p className="text-muted-foreground text-sm">City data abhi tak nahi hai</p>
+            ) : (
+              <div className="space-y-4">
+                {analyticsExtra.top5Cities.map(([city, count]) => {
+                  const barPct = analyticsExtra.topCityMax > 0 ? (count / analyticsExtra.topCityMax) * 100 : 0;
+                  return (
+                    <div key={city}>
+                      <div className="flex justify-between text-sm mb-1 gap-2">
+                        <span className="font-display font-semibold text-foreground truncate">{city}</span>
+                        <span className="text-muted-foreground shrink-0">
+                          {count} student{count !== 1 ? "s" : ""}
+                        </span>
+                      </div>
+                      <div className="h-2.5 bg-muted rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${barPct}%` }}
+                          className="h-full gradient-hero rounded-full"
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
