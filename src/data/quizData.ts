@@ -231,12 +231,26 @@ export interface StreamResult {
   tagline: string;
   description: string;
   careers: string[];
+  modernCareers?: { title: string; salary: string; description: string; trend: string }[];
+  nonAcademicCareers?: { title: string; salary: string; description: string }[];
   roadmap: { month: string; task: string }[];
   colleges: College[];
   scholarships: Scholarship[];
   examsToPrepare: string[];
   youtubeChannels: string[];
 }
+
+/** Same passion-based paths shown for every stream */
+const NON_ACADEMIC_CAREERS_ALL_STREAMS: {
+  title: string;
+  salary: string;
+  description: string;
+}[] = [
+  { title: "Professional Sports", salary: "₹2-100 LPA", description: "Cricket, Football, Badminton, etc" },
+  { title: "Music / Singing", salary: "₹2-50 LPA", description: "Singer, composer, music producer" },
+  { title: "Acting / Film", salary: "₹3-unlimited", description: "Bollywood, OTT, theatre" },
+  { title: "Sports Coaching", salary: "₹3-15 LPA", description: "Apni expertise dusron ko sikhao" },
+];
 
 // ============== ALL STATES LIST ==============
 export const allStates = [
@@ -288,6 +302,13 @@ export const streamResults: Record<string, StreamResult> = {
       "💊 Pharmacist - ₹3-10 LPA",
       "🌾 Agricultural Scientist - ₹4-12 LPA",
     ],
+    modernCareers: [
+      { title: "AI / Machine Learning Engineer", salary: "₹12-50 LPA", description: "AI models build karo", trend: "🔥 Hottest" },
+      { title: "Data Scientist", salary: "₹8-35 LPA", description: "Data se insights nikalo", trend: "📈 Growing" },
+      { title: "Cyber Security Expert", salary: "₹10-40 LPA", description: "Systems ko secure karo", trend: "🔒 Critical" },
+      { title: "Game Developer", salary: "₹6-25 LPA", description: "Games banao", trend: "🎮 Rising" },
+    ],
+    nonAcademicCareers: NON_ACADEMIC_CAREERS_ALL_STREAMS,
     examsToPrepare: [
       "🎯 JEE Main & Advanced — IITs, NITs ke liye (Jan & April)",
       "🩺 NEET UG — Medical colleges ke liye (May)",
@@ -540,6 +561,13 @@ export const streamResults: Record<string, StreamResult> = {
       "🏛️ Bank PO / Clerk - ₹4-8 LPA",
       "📋 Company Secretary (CS) - ₹5-15 LPA",
     ],
+    modernCareers: [
+      { title: "Digital Marketing", salary: "₹4-20 LPA", description: "Online brand grow karo", trend: "📱 Booming" },
+      { title: "Startup Founder", salary: "Unlimited 🚀", description: "Apna business banao", trend: "🦄 Dream" },
+      { title: "Stock Market Analyst", salary: "₹6-30 LPA", description: "Market trends analyse karo", trend: "📊 Stable" },
+      { title: "Freelancer / Consultant", salary: "₹3-25 LPA", description: "Apne terms pe kaam karo", trend: "💻 Flexible" },
+    ],
+    nonAcademicCareers: NON_ACADEMIC_CAREERS_ALL_STREAMS,
     examsToPrepare: [
       "📊 CA Foundation — Chartered Accountant banna hai toh (Nov & May)",
       "🏛️ CLAT — Law colleges ke liye (May-June)",
@@ -687,6 +715,13 @@ export const streamResults: Record<string, StreamResult> = {
       "🎭 Theatre / Performing Arts - ₹3-20 LPA",
       "📝 Civil Services (BPSC/UPPSC) - ₹6-12 LPA + perks",
     ],
+    modernCareers: [
+      { title: "Content Creator / YouTuber", salary: "₹2-50 LPA", description: "Audience build karo", trend: "🎬 Exploding" },
+      { title: "UX/UI Designer", salary: "₹5-25 LPA", description: "Apps aur websites design karo", trend: "🎨 In demand" },
+      { title: "Social Media Manager", salary: "₹3-15 LPA", description: "Brand ki online presence manage karo", trend: "📲 Growing" },
+      { title: "Podcast / Audio Creator", salary: "₹2-20 LPA", description: "Voice content create karo", trend: "🎙️ New" },
+    ],
+    nonAcademicCareers: NON_ACADEMIC_CAREERS_ALL_STREAMS,
     examsToPrepare: [
       "⚖️ CLAT — Top law colleges ke liye (May-June)",
       "🏛️ UPSC / BPSC / UPPSC — Civil services ke liye",
@@ -833,6 +868,8 @@ export interface QuizProfile {
   interests: string[];
   strengths: string[];
   personality: string;
+  selectedClass?: string;
+  selectedInterest?: string;
 }
 
 export function calculateStream(answers: number[][]): string {

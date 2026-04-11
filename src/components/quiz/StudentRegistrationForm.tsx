@@ -10,6 +10,9 @@ const formSchema = z.object({
   phone: z.string().trim().regex(/^[6-9]\d{9}$/, "Sahi phone number dalein (10 digits, 6-9 se shuru)"),
   email: z.string().trim().email("Sahi email address dalein").max(255, "Email bahut lamba hai"),
   city: z.string().trim().min(2, "Kripya apna city/district bataayein").max(100, "City name bahut lamba hai"),
+  interest: z
+    .enum(["", "tech", "business", "creative", "sports", "undecided"])
+    .refine((v) => v !== "", { message: "Kripya apna interest select karein" }),
   class: z.string().min(1, "Kripya apni class select karein"),
 });
 
@@ -23,6 +26,14 @@ interface Props {
 
 const classOptions = ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "12th Pass"];
 
+const interestOptions: { value: "tech" | "business" | "creative" | "sports" | "undecided"; label: string }[] = [
+  { value: "tech", label: "💻 Technology & Science" },
+  { value: "business", label: "💼 Business & Finance" },
+  { value: "creative", label: "🎨 Arts & Creativity" },
+  { value: "sports", label: "🏏 Sports & Fitness" },
+  { value: "undecided", label: "🤷 Abhi decide nahi" },
+];
+
 const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
   const { user } = useAuth();
   const [form, setForm] = useState<FormData>({
@@ -30,6 +41,7 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
     phone: "",
     email: "",
     city: "",
+    interest: "",
     class: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
@@ -54,6 +66,9 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
       return;
     }
 
+    localStorage.setItem("selectedClass", form.class);
+    localStorage.setItem("selectedInterest", result.data.interest);
+
     setSubmitting(true);
 
     if (user) {
@@ -76,6 +91,8 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
     }
 
     setTimeout(() => {
+      localStorage.setItem("selectedClass", form.class);
+      localStorage.setItem("selectedInterest", result.data.interest);
       onSubmit();
     }, 500);
   };
@@ -168,6 +185,32 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
             maxLength={100}
           />
           {errors.city && <p className="text-destructive text-xs mt-1 font-body">{errors.city}</p>}
+        </div>
+
+        {/* Interest */}
+        <div>
+          <label className="flex items-center gap-2 text-sm font-display font-semibold text-foreground mb-1.5">
+            Aapka main interest kya hai? 🎯
+          </label>
+          <div className="-mx-1 flex gap-2 overflow-x-auto pb-2 px-1 snap-x snap-mandatory md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:pb-0 md:px-0">
+            {interestOptions.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => updateField("interest", opt.value)}
+                className={`min-w-[140px] shrink-0 snap-start px-3 py-2.5 rounded-xl border-2 font-display font-semibold text-sm text-left transition-all md:min-w-0 ${
+                  form.interest === opt.value
+                    ? "border-primary bg-primary/10 text-foreground"
+                    : "border-border bg-card text-muted-foreground hover:border-primary/40"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+          {errors.interest && (
+            <p className="text-destructive text-xs mt-1 font-body">{errors.interest}</p>
+          )}
         </div>
 
         {/* Class */}

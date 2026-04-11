@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { useRef, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Download, RotateCcw, Share2 } from "lucide-react";
+import { toast } from "sonner";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import Navbar from "@/components/Navbar";
@@ -18,18 +19,128 @@ import ResultYouTube from "@/components/results/ResultYouTube";
 import ResultFreeCourses from "@/components/results/ResultFreeCourses";
 import CareerPathGraph from "@/components/results/CareerPathGraph";
 
+const EXPLORE_INTERESTS = [
+  {
+    title: "Science & Technology",
+    description: "Experiments, coding, gadgets",
+  },
+  {
+    title: "Business & Money",
+    description: "Startups, finance, marketing",
+  },
+  {
+    title: "Arts & Creativity",
+    description: "Writing, design, music, film",
+  },
+  {
+    title: "Sports & Fitness",
+    description: "Athletics, coaching, sports management",
+  },
+] as const;
+
+const TWELFTH_PASS_ACTIONS = [
+  {
+    title: "UG Admissions",
+    description: "CUET, JEE, NEET counselling abhi shuru karo",
+  },
+  {
+    title: "Direct Job",
+    description: "Diploma, certificate courses, government exams",
+  },
+  {
+    title: "Gap Year",
+    description: "Coaching, skill courses, entrance exam prep",
+  },
+] as const;
+
 const Results = () => {
   const { stream } = useParams<{ stream: string }>();
   const result = streamResults[stream || "science"];
   const reportRef = useRef<HTMLDivElement>(null);
 
-  // Get quiz profile from localStorage or fallback
   const quizProfile = useMemo<QuizProfile | null>(() => {
     try {
       const raw = localStorage.getItem("pathfinder_quiz_profile");
       return raw ? JSON.parse(raw) : null;
-    } catch { return null; }
+    } catch {
+      return null;
+    }
   }, []);
+
+  const selectedClass = quizProfile?.selectedClass;
+
+  if (selectedClass === "Class 8" || selectedClass === "Class 9") {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="pt-24 pb-16 px-4 max-w-4xl mx-auto">
+          <motion.section
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="gradient-hero rounded-2xl p-8 md:p-10 text-primary-foreground text-center shadow-lg mb-10"
+          >
+            <h1 className="font-display font-bold text-3xl md:text-4xl mb-3">
+              Abhi Explore Karo! 🚀
+            </h1>
+            <p className="font-body text-lg md:text-xl text-primary-foreground/95 max-w-2xl mx-auto leading-relaxed">
+              Tum abhi {selectedClass} mein ho — yeh time hai naye fields discover karne ka!
+            </p>
+          </motion.section>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
+            {EXPLORE_INTERESTS.map((item, i) => (
+              <motion.button
+                key={item.title}
+                type="button"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 * i }}
+                onClick={() =>
+                  toast.success(`Great choice! ${item.title} mein bahut scope hai!`)
+                }
+                className="text-left rounded-2xl border-2 border-border bg-card p-5 hover:border-primary/50 hover:bg-muted/40 transition-all shadow-sm hover:shadow-md"
+              >
+                <h3 className="font-display font-bold text-lg text-foreground mb-1.5">
+                  {item.title}
+                </h3>
+                <p className="font-body text-sm text-muted-foreground">{item.description}</p>
+              </motion.button>
+            ))}
+          </div>
+
+          <section className="rounded-2xl border-2 border-border bg-card p-6 md:p-8 mb-10">
+            <h2 className="font-display font-bold text-xl md:text-2xl text-foreground mb-4">
+              Skills pe focus
+            </h2>
+            <ul className="space-y-3 font-body text-muted-foreground">
+              <li className="flex gap-2">
+                <span className="text-primary font-semibold">•</span>
+                Communication skills develop karo
+              </li>
+              <li className="flex gap-2">
+                <span className="text-primary font-semibold">•</span>
+                Maths strong rakho — har field mein kaam aata hai
+              </li>
+              <li className="flex gap-2">
+                <span className="text-primary font-semibold">•</span>
+                Apni hobbies ko seriously lo
+              </li>
+            </ul>
+          </section>
+
+          <div className="text-center">
+            <Link
+              to="/quiz"
+              className="inline-flex items-center justify-center font-display font-bold px-8 py-3.5 rounded-xl gradient-hero text-primary-foreground hover:opacity-90 transition-opacity shadow-md"
+            >
+              Stream Guide Dekhein (Class 10 ke baad)
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const allScores = quizProfile?.scores || {
     science: stream === "science" ? 38 : stream === "commerce" ? 10 : 8,
@@ -42,7 +153,9 @@ const Results = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <p className="text-xl text-muted-foreground">Maaf kijiye! Stream nahi mila 😅</p>
-          <Link to="/quiz" className="text-primary underline mt-2 inline-block">Quiz dubara dijiye</Link>
+          <Link to="/quiz" className="text-primary underline mt-2 inline-block">
+            Quiz dubara dijiye
+          </Link>
         </div>
       </div>
     );
@@ -82,6 +195,8 @@ const Results = () => {
     }
   };
 
+  const show12thPassBanner = selectedClass === "12th Pass";
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -113,6 +228,30 @@ const Results = () => {
 
         {/* Report content */}
         <div ref={reportRef} className="space-y-6">
+          {show12thPassBanner && (
+            <div className="rounded-2xl bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 p-6 md:p-8 text-white shadow-lg border border-amber-300/40">
+              <h2 className="font-display font-bold text-xl md:text-2xl text-center mb-6 drop-shadow-sm">
+                🎯 12th Pass — Career Decide Karne Ka Time!
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+                {TWELFTH_PASS_ACTIONS.map((action) => (
+                  <div
+                    key={action.title}
+                    className="rounded-xl bg-white/15 backdrop-blur-sm border border-white/30 p-4 text-left"
+                  >
+                    <h3 className="font-display font-bold text-base mb-1">{action.title}</h3>
+                    <p className="font-body text-sm text-white/90 leading-snug">
+                      {action.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <p className="text-center text-sm text-white/90 mt-5 font-body">
+                Scroll karein apna detailed result dekhne ke liye
+              </p>
+            </div>
+          )}
+
           <ResultHeroCard result={result} allScores={allScores} />
           <ResultDescription result={result} />
           <ResultCareers result={result} />

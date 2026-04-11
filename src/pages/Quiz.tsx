@@ -47,11 +47,17 @@ const Quiz = () => {
 
   const handleFormSubmit = async () => {
     const profile = buildQuizProfile(answers);
+    const selectedClass = localStorage.getItem("selectedClass");
+    const selectedInterest = localStorage.getItem("selectedInterest");
     const stream = profile.stream;
 
     // Store quiz profile for chatbot personalization
     try {
-      localStorage.setItem("pathfinder_quiz_profile", JSON.stringify(profile));
+      localStorage.setItem("pathfinder_quiz_profile", JSON.stringify({
+        ...profile,
+        selectedClass,
+        selectedInterest,
+      }));
     } catch { /* silently fail */ }
 
     if (user) {

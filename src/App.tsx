@@ -13,6 +13,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
+import CareerComparison from "./pages/CareerComparison";
 import ChatBot from "./components/ChatBot";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/install" element={<Install />} />
+            <Route path="/career-comparison" element={<CareerComparison />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <ChatBot />
