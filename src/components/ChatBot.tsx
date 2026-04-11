@@ -141,13 +141,36 @@ function saveChatHistory(messages: Message[]) {
 // CHATBOT COMPONENT
 // ─────────────────────────────────────────────
 const ChatBot = () => {
-  const quizProfile = useMemo(() => getQuizProfile(), []);
+  // ✅ FIX: Har baar fresh read — stale cache nahi chalega
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>(() => loadChatHistory(quizProfile));
+  const [quizProfile, setQuizProfile] = useState<any>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // ✅ FIX: Chatbot khulte waqt fresh profile read karo
+  // Agar stream badal gaya toh chat history bhi reset karo
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const freshProfile = getQuizProfile();
+    const prevStream = quizProfile?.stream;
+    const newStream = freshProfile?.stream;
+
+    // Stream badla ya pehli baar khul raha hai
+    if (prevStream !== newStream) {
+      setQuizProfile(freshProfile);
+      const freshMsg = buildInitialMessage(freshProfile);
+      setMessages([freshMsg]);
+      localStorage.removeItem(STORAGE_KEY);
+    } else {
+      // Same stream — cached history use karo
+      const history = loadChatHistory(freshProfile);
+      setMessages(history);
+    }
+  }, [isOpen]);
 
   const quickQuestions = useMemo(() => getQuickQuestions(quizProfile), [quizProfile]);
 
