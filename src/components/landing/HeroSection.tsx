@@ -58,7 +58,7 @@ const HeroSection = () => (
 
         {/* Main heading */}
         <h1 className="font-display font-black text-4xl md:text-6xl lg:text-7xl text-foreground leading-[1.1] mb-8 tracking-tight">
-          Sapne Dekh,{" "}
+          Sapne Dekho,{" "}
           <span className="text-gradient-hero">
             Raasta Hum Dikhayenge
           </span>
@@ -105,7 +105,7 @@ const HeroSection = () => (
             href="#features"
             className="border-2 border-border text-foreground font-display font-semibold px-8 py-4 rounded-xl text-lg hover:bg-muted hover:border-primary/20 transition-all"
           >
-            Pehle Dekh Lein 👀
+            Pehle Dekho Lein 👀
           </a>
         </motion.div>
 
