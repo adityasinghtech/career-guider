@@ -6,10 +6,12 @@ import { toast } from "sonner";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import Navbar from "@/components/Navbar";
-import { streamResults, buildQuizProfile } from "@/data/quizData";
+import { streamResults } from "@/data/quizData";
 import type { QuizProfile } from "@/data/quizData";
 import ResultHeroCard from "@/components/results/ResultHeroCard";
 import ResultDescription from "@/components/results/ResultDescription";
+import ResultNextSteps from "@/components/results/ResultNextSteps";
+import ResultEarningPaths from "@/components/results/ResultEarningPaths";
 import ResultCareers from "@/components/results/ResultCareers";
 import ResultExams from "@/components/results/ResultExams";
 import ResultRoadmap from "@/components/results/ResultRoadmap";
@@ -254,6 +256,8 @@ const Results = () => {
 
           <ResultHeroCard result={result} allScores={allScores} />
           <ResultDescription result={result} />
+          <ResultNextSteps fallbackStream={stream || "science"} />
+          <ResultEarningPaths />
           <ResultCareers result={result} />
           <ResultExams result={result} />
           <ResultRoadmap result={result} />

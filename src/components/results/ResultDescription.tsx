@@ -1,22 +1,21 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import type { QuizProfile, StreamResult } from "@/data/quizData";
-import { generatePersonalizedDescription } from "@/utils/personalizedDescription";
+import { generatePersonalizedText } from "@/utils/personalizedDescription";
 
 const ResultDescription = ({ result }: { result: StreamResult }) => {
-  const quizProfile = useMemo<QuizProfile | null>(() => {
+  const quizProfile = useMemo(() => {
     try {
       const raw = localStorage.getItem("pathfinder_quiz_profile");
-      if (!raw) return null;
-      return JSON.parse(raw) as QuizProfile;
+      return raw ? (JSON.parse(raw) as QuizProfile) : null;
     } catch {
       return null;
     }
   }, []);
 
   const text = useMemo(
-    () => generatePersonalizedDescription(quizProfile, result.description),
-    [quizProfile, result.description],
+    () => generatePersonalizedText(quizProfile, result),
+    [quizProfile, result],
   );
 
   return (

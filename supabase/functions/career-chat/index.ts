@@ -140,37 +140,66 @@ const STREAM_DATA = {
 // ─────────────────────────────────────────────
 // BASE SYSTEM PROMPT
 // ─────────────────────────────────────────────
-const BASE_PROMPT = `You are PathFinder AI — India ka #1 career guidance assistant for students. Ek samajhdaar bade bhai/didi ki tarah baat karo.
+const BASE_PROMPT = `You are PathFinder AI — India ka #1 career guidance assistant for students.
+Ek samajhdaar bade bhai/didi ki tarah baat karo.
+
+## STRICT TOPIC RULES — BAHUT IMPORTANT:
+- ONLY answer questions about: career, stream, exams, colleges, scholarships,
+  roadmap, skills, study tips, government jobs, private jobs, business, freelancing,
+  education, courses, salary information
+- If someone asks about movies, mobile phones, cricket scores, entertainment,
+  shopping, cooking, relationships, or ANY non-career topic, reply EXACTLY:
+  "Main sirf career aur education guidance ke liye bana hoon 😊
+   Career, stream, exams, colleges ya roadmap se related kuch poochho!"
+- Never break this rule even if user insists
 
 ## Baat karne ka style:
 - Hinglish mein baat karo (Hindi + English natural mix)
-- Friendly, warm, encouraging tone — jaise ek real bada bhai/didi
-- Bullet points aur emojis use karo responses ko clear banane ke liye
+- Friendly, warm tone — jaise ek real bada bhai/didi
+- Bullet points aur emojis use karo
 - Short paragraphs — wall of text mat likho
-- Specific aur actionable advice do — vague mat raho
-- Student ka naam nahi pata toh "aap" use karo
+- Specific aur actionable advice do
+- Har response ke end mein ek follow-up question suggest karo
 
 ## Tera expertise:
-**Science:** JEE, NEET, BCECE, IITs, NITs, AIIMS, Engineering, Medical, Research
-**Commerce:** CA, CS, CMA, MBA, CAT, IPMAT, IIMs, SRCC, Banking/Finance
-**Arts:** CLAT, UPSC, NID/NIFT, CUET, NLUs, JNU, Journalism, Design, Civil Services
+Science: JEE, NEET, BCECE, IITs, NITs, AIIMS, Engineering, Medical, Research, AI/ML
+Commerce: CA, CS, MBA, CAT, IIMs, SRCC, Banking, Finance, Startup, Digital Marketing
+Arts: CLAT, UPSC, NLUs, JNU, Journalism, Design, NID/NIFT, Civil Services
+Modern: Data Science, Cyber Security, Game Dev, Content Creator, Freelancing
+Non-academic: Sports, Music, Acting, YouTube, Film
 
-## Important rules:
-- Agar student ka quiz result hai toh HAMESHA usi ke context mein jawab do
-- Suggested careers mein se specifically wahi batao jo student ke profile se match kare
+## Passion + Alternate paths guidance:
+- Agar student arts se ho but engineering mein jaana chahta ho → bridge path batao
+- Agar student padhai ke saath earning chahta ho → freelancing/tutoring options batao
+- Agar student confused ho → clearly 2-3 options compare karo
+- Agar student weak subject mention kare → specific improvement tips do
+
+## Important (jab quiz profile diya ho):
+- HAMESHA us profile ke context mein jawab do
 - College recommend karte waqt student ke state ka dhyan rakho (state-specific colleges pehle)
-- Scholarships batao toh student ki category/state ke hisaab se filter karo
+- Scholarships batao toh category/state ke hisaab se filter karo
 - Kabhi discourage mat karo — har stream mein amazing scope hai
-- Agar koi stressed/confused lage toh pehle empathy, baad mein advice`;
+- Stressed/confused lage toh pehle empathy, baad mein advice`;
 
 // ─────────────────────────────────────────────
 // BUILD PERSONALIZED SYSTEM PROMPT
 // ─────────────────────────────────────────────
-function buildSystemPrompt(quizProfile: any): string {
+interface QuizProfileInput {
+  stream?: string;
+  scores?: { science?: number; commerce?: number; arts?: number };
+  confidence?: number;
+  interests?: string[];
+  strengths?: string[];
+  personality?: string;
+  state?: string;
+  selectedInterest?: string;
+}
+
+function buildSystemPrompt(quizProfile: QuizProfileInput | null): string {
   if (!quizProfile) return BASE_PROMPT;
 
   const stream = (quizProfile.stream || "").toLowerCase();
-  const streamInfo = STREAM_DATA[stream] || STREAM_DATA.arts;
+  const streamInfo = STREAM_DATA[stream as keyof typeof STREAM_DATA] || STREAM_DATA.arts;
 
   const scores = quizProfile.scores || {};
   const confidence = quizProfile.confidence || 0;
@@ -178,6 +207,19 @@ function buildSystemPrompt(quizProfile: any): string {
   const strengths = (quizProfile.strengths || []).filter(Boolean);
   const personality = quizProfile.personality || "Explorer";
   const state = quizProfile.state || "";
+
+  const interest = quizProfile.selectedInterest || "";
+  const interestMap: Record<string, string> = {
+    tech: "Technology & Science mein interest — coding, AI, engineering paths prioritize karo",
+    business: "Business & Finance mein interest — CA, MBA, startup, digital marketing focus karo",
+    creative: "Arts & Creative mein interest — design, media, content creation, law paths batao",
+    sports: "Sports mein interest — sports management, coaching, physiotherapy, defense paths batao",
+    undecided: "Abhi interest clear nahi — multiple options clearly compare karo with pros/cons",
+  };
+  const interestLine =
+    interest && interestMap[interest]
+      ? `\n**Student ka Interest:** ${interestMap[interest]}`
+      : "";
 
   return `${BASE_PROMPT}
 
@@ -200,7 +242,7 @@ ${interests.slice(0, 5).map((i: string) => `- ${i}`).join("\n")}` : ""}
 ${strengths.length > 0 ? `**Student ki Strengths (quiz se):**
 ${strengths.slice(0, 4).map((s: string) => `- ${s}`).join("\n")}` : ""}
 
-${state ? `**State:** ${state} (iske hisaab se colleges aur scholarships suggest karo)` : ""}
+${state ? `**State:** ${state} (iske hisaab se colleges aur scholarships suggest karo)` : ""}${interestLine}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ## ${(quizProfile.stream || "").toUpperCase()} STREAM — COMPLETE DATA:
@@ -234,7 +276,12 @@ ${streamInfo.scholarships.map((s: string) => `• ${s}`).join("\n")}
 // ─────────────────────────────────────────────
 // GENERATE AI RESPONSE
 // ─────────────────────────────────────────────
-async function generateResponse(messages: any[], systemPrompt: string): Promise<string> {
+interface ChatMessage {
+  role: string;
+  content: string;
+}
+
+async function generateResponse(messages: ChatMessage[], systemPrompt: string): Promise<string> {
   if (!OPENROUTER_API_KEY) {
     throw new Error("OPENROUTER_API_KEY Supabase secrets mein set nahi hai");
   }
@@ -252,7 +299,7 @@ async function generateResponse(messages: any[], systemPrompt: string): Promise<
       max_tokens: 1024,
       messages: [
         { role: "system", content: systemPrompt },
-        ...messages.map((m: any) => ({
+        ...messages.map((m) => ({
           role: m.role,
           content: m.content,
         })),
@@ -307,11 +354,12 @@ serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Career chat error:", err);
+    const message = err instanceof Error ? err.message : "Server error";
     return new Response(
       JSON.stringify({
-        error: err.message || "Server error",
+        error: message,
         reply: "Maaf kijiye, abhi kuch technical problem aa gayi hai 😔 Thodi der baad try karein!",
       }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
