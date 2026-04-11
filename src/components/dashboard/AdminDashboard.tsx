@@ -23,6 +23,18 @@ interface QuizResultData {
   created_at: string;
 }
 
+type ContactIssueKind = "quiz" | "login" | "result" | "career" | "other";
+
+type MessageIssueFilter = "all" | "quiz" | "login" | "career";
+
+const ISSUE_PREFIX_BY_KIND: Record<ContactIssueKind, string> = {
+  quiz: "[QUIZ ISSUE] ",
+  login: "[LOGIN ISSUE] ",
+  result: "[RESULT ISSUE] ",
+  career: "[CAREER GUIDANCE] ",
+  other: "[OTHER] ",
+};
+
 interface ContactMessage {
   id: string;
   name: string;
@@ -31,7 +43,46 @@ interface ContactMessage {
   message: string;
   sender_type: string;
   is_read: boolean;
+  issue_type?: string | null;
   created_at: string;
+}
+
+function normalizeIssueTypeFromDb(raw: string | null | undefined): ContactIssueKind | null {
+  if (!raw || !raw.trim()) return null;
+  const v = raw.trim().toLowerCase().replace(/\s+/g, "_");
+  const map: Record<string, ContactIssueKind> = {
+    quiz: "quiz",
+    login: "login",
+    result: "result",
+    career: "career",
+    other: "other",
+    quiz_issue: "quiz",
+    login_issue: "login",
+    result_issue: "result",
+    career_guidance: "career",
+  };
+  return map[v] ?? null;
+}
+
+function resolveIssueKind(msg: ContactMessage): ContactIssueKind | null {
+  const fromCol = normalizeIssueTypeFromDb(msg.issue_type ?? undefined);
+  if (fromCol) return fromCol;
+  const text = msg.message;
+  const order: ContactIssueKind[] = ["quiz", "login", "result", "career", "other"];
+  for (const k of order) {
+    if (text.startsWith(ISSUE_PREFIX_BY_KIND[k])) return k;
+  }
+  return null;
+}
+
+function displayMessageBody(msg: ContactMessage, kind: ContactIssueKind | null): string {
+  if (kind && msg.message.startsWith(ISSUE_PREFIX_BY_KIND[kind])) {
+    return msg.message.slice(ISSUE_PREFIX_BY_KIND[kind].length);
+  }
+  for (const prefix of Object.values(ISSUE_PREFIX_BY_KIND)) {
+    if (msg.message.startsWith(prefix)) return msg.message.slice(prefix.length);
+  }
+  return msg.message;
 }
 
 interface UserRole {
@@ -50,6 +101,8 @@ const AdminDashboard = () => {
   const [suggestionText, setSuggestionText] = useState("");
   const [sendingTo, setSendingTo] = useState<{ studentId: string; resultId?: string } | null>(null);
   const [activeTab, setActiveTab] = useState<"students" | "analytics" | "messages">("students");
+  const [messageIssueFilter, setMessageIssueFilter] = useState<MessageIssueFilter>("all");
+  const [messagesUnreadOnly, setMessagesUnreadOnly] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -147,6 +200,29 @@ const AdminDashboard = () => {
     school: "🏫 School",
     other: "Other",
   };
+
+  const issueBadgeLabel: Record<ContactIssueKind, string> = {
+    quiz: "Quiz Issue",
+    login: "Login Issue",
+    result: "Result Issue",
+    career: "Career Guidance",
+    other: "Other",
+  };
+
+  const issueBadgeClass: Record<ContactIssueKind, string> = {
+    quiz: "bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/40",
+    login: "bg-red-500/15 text-red-700 dark:text-red-300 border-red-500/40",
+    career: "bg-green-500/15 text-green-700 dark:text-green-300 border-green-500/40",
+    result: "bg-amber-500/15 text-amber-800 dark:text-amber-200 border-amber-500/40",
+    other: "bg-muted text-muted-foreground border-border",
+  };
+
+  const filteredContactMessages = contactMessages.filter((msg) => {
+    if (messagesUnreadOnly && msg.is_read) return false;
+    if (messageIssueFilter === "all") return true;
+    const kind = resolveIssueKind(msg);
+    return kind === messageIssueFilter;
+  });
 
   return (
     <div className="space-y-6">
@@ -357,49 +433,106 @@ const AdminDashboard = () => {
           {contactMessages.length === 0 ? (
             <p className="text-center text-muted-foreground font-body py-8">Abhi tak koi message nahi aaya</p>
           ) : (
-            <div className="space-y-3">
-              {contactMessages.map((msg) => (
-                <div
-                  key={msg.id}
-                  className={`border rounded-xl p-4 transition-colors ${
-                    msg.is_read ? "border-border bg-muted/20" : "border-primary/30 bg-primary/5"
+            <>
+              <div className="flex flex-col gap-3 mb-5">
+                <div className="flex flex-wrap gap-2">
+                  {(
+                    [
+                      { id: "all" as const, label: "Sab dikhao" },
+                      { id: "quiz" as const, label: "Quiz Issue" },
+                      { id: "login" as const, label: "Login Issue" },
+                      { id: "career" as const, label: "Career Guidance" },
+                    ] as const
+                  ).map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setMessageIssueFilter(opt.id)}
+                      className={`font-display font-semibold px-3 py-2 rounded-xl text-xs sm:text-sm transition-all border-2 ${
+                        messageIssueFilter === opt.id
+                          ? "gradient-hero text-primary-foreground border-transparent"
+                          : "bg-muted/50 text-muted-foreground border-border hover:text-foreground hover:border-primary/30"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                <motion.button
+                  type="button"
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setMessagesUnreadOnly((v) => !v)}
+                  className={`self-start font-display font-semibold px-3 py-2 rounded-xl text-xs sm:text-sm border-2 transition-colors ${
+                    messagesUnreadOnly
+                      ? "border-primary bg-primary/10 text-foreground"
+                      : "border-border bg-card text-muted-foreground hover:border-primary/40"
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <span className="font-display font-bold text-foreground">{msg.name}</span>
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-display">
-                          {senderTypeLabels[msg.sender_type] || msg.sender_type}
-                        </span>
-                        {!msg.is_read && (
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-primary text-primary-foreground font-display font-semibold">
-                            Naya
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-2">
-                        {msg.email && <span>{msg.email}</span>}
-                        {msg.email && msg.phone && <span> • </span>}
-                        {msg.phone && <span>{msg.phone}</span>}
-                      </p>
-                      <p className="text-foreground font-body text-sm">{msg.message}</p>
-                      <p className="text-xs text-muted-foreground mt-2">
-                        {new Date(msg.created_at).toLocaleString("en-IN")}
-                      </p>
-                    </div>
-                    {!msg.is_read && (
-                      <button
-                        onClick={() => markMessageRead(msg.id)}
-                        className="flex items-center gap-1 text-xs font-display font-semibold text-primary hover:underline shrink-0"
+                  Unread only {messagesUnreadOnly ? "✓" : ""}
+                </motion.button>
+              </div>
+
+              {filteredContactMessages.length === 0 ? (
+                <p className="text-center text-muted-foreground font-body py-8">
+                  Is filter ke liye koi message nahi mila
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {filteredContactMessages.map((msg) => {
+                    const issueKind = resolveIssueKind(msg);
+                    const body = displayMessageBody(msg, issueKind);
+                    return (
+                      <div
+                        key={msg.id}
+                        className={`border rounded-xl p-4 transition-colors ${
+                          msg.is_read ? "border-border bg-muted/20" : "border-primary/30 bg-primary/5"
+                        }`}
                       >
-                        <Eye className="w-3 h-3" /> Padh Liya
-                      </button>
-                    )}
-                  </div>
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1 flex-wrap">
+                              <span className="font-display font-bold text-foreground">{msg.name}</span>
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-display border border-border">
+                                {senderTypeLabels[msg.sender_type] || msg.sender_type}
+                              </span>
+                              {issueKind && (
+                                <span
+                                  className={`text-xs px-2 py-0.5 rounded-full font-display font-semibold border ${issueBadgeClass[issueKind]}`}
+                                >
+                                  {issueBadgeLabel[issueKind]}
+                                </span>
+                              )}
+                              {!msg.is_read && (
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-primary text-primary-foreground font-display font-semibold">
+                                  Naya
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-2">
+                              {msg.email && <span>{msg.email}</span>}
+                              {msg.email && msg.phone && <span> • </span>}
+                              {msg.phone && <span>{msg.phone}</span>}
+                            </p>
+                            <p className="text-foreground font-body text-sm whitespace-pre-wrap break-words">{body}</p>
+                            <p className="text-xs text-muted-foreground mt-2">
+                              {new Date(msg.created_at).toLocaleString("en-IN")}
+                            </p>
+                          </div>
+                          {!msg.is_read && (
+                            <button
+                              onClick={() => markMessageRead(msg.id)}
+                              className="flex items-center gap-1 text-xs font-display font-semibold text-primary hover:underline shrink-0"
+                            >
+                              <Eye className="w-3 h-3" /> Padh Liya
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           )}
         </div>
       )}

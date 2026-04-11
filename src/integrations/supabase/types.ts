@@ -58,6 +58,7 @@ export type Database = {
           email: string | null
           id: string
           is_read: boolean
+          issue_type: string | null
           message: string
           name: string
           phone: string | null
@@ -68,6 +69,7 @@ export type Database = {
           email?: string | null
           id?: string
           is_read?: boolean
+          issue_type?: string | null
           message: string
           name: string
           phone?: string | null
@@ -78,6 +80,7 @@ export type Database = {
           email?: string | null
           id?: string
           is_read?: boolean
+          issue_type?: string | null
           message?: string
           name?: string
           phone?: string | null

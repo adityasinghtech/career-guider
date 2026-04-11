@@ -1,9 +1,34 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, MessageCircle, Send, MapPin, Clock, HelpCircle } from "lucide-react";
+import { Mail, Phone, MessageCircle, Send, Clock, HelpCircle, CheckCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+
+type ContactIssueTypeId = "quiz" | "login" | "result" | "career" | "other";
+
+const CONTACT_ISSUE_MESSAGE_PREFIX: Record<ContactIssueTypeId, string> = {
+  quiz: "[QUIZ ISSUE] ",
+  login: "[LOGIN ISSUE] ",
+  result: "[RESULT ISSUE] ",
+  career: "[CAREER GUIDANCE] ",
+  other: "[OTHER] ",
+};
+
+/** Replace with your WhatsApp number (digits only, country code without +) */
+const PLACEHOLDER_WHATSAPP_NUMBER = "910000000000";
+
+const issueTypeOptions: {
+  id: ContactIssueTypeId;
+  title: string;
+  description: string;
+}[] = [
+  { id: "quiz", title: "🎯 Quiz Issue", description: "Quiz se related problem" },
+  { id: "login", title: "🔐 Login Issue", description: "Login ya signup mein dikkat" },
+  { id: "result", title: "📊 Result Issue", description: "Result ya recommendation se problem" },
+  { id: "career", title: "💬 Career Guidance", description: "Career advice chahiye" },
+  { id: "other", title: "❓ Other", description: "Kuch aur" },
+];
 
 const faqs = [
   { q: "Kya PathFinder free hai?", a: "Ji haan! 100% free hai students ke liye. Koi hidden charges nahi. Quiz dijiye, results dekhein, PDF download karein — sab free!" },
@@ -14,25 +39,73 @@ const faqs = [
 ];
 
 const Contact = () => {
-  const { toast } = useToast();
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "", message: "", type: "student" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+    type: "student",
+    issueType: "career" as ContactIssueTypeId,
+  });
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { error } = await supabase.from("contact_messages").insert({
+    const baseRow = {
       name: formData.name,
-      email: formData.email || "",
-      phone: formData.phone || "",
-      message: formData.message,
+      email: formData.email || null,
+      phone: formData.phone || null,
       sender_type: formData.type,
-    });
-    if (error) {
-      toast({ title: "Message bhej nahi paaya 😔", description: "Kripya dubara koshish karein", variant: "destructive" });
-      return;
+    };
+
+    try {
+      const withColumn = await supabase.from("contact_messages").insert({
+        ...baseRow,
+        message: formData.message,
+        issue_type: formData.issueType,
+      });
+
+      if (!withColumn.error) {
+        setSubmitted(true);
+        toast.success("Message bhej diya! ✅", { description: "Hum jald hi reply karenge" });
+        return;
+      }
+
+      const msg = withColumn.error.message || "";
+      const likelyMissingColumn =
+        /issue_type|column|schema|42703|PGRST204/i.test(msg) || withColumn.error.code === "PGRST204";
+
+      if (!likelyMissingColumn) {
+        toast.error("Message bhej nahi paaya 😔", { description: "Kripya dubara koshish karein" });
+        return;
+      }
+
+      const prefixedMessage = CONTACT_ISSUE_MESSAGE_PREFIX[formData.issueType] + formData.message;
+      const fallback = await supabase.from("contact_messages").insert({
+        ...baseRow,
+        message: prefixedMessage,
+      });
+
+      if (fallback.error) {
+        toast.error("Message bhej nahi paaya 😔", { description: "Kripya dubara koshish karein" });
+        return;
+      }
+
+      setSubmitted(true);
+      toast.success("Message bhej diya! ✅", { description: "Hum jald hi reply karenge" });
+    } catch {
+      const prefixedMessage = CONTACT_ISSUE_MESSAGE_PREFIX[formData.issueType] + formData.message;
+      const fallback = await supabase.from("contact_messages").insert({
+        ...baseRow,
+        message: prefixedMessage,
+      });
+      if (fallback.error) {
+        toast.error("Message bhej nahi paaya 😔", { description: "Kripya dubara koshish karein" });
+        return;
+      }
+      setSubmitted(true);
+      toast.success("Message bhej diya! ✅", { description: "Hum jald hi reply karenge" });
     }
-    setSubmitted(true);
-    toast({ title: "Message bhej diya gaya! ✅", description: "Hum jaldi reply karenge 🙏" });
   };
 
   return (
@@ -127,11 +200,24 @@ const Contact = () => {
             className="bg-card rounded-2xl p-6 shadow-card"
           >
             {submitted ? (
-              <div className="text-center py-12">
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-center py-10 px-2"
+              >
                 <div className="text-5xl mb-4">✅</div>
-                <h3 className="font-display font-bold text-xl text-foreground mb-2">Message Bhej Diya Gaya!</h3>
-                <p className="text-muted-foreground">Hum jaldi se jaldi reply karenge. Tab tak quiz try kar lijiye! 😄</p>
-              </div>
+                <h3 className="font-display font-bold text-xl text-foreground mb-2">Message bhej diya! ✅</h3>
+                <p className="text-muted-foreground font-body mb-6">Hum jald hi reply karenge</p>
+                <a
+                  href={`https://wa.me/${PLACEHOLDER_WHATSAPP_NUMBER}?text=${encodeURIComponent("Namaste PathFinder! Mujhe madad chahiye.")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 gradient-hero text-primary-foreground font-display font-semibold px-5 py-3 rounded-xl shadow-card hover:opacity-90 transition-opacity text-sm w-full sm:w-auto"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  WhatsApp pe bhi contact karein
+                </a>
+              </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <h3 className="font-display font-bold text-lg text-foreground mb-2">Message Bhejein ✍️</h3>
@@ -186,6 +272,46 @@ const Contact = () => {
                       className="w-full px-4 py-2.5 rounded-xl border-2 border-border bg-background text-foreground font-body focus:border-primary focus:outline-none"
                       placeholder="9315861151"
                     />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-sm font-display font-semibold text-foreground block mb-2">Issue Type *</label>
+                  <div className="space-y-2">
+                    {issueTypeOptions.map((opt) => {
+                      const selected = formData.issueType === opt.id;
+                      return (
+                        <motion.button
+                          key={opt.id}
+                          type="button"
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => setFormData((p) => ({ ...p, issueType: opt.id }))}
+                          className={`w-full text-left p-3 sm:p-4 rounded-xl border-2 transition-all font-body ${
+                            selected
+                              ? "border-primary bg-primary/10 shadow-card"
+                              : "border-border bg-card hover:border-primary/40"
+                          }`}
+                        >
+                          <div className="flex items-start gap-3">
+                            <div
+                              className={`mt-0.5 w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                                selected ? "border-primary bg-primary" : "border-muted-foreground/30"
+                              }`}
+                            >
+                              {selected && <CheckCircle className="w-4 h-4 text-primary-foreground" />}
+                            </div>
+                            <div>
+                              <span
+                                className={`font-display font-semibold text-sm block ${selected ? "text-foreground" : "text-muted-foreground"}`}
+                              >
+                                {opt.title}
+                              </span>
+                              <span className="text-xs text-muted-foreground">{opt.description}</span>
+                            </div>
+                          </div>
+                        </motion.button>
+                      );
+                    })}
                   </div>
                 </div>
 

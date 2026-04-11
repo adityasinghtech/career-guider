@@ -11,12 +11,12 @@ import {
   Edit3,
   Save,
   X,
-  Award,
   TrendingUp,
-  GraduationCap,
   Target,
   Flame,
   ListChecks,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -48,6 +48,8 @@ interface Profile {
   parent_phone: string;
   avatar_url: string;
   career_goal?: string | null;
+  created_at?: string;
+  updated_at?: string;
 }
 
 type StreamKey = "science" | "commerce" | "arts";
@@ -184,6 +186,7 @@ const StudentDashboard = () => {
   const [checklistItems, setChecklistItems] = useState<ChecklistItem[]>([]);
   const [profileStreamFromStorage, setProfileStreamFromStorage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"overview" | "results" | "suggestions" | "profile">("overview");
+  const [timelineExpanded, setTimelineExpanded] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -291,6 +294,130 @@ const StudentDashboard = () => {
 
   const unreadCount = suggestions.filter((s) => !s.is_read).length;
 
+  const stageQuizDone = results.length > 0;
+  const stageGoalSet = Boolean(profile?.career_goal?.trim());
+  const stageChecklistStarted = checklistItems.some((i) => i.checked);
+  const stageExpert = suggestions.length > 0;
+  const journeyStagesComplete = [stageQuizDone, stageGoalSet, stageChecklistStarted, stageExpert].filter(Boolean).length;
+  const journeyPercent = Math.round((journeyStagesComplete / 4) * 100);
+
+  type NextActionConfig = {
+    title: string;
+    ctaLabel: string;
+    ctaHref: string | null;
+    scrollToId: string | null;
+    switchTab: "overview" | "results" | "suggestions" | "profile" | null;
+  };
+
+  const nextAction: NextActionConfig = useMemo(() => {
+    if (!stageQuizDone) {
+      return {
+        title: "Quiz dijiye — apna stream discover karo 🎯",
+        ctaLabel: "Quiz shuru karein",
+        ctaHref: "/quiz",
+        scrollToId: null,
+        switchTab: null,
+      };
+    }
+    if (!stageGoalSet) {
+      return {
+        title: "Career goal set karo — dashboard tab mein 🎯",
+        ctaLabel: "Goal set karein",
+        ctaHref: null,
+        scrollToId: "student-dashboard-career-goal",
+        switchTab: null,
+      };
+    }
+    if (!stageChecklistStarted) {
+      return {
+        title: "Preparation checklist start karo ✅",
+        ctaLabel: "Checklist kholo",
+        ctaHref: null,
+        scrollToId: "student-dashboard-checklist",
+        switchTab: null,
+      };
+    }
+    if (!stageExpert) {
+      return {
+        title: "Kal bhi aao — streak banaye rakho 🔥",
+        ctaLabel: "Checklist continue karein",
+        ctaHref: null,
+        scrollToId: "student-dashboard-checklist",
+        switchTab: null,
+      };
+    }
+    return {
+      title: "Bahut badhiya! Expert suggestion ka wait karo 💬",
+      ctaLabel: "Suggestions dekhein",
+      ctaHref: null,
+      scrollToId: null,
+      switchTab: "suggestions",
+    };
+  }, [stageQuizDone, stageGoalSet, stageChecklistStarted, stageExpert]);
+
+  type StoryItem = { id: string; at: string; title: string; detail: string };
+
+  const storyItems = useMemo(() => {
+    const items: StoryItem[] = [];
+    if (profile?.created_at) {
+      items.push({
+        id: "join",
+        at: profile.created_at,
+        title: "PathFinder join kiya",
+        detail: "Account bana — yahi se aapki journey shuru!",
+      });
+    }
+    const quizzesChrono = [...results].sort(
+      (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+    );
+    quizzesChrono.forEach((r, idx) => {
+      items.push({
+        id: `quiz-${r.id}`,
+        at: r.created_at,
+        title: `Quiz diya (${idx + 1})`,
+        detail: `${r.stream.charAt(0).toUpperCase() + r.stream.slice(1)} stream suggest hua`,
+      });
+    });
+    if (profile?.career_goal?.trim() && profile.updated_at) {
+      items.push({
+        id: "goal",
+        at: profile.updated_at,
+        title: "Career goal set kiya",
+        detail: profile.career_goal.trim(),
+      });
+    }
+    [...suggestions]
+      .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+      .forEach((s, idx) => {
+        items.push({
+          id: `sugg-${s.id}`,
+          at: s.created_at,
+          title: `Expert suggestion (${idx + 1})`,
+          detail: s.message.length > 100 ? `${s.message.slice(0, 100)}…` : s.message,
+        });
+      });
+    return items.sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime());
+  }, [profile, results, suggestions]);
+
+  const displayedStoryItems = timelineExpanded ? storyItems : storyItems.slice(-5);
+  const canExpandStory = storyItems.length > 5;
+
+  const runNextActionCta = () => {
+    if (nextAction.switchTab) setActiveTab(nextAction.switchTab);
+    if (nextAction.scrollToId) {
+      window.requestAnimationFrame(() => {
+        document.getElementById(nextAction.scrollToId as string)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  };
+
+  const journeyStageMeta = [
+    { key: "quiz", label: "Quiz Diya", done: stageQuizDone },
+    { key: "goal", label: "Goal Set Kiya", done: stageGoalSet },
+    { key: "check", label: "Checklist Shuru", done: stageChecklistStarted },
+    { key: "exp", label: "Expert Se Baat", done: stageExpert },
+  ] as const;
+
   const tabs = [
     { id: "overview" as const, label: "Overview", icon: TrendingUp },
     { id: "results" as const, label: "Quiz Results", icon: BookOpen, count: results.length },
@@ -348,50 +475,210 @@ const StudentDashboard = () => {
       {/* Overview Tab */}
       {activeTab === "overview" && (
         <>
-          {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-card border-2 border-border rounded-2xl p-5">
+          {/* SECTION 1 — Journey */}
+          <motion.section
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 shadow-card"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-4">
+              <h2 className="font-display font-bold text-lg md:text-xl text-foreground">Aapka Journey 🗺️</h2>
+              <p className="text-sm font-display font-semibold text-primary">{journeyPercent}% complete</p>
+            </div>
+            <div className="h-3 rounded-full bg-muted overflow-hidden mb-5">
+              <motion.div
+                className="h-full gradient-hero rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: `${journeyPercent}%` }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+              />
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              {journeyStageMeta.map((st) => (
+                <div
+                  key={st.key}
+                  className={`rounded-xl border-2 p-3 text-center transition-colors ${
+                    st.done ? "border-primary/50 bg-primary/5 shadow-card" : "border-border bg-muted/20"
+                  }`}
+                >
+                  <p className="font-display font-bold text-sm text-foreground mb-1">
+                    {st.done ? "✅" : "⭕"} {st.label}
+                  </p>
+                  <div className={`h-1.5 rounded-full overflow-hidden ${st.done ? "bg-muted" : "bg-muted/60"}`}>
+                    {st.done && <div className="h-full w-full gradient-hero rounded-full" />}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.section>
+
+          {/* SECTION 2 — Next Action */}
+          <motion.section
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="rounded-2xl p-5 md:p-6 gradient-hero text-primary-foreground shadow-card"
+          >
+            <p className="text-xs font-display font-semibold uppercase tracking-wide opacity-90 mb-2">Next Action</p>
+            <h3 className="font-display font-bold text-lg md:text-xl mb-4 leading-snug">{nextAction.title}</h3>
+            {nextAction.ctaHref ? (
+              <Link
+                to={nextAction.ctaHref}
+                className="inline-flex items-center justify-center gap-2 bg-primary-foreground/15 hover:bg-primary-foreground/25 font-display font-bold px-5 py-3 rounded-xl text-sm transition-colors border border-primary-foreground/30"
+              >
+                {nextAction.ctaLabel}
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={runNextActionCta}
+                className="inline-flex items-center justify-center gap-2 bg-primary-foreground/15 hover:bg-primary-foreground/25 font-display font-bold px-5 py-3 rounded-xl text-sm transition-colors border border-primary-foreground/30"
+              >
+                {nextAction.ctaLabel}
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            )}
+          </motion.section>
+
+          {/* SECTION 3 — Stats */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.08 }}
+              className="bg-card border-2 border-border rounded-2xl p-5 shadow-card"
+            >
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-10 h-10 rounded-xl gradient-hero flex items-center justify-center">
                   <BookOpen className="w-5 h-5 text-primary-foreground" />
                 </div>
                 <span className="font-display font-bold text-2xl text-foreground">{results.length}</span>
               </div>
-              <p className="text-muted-foreground text-sm font-body">Quiz Diye</p>
+              <p className="text-foreground text-sm font-display font-semibold">
+                {results.length === 1 ? "1 quiz diya" : `${results.length} quiz diye`}
+              </p>
+              <p className="text-muted-foreground text-xs font-body mt-1 capitalize">
+                Stream: {latestStream || "—"}
+              </p>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-card border-2 border-border rounded-2xl p-5">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="bg-card border-2 border-border rounded-2xl p-5 shadow-card"
+            >
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl gradient-accent flex items-center justify-center">
-                  <MessageSquare className="w-5 h-5 text-accent-foreground" />
+                <div className="w-10 h-10 rounded-xl bg-orange-500/15 flex items-center justify-center border border-border">
+                  <Flame className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                </div>
+                <span className="font-display font-bold text-2xl text-foreground">
+                  🔥 {streakCount}
+                </span>
+              </div>
+              <p className="text-foreground text-sm font-display font-semibold">day streak</p>
+              <p className="text-muted-foreground text-xs font-body mt-1">Roz aao, streak badhao</p>
+            </motion.div>
+
+            <motion.button
+              type="button"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.12 }}
+              onClick={() => setActiveTab("suggestions")}
+              className="text-left bg-card border-2 border-border rounded-2xl p-5 shadow-card hover:border-primary/40 transition-colors w-full"
+            >
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-border">
+                  <MessageSquare className="w-5 h-5 text-primary" />
                 </div>
                 <span className="font-display font-bold text-2xl text-foreground">{unreadCount}</span>
               </div>
-              <p className="text-muted-foreground text-sm font-body">Naye Suggestions</p>
-            </motion.div>
+              <p className="text-foreground text-sm font-display font-semibold">naye suggestions</p>
+              <p className="text-muted-foreground text-xs font-body mt-1">Unread count</p>
+            </motion.button>
 
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card border-2 border-border rounded-2xl p-5">
+            <motion.button
+              type="button"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.14 }}
+              onClick={() =>
+                document.getElementById("student-dashboard-career-goal")?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                })
+              }
+              className="text-left bg-card border-2 border-border rounded-2xl p-5 shadow-card hover:border-primary/40 transition-colors w-full"
+            >
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center">
-                  <GraduationCap className="w-5 h-5 text-secondary-foreground" />
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-border">
+                  <Target className="w-5 h-5 text-primary" />
                 </div>
-                <span className="font-display font-bold text-sm text-foreground capitalize">{latestStream || "—"}</span>
               </div>
-              <p className="text-muted-foreground text-sm font-body">Recommended Stream</p>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-card border-2 border-border rounded-2xl p-5">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Award className="w-5 h-5 text-primary" />
-                </div>
-                <span className="font-display font-bold text-sm text-foreground">{profile?.city || "N/A"}</span>
-              </div>
-              <p className="text-muted-foreground text-sm font-body">{profile?.class || "Class N/A"}</p>
-            </motion.div>
+              <p className="text-foreground text-sm font-display font-semibold line-clamp-2 min-h-[2.5rem]">
+                {profile?.career_goal?.trim()
+                  ? profile.career_goal.trim().length > 30
+                    ? `${profile.career_goal.trim().slice(0, 30)}…`
+                    : profile.career_goal.trim()
+                  : "Goal set karein"}
+              </p>
+              <p className="text-muted-foreground text-xs font-body mt-1">Career goal</p>
+            </motion.button>
           </div>
 
-          {/* My Progress */}
+          {/* SECTION 4 — Aapki Story */}
+          <motion.section
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 shadow-card"
+          >
+            <h2 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-primary" /> Aapki Story
+            </h2>
+            {storyItems.length === 0 ? (
+              <p className="text-muted-foreground font-body text-sm">Abhi story ban rahi hai — quiz dekar shuru karein!</p>
+            ) : (
+              <>
+                <ul className="relative space-y-0 pl-2 before:absolute before:left-[7px] before:top-2 before:bottom-2 before:w-0.5 before:bg-border">
+                  {displayedStoryItems.map((item) => (
+                    <li key={item.id} className="relative pl-6 pb-6 last:pb-0">
+                      <span className="absolute left-0 top-1.5 w-3.5 h-3.5 rounded-full border-2 border-primary bg-card shadow-sm" />
+                      <p className="font-display font-semibold text-sm text-foreground">{item.title}</p>
+                      <p className="text-xs text-muted-foreground font-body mb-1">
+                        {new Date(item.at).toLocaleString("en-IN", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </p>
+                      <p className="text-sm text-muted-foreground font-body leading-relaxed">{item.detail}</p>
+                    </li>
+                  ))}
+                </ul>
+                {canExpandStory && (
+                  <button
+                    type="button"
+                    onClick={() => setTimelineExpanded((e) => !e)}
+                    className="mt-2 flex items-center gap-1 text-sm font-display font-semibold text-primary hover:underline"
+                  >
+                    {timelineExpanded ? (
+                      <>
+                        <ChevronUp className="w-4 h-4" /> Kam dikhao
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="w-4 h-4" /> Aur dekhein
+                      </>
+                    )}
+                  </button>
+                )}
+              </>
+            )}
+          </motion.section>
+
+          {/* Career goal + checklist (detail) */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -402,7 +689,7 @@ const StudentDashboard = () => {
             </h2>
 
             {/* 1. Career goal */}
-            <div className="bg-card border-2 border-border rounded-2xl p-5 md:p-6">
+            <div id="student-dashboard-career-goal" className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 scroll-mt-24 shadow-card">
               <div className="flex items-start justify-between gap-3 mb-3">
                 <div className="flex items-center gap-2">
                   <Target className="w-5 h-5 text-primary shrink-0" />
@@ -461,7 +748,7 @@ const StudentDashboard = () => {
             </div>
 
             {/* 2. Preparation checklist */}
-            <div className="bg-card border-2 border-border rounded-2xl p-5 md:p-6">
+            <div id="student-dashboard-checklist" className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 scroll-mt-24 shadow-card">
               <h3 className="font-display font-bold text-lg text-foreground mb-1 flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-primary" />
                 Preparation Checklist
@@ -499,115 +786,7 @@ const StudentDashboard = () => {
                 })}
               </ul>
             </div>
-
-            {/* 3. Streak */}
-            <div className="rounded-2xl border-2 border-amber-200/80 bg-gradient-to-br from-amber-50/90 to-orange-50/80 dark:from-amber-950/30 dark:to-orange-950/20 dark:border-amber-800/50 px-5 py-4 flex items-center gap-3">
-              <Flame className="w-10 h-10 text-orange-500 shrink-0" />
-              <div>
-                <p className="font-display font-bold text-foreground text-lg">
-                  🔥 {streakCount} day streak! Keep it up!
-                </p>
-                <p className="text-xs text-muted-foreground font-body mt-0.5">
-                  Roz dashboard kholna — streak banaye rakho
-                </p>
-              </div>
-            </div>
           </motion.div>
-
-          {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Recent Results */}
-            <div className="bg-card border-2 border-border rounded-2xl p-6">
-              <h2 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
-                <Clock className="w-5 h-5 text-primary" /> Haal Hi Ke Results
-              </h2>
-              {results.length === 0 ? (
-                <div className="text-center py-6">
-                  <p className="text-muted-foreground font-body mb-3">Abhi tak koi quiz nahi diya</p>
-                  <Link to="/quiz" className="text-primary font-display font-semibold hover:underline">
-                    Pehla quiz dijiye →
-                  </Link>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {results.slice(0, 3).map((r) => (
-                    <Link
-                      key={r.id}
-                      to={`/results/${r.stream}`}
-                      className="flex items-center justify-between p-3 rounded-xl border border-border hover:border-primary/40 transition-colors group"
-                    >
-                      <div>
-                        <p className="font-display font-semibold text-foreground capitalize text-sm">{r.stream} Stream</p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(r.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
-                        </p>
-                      </div>
-                      <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                    </Link>
-                  ))}
-                  {results.length > 3 && (
-                    <button onClick={() => setActiveTab("results")} className="text-sm text-primary font-display font-semibold hover:underline">
-                      Saare results dekhein ({results.length}) →
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Recent Suggestions */}
-            <div className="bg-card border-2 border-border rounded-2xl p-6">
-              <h2 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-accent" /> Expert Suggestions
-              </h2>
-              {suggestions.length === 0 ? (
-                <p className="text-center text-muted-foreground font-body py-6">Koi suggestion abhi tak nahi aaya</p>
-              ) : (
-                <div className="space-y-3">
-                  {suggestions.slice(0, 3).map((s) => (
-                    <div
-                      key={s.id}
-                      className={`p-3 rounded-xl border transition-colors ${
-                        s.is_read ? "border-border bg-card" : "border-primary/30 bg-primary/5"
-                      }`}
-                    >
-                      <p className="font-body text-foreground text-sm line-clamp-2">{s.message}</p>
-                      <div className="flex justify-between items-center mt-2">
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(s.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
-                        </span>
-                        {!s.is_read && (
-                          <button onClick={() => markRead(s.id)} className="text-xs text-primary font-display font-semibold flex items-center gap-1">
-                            <CheckCircle className="w-3 h-3" /> Padh Liya
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                  {suggestions.length > 3 && (
-                    <button onClick={() => setActiveTab("suggestions")} className="text-sm text-primary font-display font-semibold hover:underline">
-                      Saare suggestions dekhein ({suggestions.length}) →
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Recommended Action */}
-          {latestStream && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="gradient-hero rounded-2xl p-6 text-primary-foreground">
-              <h3 className="font-display font-bold text-lg mb-2">🎯 Aapke Liye Suggestion</h3>
-              <p className="text-sm opacity-90 mb-4">
-                Aapka recommended stream <strong className="capitalize">{latestStream}</strong> hai. Apna detailed roadmap, colleges aur scholarships dekhein!
-              </p>
-              <Link
-                to={`/results/${latestStream}`}
-                className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 font-display font-semibold px-4 py-2 rounded-lg text-sm transition-colors"
-              >
-                Detailed Report Dekhein <ArrowRight className="w-4 h-4" />
-              </Link>
-            </motion.div>
-          )}
         </>
       )}
 
