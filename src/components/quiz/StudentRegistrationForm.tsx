@@ -37,6 +37,7 @@ const interestOptions: { value: "tech" | "business" | "creative" | "sports" | "u
 const situations = [
   "💰 Padhai ke saath earning chahiye",
   "📉 Maths mein thoda weak hoon",
+  "📚 Padhai boring lagti hai / focus nahi banta",
   "💸 Financial constraints hain",
   "🔄 Stream change karna chahta/chahti hoon",
   "👨‍👩‍👦 Family ne stream decide ki hai",

@@ -7,6 +7,7 @@ export interface StudentProfile {
   confidence: number;
   personality: string;
   scores: { science: number; commerce: number; arts: number };
+  mentorNotes?: string[];
 }
 
 export interface GuidanceOutput {
@@ -118,7 +119,7 @@ export function calculateCareerMatches(profile: StudentProfile): CareerMatch[] {
 }
 
 export function generateGuidance(profile: StudentProfile): GuidanceOutput {
-  const { stream, selectedClass, selectedInterest, dreamGoal, situation } = profile;
+  const { stream, selectedClass, selectedInterest, dreamGoal, situation, mentorNotes } = profile;
 
   const output: GuidanceOutput = {
     primaryMessage: "",
@@ -162,6 +163,15 @@ export function generateGuidance(profile: StudentProfile): GuidanceOutput {
   if (situation?.some((s) => s.includes("Maths mein thoda weak hoon")) && stream === "science") {
     output.alertMessage = (output.alertMessage || "") +
       `\nMaths weakness + Science stream — important note:\nJEE ke liye Maths strong karna hoga. Lekin NEET (Biology group) mein Maths kam important hai — consider PCB instead of PCM.`;
+  }
+
+  const studyStruggle =
+    situation?.some((s) => s.includes("Padhai boring") || s.includes("focus nahi")) ||
+    (mentorNotes || []).join(" ").match(/padhai|study|boring|man nahi|focus|nahi pasand/i);
+
+  if (studyStruggle) {
+    output.alertMessage = (output.alertMessage || "") +
+      `\nPadhai/focus tough lag raha hai — yeh common hai, aur iska matlab yeh nahi ki tum "weak" ho. Chhote goals (25-minute study blocks), interesting YouTube teachers, aur ek sport/hobby routine se brain fresh rehta hai. Agar possible ho toh school counselor se ek baar baat zaroor karo — early help best help hoti hai.`;
   }
 
   // FAMILY PRESSURE
@@ -209,6 +219,15 @@ export function generateGuidance(profile: StudentProfile): GuidanceOutput {
   const streamMsg = streamMsgs[stream]?.[selectedInterest] || `${stream} stream mein bahut scope hai!`;
 
   output.primaryMessage = `${classMsg}\n\n${streamMsg}`;
+
+  const voiceNotes = (mentorNotes || []).map((n) => n.trim()).filter(Boolean);
+  if (voiceNotes.length > 0) {
+    const preview = voiceNotes.slice(0, 3).join(" · ");
+    const short = preview.length > 220 ? `${preview.slice(0, 217)}…` : preview;
+    output.primaryMessage =
+      `Tumne jo apne words mein likha ("${short}"), usko dhyaan mein rakhte hue neeche guidance hai.\n\n` +
+      output.primaryMessage;
+  }
 
   if (selectedClass === "12th Pass" || selectedClass === "Class 12") {
     output.urgencyLevel = "high";

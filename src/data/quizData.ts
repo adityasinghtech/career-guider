@@ -905,6 +905,8 @@ export interface QuizProfile {
   selectedInterest?: string;
   dreamGoal?: string;
   situation?: string[];
+  /** Optional per-question reflections from the quiz (mentor-style notes). */
+  mentorNotes?: string[];
 }
 
 export function calculateStream(answers: number[][]): string {

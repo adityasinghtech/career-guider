@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
 
@@ -23,24 +23,38 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [role, setRole] = useState<"admin" | "student" | null>(null);
   const [roleLoading, setRoleLoading] = useState(false);
 
-  const fetchRole = async (userId: string) => {
+  const fetchRole = useCallback(async (userId: string) => {
     setRoleLoading(true);
-    const { data } = await supabase
+
+    const { data, error } = await supabase
       .from("user_roles")
       .select("role")
       .eq("user_id", userId);
-    // If user has admin role, prioritize it
-    const roles = (data || []).map((r: any) => r.role);
-    setRole(roles.includes("admin") ? "admin" : roles.includes("student") ? "student" : "student");
-    setRoleLoading(false);
-  };
 
-  const refreshRole = async () => {
+    if (error) {
+      if (import.meta.env.DEV) {
+        console.warn("[useAuth] Role fetch error:", error.message, error);
+      }
+      setRole("student");
+    } else {
+      const rows = data ?? [];
+      const roles = rows.map((r) => r.role as string);
+      if (import.meta.env.DEV) {
+        console.debug("[useAuth] user_roles for user:", userId.slice(0, 8) + "…", roles);
+      }
+      const isAdmin = roles.some((r) => r === "admin");
+      setRole(isAdmin ? "admin" : "student");
+    }
+
+    setRoleLoading(false);
+  }, []);
+
+  const refreshRole = useCallback(async () => {
     const {
       data: { session },
     } = await supabase.auth.getSession();
     if (session?.user) await fetchRole(session.user.id);
-  };
+  }, [fetchRole]);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -69,7 +83,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [fetchRole]);
 
   const signUp = async (email: string, password: string, fullName: string) => {
     const { error } = await supabase.auth.signUp({

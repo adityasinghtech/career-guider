@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import type { StreamResult } from "@/data/quizData";
+import type { QuizProfile, StreamResult } from "@/data/quizData";
+import { generatePersonalizedText } from "@/utils/personalizedDescription";
 import {
   generateGuidance,
   profileFromLocalStorage,
@@ -15,6 +16,21 @@ const streamKeyFromResult = (result: StreamResult): string => {
 };
 
 const ResultDescription = ({ result }: { result: StreamResult }) => {
+  const quizProfile = useMemo((): QuizProfile | null => {
+    try {
+      const raw = localStorage.getItem("pathfinder_quiz_profile");
+      if (!raw) return null;
+      return JSON.parse(raw) as QuizProfile;
+    } catch {
+      return null;
+    }
+  }, [result.stream]);
+
+  const personalizedIntro = useMemo(
+    () => generatePersonalizedText(quizProfile, result),
+    [quizProfile, result],
+  );
+
   const output = useMemo(() => {
     const key = streamKeyFromResult(result);
     const stored = profileFromLocalStorage();
@@ -58,8 +74,16 @@ const ResultDescription = ({ result }: { result: StreamResult }) => {
       )}
 
       <h2 className="font-display font-bold text-xl text-foreground mb-3">
-        Aapke Liye Ye Kyun Best Hai? 🎯
+        Mentor jaisi baat — tumhari profile ke hisaab se 💬
       </h2>
+
+      <div className="mb-4 rounded-xl bg-muted/30 border border-border/60 p-4">
+        <p className="font-body text-foreground leading-relaxed whitespace-pre-line">{personalizedIntro}</p>
+      </div>
+
+      <h3 className="font-display font-bold text-lg text-foreground mb-2">
+        Aapke Liye Ye Kyun Fit Lagta Hai? 🎯
+      </h3>
 
       <div className="mb-4 rounded-xl bg-background/80 border border-border/60 p-4">
         <p className="font-body text-foreground leading-relaxed whitespace-pre-line">{primaryMessage}</p>

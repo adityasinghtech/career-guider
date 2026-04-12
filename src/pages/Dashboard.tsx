@@ -6,7 +6,7 @@ import AdminDashboard from "@/components/dashboard/AdminDashboard";
 import Navbar from "@/components/Navbar";
 
 const Dashboard = () => {
-  const { user, loading, role, roleLoading } = useAuth();
+  const { user, loading, role, roleLoading, refreshRole } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,6 +14,10 @@ const Dashboard = () => {
       navigate("/auth");
     }
   }, [loading, user, navigate]);
+
+  useEffect(() => {
+    if (user?.id) void refreshRole();
+  }, [user?.id, refreshRole]);
 
   if (loading || roleLoading) {
     return (
