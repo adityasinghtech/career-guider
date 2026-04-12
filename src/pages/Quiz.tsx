@@ -47,8 +47,8 @@ const Quiz = () => {
 
   const handleFormSubmit = async () => {
     const profile = buildQuizProfile(answers);
-    const selectedClass = localStorage.getItem("selectedClass");
-    const selectedInterest = localStorage.getItem("selectedInterest");
+    const selectedClass = localStorage.getItem("selectedClass") || "";
+    const selectedInterest = localStorage.getItem("selectedInterest") || "";
     const dreamGoal = localStorage.getItem("dreamGoal") || "";
     let situation: string[] = [];
     try {
@@ -77,6 +77,15 @@ const Quiz = () => {
         answers: answers,
         scores: profile.scores,
       });
+
+      await supabase.from("profiles").upsert(
+        {
+          id: user.id,
+          stream,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "id" },
+      );
     }
 
     navigate(`/results/${stream}`);

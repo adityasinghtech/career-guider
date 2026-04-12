@@ -13,29 +13,6 @@ const formSchema = z.object({
   interest: z
     .enum(["", "tech", "business", "creative", "sports", "undecided"])
     .refine((v) => v !== "", { message: "Kripya apna interest select karein" }),
-  dreamGoal: z
-    .string()
-    .refine(
-      (v) =>
-        v === "" ||
-        [
-          "doctor",
-          "engineer",
-          "ai_ml",
-          "ca",
-          "mba",
-          "startup",
-          "ias",
-          "lawyer",
-          "teacher",
-          "content_creator",
-          "defense",
-          "sports",
-          "designer",
-          "undecided",
-        ].includes(v),
-      { message: "Dream goal select karein ya optional chhod dein" },
-    ),
   class: z.string().min(1, "Kripya apni class select karein"),
 });
 
@@ -57,32 +34,14 @@ const interestOptions: { value: "tech" | "business" | "creative" | "sports" | "u
   { value: "undecided", label: "🤷 Abhi decide nahi" },
 ];
 
-const dreamGoalOptions: { value: string; label: string }[] = [
-  { value: "", label: "Select karo (optional)" },
-  { value: "doctor", label: "👨‍⚕️ Doctor / Medical" },
-  { value: "engineer", label: "💻 Engineer / Software Dev" },
-  { value: "ai_ml", label: "🤖 AI / Data Science" },
-  { value: "ca", label: "📊 CA / Finance" },
-  { value: "mba", label: "🏢 MBA / Business" },
-  { value: "startup", label: "🚀 Startup / Entrepreneur" },
-  { value: "ias", label: "🏛️ IAS / Government Officer" },
-  { value: "lawyer", label: "⚖️ Lawyer" },
-  { value: "teacher", label: "📚 Teacher / Professor" },
-  { value: "content_creator", label: "🎬 Content Creator / YouTuber" },
-  { value: "defense", label: "🎖️ Army / Navy / Air Force" },
-  { value: "sports", label: "🏏 Professional Sports" },
-  { value: "designer", label: "🎨 Designer / Artist" },
-  { value: "undecided", label: "🤷 Abhi decide nahi" },
-];
-
-const situationOptions = [
+const situations = [
   "💰 Padhai ke saath earning chahiye",
   "📉 Maths mein thoda weak hoon",
   "💸 Financial constraints hain",
   "🔄 Stream change karna chahta/chahti hoon",
   "👨‍👩‍👦 Family ne stream decide ki hai",
   "😕 Confused hoon — guidance chahiye",
-] as const;
+];
 
 const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
   const { user } = useAuth();
@@ -92,9 +51,9 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
     email: "",
     city: "",
     interest: "",
-    dreamGoal: "",
     class: "",
   });
+  const [dreamGoal, setDreamGoal] = useState("");
   const [selectedSituations, setSelectedSituations] = useState<string[]>([]);
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitting, setSubmitting] = useState(false);
@@ -104,12 +63,6 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
-  };
-
-  const toggleSituation = (label: string) => {
-    setSelectedSituations((prev) =>
-      prev.includes(label) ? prev.filter((x) => x !== label) : [...prev, label],
-    );
   };
 
   const handleSubmit = async () => {
@@ -126,7 +79,7 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
 
     localStorage.setItem("selectedClass", form.class);
     localStorage.setItem("selectedInterest", result.data.interest);
-    localStorage.setItem("dreamGoal", form.dreamGoal || "");
+    localStorage.setItem("dreamGoal", dreamGoal);
     localStorage.setItem("situation", JSON.stringify(selectedSituations));
 
     setSubmitting(true);
@@ -144,7 +97,7 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
 
     try {
       const existing = JSON.parse(localStorage.getItem("pathfinder_students") || "[]");
-      existing.push({ ...result.data, timestamp: new Date().toISOString() });
+      existing.push({ ...result.data, dreamGoal, selectedSituations, timestamp: new Date().toISOString() });
       localStorage.setItem("pathfinder_students", JSON.stringify(existing));
     } catch {
       // silently fail
@@ -159,10 +112,6 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
     `w-full px-4 py-3 rounded-xl border-2 bg-card font-body text-foreground placeholder:text-muted-foreground/50 outline-none transition-colors ${
       errors[field] ? "border-destructive" : "border-border focus:border-primary"
     }`;
-
-  const selectClass = `w-full border-2 rounded-xl px-4 py-3 bg-card font-body text-foreground outline-none transition-colors ${
-    errors.dreamGoal ? "border-destructive" : "border-border focus:border-primary"
-  } appearance-none cursor-pointer`;
 
   return (
     <motion.div
@@ -276,53 +225,59 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
         </div>
 
         {/* Dream Goal (optional) */}
-        <div>
-          <label className="flex items-center gap-2 text-sm font-display font-semibold text-foreground mb-1.5">
-            Tumhara dream career kya hai? (optional) 🌟
+        <div className="space-y-2">
+          <label className="font-display font-semibold text-sm text-foreground">
+            Tumhara dream career kya hai?
+            <span className="text-muted-foreground font-normal"> (optional) 🌟</span>
           </label>
           <select
-            value={form.dreamGoal}
-            onChange={(e) => updateField("dreamGoal", e.target.value)}
-            className={selectClass}
+            value={dreamGoal}
+            onChange={(e) => setDreamGoal(e.target.value)}
+            className="border-2 border-border rounded-xl px-4 py-3 bg-card font-body text-foreground w-full outline-none focus:border-primary transition-colors cursor-pointer"
           >
-            {dreamGoalOptions.map((opt) => (
-              <option key={opt.value || "empty"} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
+            <option value="">Select karo (optional)</option>
+            <option value="doctor">👨‍⚕️ Doctor / Medical</option>
+            <option value="engineer">💻 Engineer / Software Dev</option>
+            <option value="ai_ml">🤖 AI / Data Science</option>
+            <option value="ca">📊 CA / Finance</option>
+            <option value="mba">🏢 MBA / Business</option>
+            <option value="startup">🚀 Startup / Entrepreneur</option>
+            <option value="ias">🏛️ IAS / Government Officer</option>
+            <option value="lawyer">⚖️ Lawyer</option>
+            <option value="teacher">📚 Teacher / Professor</option>
+            <option value="content_creator">🎬 Content Creator / YouTuber</option>
+            <option value="defense">🎖️ Army / Navy / Air Force</option>
+            <option value="sports">🏏 Professional Sports</option>
+            <option value="designer">🎨 Designer / Artist</option>
+            <option value="undecided">🤷 Abhi decide nahi</option>
           </select>
-          {errors.dreamGoal && (
-            <p className="text-destructive text-xs mt-1 font-body">{errors.dreamGoal}</p>
-          )}
-          <p className="text-xs text-muted-foreground mt-1 font-body">
-            Optional — skip kar sakte ho, report phir bhi personalized rahegi
-          </p>
         </div>
 
         {/* Situation (optional, multi-select) */}
-        <div>
-          <label className="text-sm font-display font-semibold text-foreground mb-1.5 block">
-            Koi khaas situation hai? (optional — jo bhi sahi ho select karo)
+        <div className="space-y-3">
+          <label className="font-display font-semibold text-sm text-foreground">
+            Koi khaas situation hai?
+            <span className="text-muted-foreground font-normal"> (optional — jo sahi ho select karo)</span>
           </label>
-          <div className="flex flex-col gap-1.5">
-            {situationOptions.map((label) => {
-              const on = selectedSituations.includes(label);
-              return (
-                <button
-                  key={label}
-                  type="button"
-                  onClick={() => toggleSituation(label)}
-                  className={`text-left px-2.5 py-2 rounded-xl border-2 font-body text-xs transition-all ${
-                    on
-                      ? "border-primary bg-primary/10 text-foreground font-semibold"
-                      : "border-border bg-card text-muted-foreground hover:border-primary/40"
-                  }`}
-                >
-                  {on ? "✓ " : ""}
-                  {label}
-                </button>
-              );
-            })}
+          <div className="flex flex-wrap gap-2">
+            {situations.map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() =>
+                  setSelectedSituations((prev) =>
+                    prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s],
+                  )
+                }
+                className={`text-sm font-body px-3 py-2 rounded-xl border-2 transition-all ${
+                  selectedSituations.includes(s)
+                    ? "border-primary bg-primary/10 text-foreground font-semibold"
+                    : "border-border bg-card text-muted-foreground hover:border-primary/40"
+                }`}
+              >
+                {s}
+              </button>
+            ))}
           </div>
         </div>
 

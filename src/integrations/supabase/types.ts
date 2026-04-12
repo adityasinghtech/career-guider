@@ -133,6 +133,7 @@ export type Database = {
           parent_phone: string | null
           phone: string | null
           school_name: string | null
+          stream: string | null
           updated_at: string
         }
         Insert: {
@@ -143,12 +144,13 @@ export type Database = {
           class?: string | null
           created_at?: string
           email?: string | null
-          full_name?: string
+          full_name: string
           id: string
           parent_name?: string | null
           parent_phone?: string | null
           phone?: string | null
           school_name?: string | null
+          stream?: string | null
           updated_at?: string
         }
         Update: {
@@ -165,6 +167,7 @@ export type Database = {
           parent_phone?: string | null
           phone?: string | null
           school_name?: string | null
+          stream?: string | null
           updated_at?: string
         }
         Relationships: []

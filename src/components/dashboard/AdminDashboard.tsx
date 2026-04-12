@@ -140,7 +140,7 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<"students" | "analytics" | "messages">("students");
   const [messageIssueFilter, setMessageIssueFilter] = useState<MessageIssueFilter>("all");
   const [messagesUnreadOnly, setMessagesUnreadOnly] = useState(false);
-  const [grantAdminConfirm, setGrantAdminConfirm] = useState<{ id: string; name: string } | null>(null);
+  const [confirmAdmin, setConfirmAdmin] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -173,7 +173,7 @@ const AdminDashboard = () => {
     }
     setUserRoles((prev) => [...prev, { user_id: studentId, role: "admin" }]);
     toast.success("Admin role de diya gaya! 🛡️");
-    setGrantAdminConfirm(null);
+    setConfirmAdmin(null);
   };
 
   const removeAdminRole = async (studentId: string) => {
@@ -349,29 +349,20 @@ const AdminDashboard = () => {
       {/* Header */}
       <div className="flex flex-col gap-4">
         <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
-          <div className="space-y-1 min-w-0">
-            <h1 className="font-display font-bold text-2xl md:text-3xl text-foreground flex items-center gap-2 flex-wrap">
-              <span>🛡️ Admin Panel</span>
+          <div className="space-y-2 min-w-0">
+            <h1 className="font-display font-bold text-2xl md:text-3xl text-foreground">
+              🛡️ Admin Panel — PathFinder AI
             </h1>
-            <p className="text-muted-foreground font-body text-sm">
-              Students ko manage karein, messages padhein, aur suggestions dein
-            </p>
             {user?.email && (
-              <p className="text-xs font-body text-muted-foreground pt-1">
-                <span className="font-semibold text-foreground/80">Logged in:</span>{" "}
-                <span className="break-all">{user.email}</span>
-              </p>
+              <p className="text-muted-foreground font-body text-sm break-all">{user.email}</p>
             )}
-            <p className="text-xs text-muted-foreground/90 font-body pt-1">
-              Sirf authorized admins yahan access kar sakte hain
-            </p>
           </div>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto shrink-0">
             <Link
               to="/admin-setup"
-              className="inline-flex items-center justify-center gap-2 gradient-hero text-primary-foreground font-display font-semibold px-4 py-2.5 rounded-xl text-sm hover:opacity-90 transition-opacity text-center"
+              className="inline-flex items-center justify-center gap-1 border-2 border-primary text-primary font-display font-semibold px-4 py-2 rounded-xl hover:bg-primary/5 text-sm transition-colors text-center"
             >
-              Naya Admin Invite Code Banao
+              Naya Invite Code Banao →
             </Link>
             <button
               type="button"
@@ -484,7 +475,14 @@ const AdminDashboard = () => {
                 return (
                   <div key={student.id} className="border border-border rounded-xl overflow-hidden">
                     <button
-                      onClick={() => setExpandedStudent(isExpanded ? null : student.id)}
+                      onClick={() => {
+                        if (isExpanded) {
+                          if (confirmAdmin === student.id) setConfirmAdmin(null);
+                          setExpandedStudent(null);
+                        } else {
+                          setExpandedStudent(student.id);
+                        }
+                      }}
                       className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors text-left"
                     >
                       <div className="flex items-center gap-2">
@@ -504,62 +502,64 @@ const AdminDashboard = () => {
 
                     {isExpanded && (
                       <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="border-t border-border p-4 bg-muted/20">
-                        {grantAdminConfirm?.id === student.id && (
-                          <div className="mb-4 p-4 rounded-xl border-2 border-border bg-card shadow-sm space-y-3">
+                        {confirmAdmin === student.id && (
+                          <div className="mb-4 p-4 rounded-xl border-2 border-primary/30 bg-card shadow-card space-y-4">
                             <p className="text-sm font-body text-foreground leading-relaxed">
-                              Kya aap <span className="font-display font-semibold">{grantAdminConfirm.name}</span> ko admin
-                              banana chahte hain? Woh poora admin panel access kar sakenge.
+                              Kya aap{" "}
+                              <span className="font-display font-semibold">
+                                {student.full_name?.trim() || "Is student"}
+                              </span>{" "}
+                              ko admin banana chahte hain? Woh poora admin panel access kar sakenge.
                             </p>
                             <div className="flex flex-wrap gap-2">
                               <button
                                 type="button"
                                 onClick={() => grantAdminRole(student.id)}
-                                className="text-xs font-display font-semibold px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+                                className="text-sm font-display font-semibold px-4 py-2 rounded-xl bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
                               >
-                                Confirm
+                                Confirm ✅
                               </button>
                               <button
                                 type="button"
-                                onClick={() => setGrantAdminConfirm(null)}
-                                className="text-xs font-display font-semibold px-4 py-2 rounded-lg border-2 border-border text-foreground hover:bg-muted transition-colors"
+                                onClick={() => setConfirmAdmin(null)}
+                                className="text-sm font-display font-semibold px-4 py-2 rounded-xl border-2 border-border text-foreground hover:bg-muted transition-colors"
                               >
-                                Cancel
+                                Cancel ❌
                               </button>
                             </div>
                           </div>
                         )}
 
                         {/* Admin Role Toggle */}
-                        <div className="mb-4 flex items-center gap-3 flex-wrap">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (studentIsAdmin) {
-                                removeAdminRole(student.id);
-                              } else {
-                                setGrantAdminConfirm({
-                                  id: student.id,
-                                  name: student.full_name?.trim() || "Is student",
-                                });
-                              }
-                            }}
-                            className={`flex items-center gap-2 text-xs font-display font-semibold px-4 py-2 rounded-lg transition-colors ${
-                              studentIsAdmin
-                                ? "bg-destructive/10 text-destructive hover:bg-destructive/20"
-                                : "bg-primary/10 text-primary hover:bg-primary/20"
-                            }`}
-                          >
-                            {studentIsAdmin ? (
-                              <>
-                                <ShieldOff className="w-3.5 h-3.5" /> Admin Role Hatayein
-                              </>
-                            ) : (
-                              <>
-                                <ShieldCheck className="w-3.5 h-3.5" /> Admin Banayein
-                              </>
-                            )}
-                          </button>
-                        </div>
+                        {!(confirmAdmin === student.id && !studentIsAdmin) && (
+                          <div className="mb-4 flex items-center gap-3 flex-wrap">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (studentIsAdmin) {
+                                  removeAdminRole(student.id);
+                                } else {
+                                  setConfirmAdmin(student.id);
+                                }
+                              }}
+                              className={`flex items-center gap-2 text-xs font-display font-semibold px-4 py-2 rounded-lg transition-colors ${
+                                studentIsAdmin
+                                  ? "bg-destructive/10 text-destructive hover:bg-destructive/20"
+                                  : "bg-primary/10 text-primary hover:bg-primary/20"
+                              }`}
+                            >
+                              {studentIsAdmin ? (
+                                <>
+                                  <ShieldOff className="w-3.5 h-3.5" /> Admin Role Hatayein
+                                </>
+                              ) : (
+                                <>
+                                  <ShieldCheck className="w-3.5 h-3.5" /> Admin Banayein
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        )}
 
                         {/* Results */}
                         {studentResults.length > 0 ? (

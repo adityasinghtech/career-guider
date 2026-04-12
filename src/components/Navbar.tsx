@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Compass, Menu, X, Moon, Sun, LogIn, LayoutDashboard, Shield } from "lucide-react";
+import { Compass, Menu, X, Moon, Sun, LogIn, LayoutDashboard } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -72,11 +72,8 @@ const Navbar = () => {
                 {user.email}
               </span>
               {!roleLoading && role === "admin" && (
-                <span className="inline-flex items-center gap-1 shrink-0">
-                  <Shield className="w-3.5 h-3.5 text-red-700 dark:text-red-400" aria-hidden />
-                  <span className="text-xs font-display font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-800 border border-red-200 dark:bg-red-950/50 dark:text-red-200 dark:border-red-800">
-                    Admin
-                  </span>
+                <span className="inline-flex items-center gap-1 text-xs font-display font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-800 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800 shrink-0">
+                  🛡️ Admin
                 </span>
               )}
               {!roleLoading && role === "student" && (
@@ -139,10 +136,9 @@ const Navbar = () => {
                 {user.email}
               </p>
               {!roleLoading && role === "admin" && (
-                <div className="flex items-center gap-1.5 py-1">
-                  <Shield className="w-3.5 h-3.5 text-red-700 dark:text-red-400" aria-hidden />
-                  <span className="text-xs font-display font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-800 border border-red-200 dark:bg-red-950/50 dark:text-red-200 dark:border-red-800">
-                    Admin
+                <div className="py-1">
+                  <span className="inline-flex items-center gap-1 text-xs font-display font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-800 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800">
+                    🛡️ Admin
                   </span>
                 </div>
               )}

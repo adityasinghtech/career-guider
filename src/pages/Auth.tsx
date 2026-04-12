@@ -27,15 +27,38 @@ const Auth = () => {
     if (handledByFormRef.current) return;
 
     const oauthPending = sessionStorage.getItem(OAUTH_PENDING_KEY) === "1";
-    if (!oauthPending) {
-      navigate(redirectTo, { replace: true });
+
+    if (oauthPending) {
+      sessionStorage.removeItem(OAUTH_PENDING_KEY);
+
+      (async () => {
+        const { data: rows } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", user.id);
+
+        const isAdmin = rows?.some((r) => r.role === "admin");
+
+        if (isAdmin) {
+          toast.success("Admin login safal! 🛡️");
+        } else {
+          toast.success("Login safal! 🎉");
+        }
+
+        navigate(redirectTo, { replace: true });
+      })();
+
       return;
     }
+
     sessionStorage.removeItem(OAUTH_PENDING_KEY);
 
     let cancelled = false;
     (async () => {
-      const { data: rows } = await supabase.from("user_roles").select("role").eq("user_id", user.id);
+      const { data: rows } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id);
       if (cancelled) return;
       const isAdmin = rows?.some((r) => r.role === "admin");
       if (isAdmin) {

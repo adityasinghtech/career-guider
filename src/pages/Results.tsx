@@ -64,7 +64,9 @@ const Results = () => {
   const guidanceUrgency = useMemo(() => {
     try {
       const s = stream || "science";
-      return generateGuidance(profileFromLocalStorage(s)).urgencyLevel;
+      const profile = profileFromLocalStorage();
+      if (!profile) return "medium" as const;
+      return generateGuidance({ ...profile, stream: profile.stream || s }).urgencyLevel;
     } catch {
       return "medium" as const;
     }

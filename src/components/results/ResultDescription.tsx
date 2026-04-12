@@ -5,6 +5,7 @@ import type { StreamResult } from "@/data/quizData";
 import {
   generateGuidance,
   profileFromLocalStorage,
+  type StudentProfile,
 } from "@/utils/guidanceEngine";
 
 const streamKeyFromResult = (result: StreamResult): string => {
@@ -14,13 +15,25 @@ const streamKeyFromResult = (result: StreamResult): string => {
 };
 
 const ResultDescription = ({ result }: { result: StreamResult }) => {
-  const guidance = useMemo(() => {
+  const output = useMemo(() => {
     const key = streamKeyFromResult(result);
-    const profile = profileFromLocalStorage(key);
-    return generateGuidance(profile);
+    const stored = profileFromLocalStorage();
+    const fallback: StudentProfile = {
+      stream: key,
+      selectedClass: "Class 10",
+      selectedInterest: "undecided",
+      dreamGoal: "",
+      situation: [],
+      confidence: 33,
+      personality: "",
+      scores: { science: 0, commerce: 0, arts: 0 },
+    };
+    const profile = stored ?? fallback;
+    return generateGuidance({ ...profile, stream: profile.stream || key });
   }, [result]);
 
-  const { urgencyLevel } = guidance;
+  const { urgencyLevel, primaryMessage, alertMessage, alternatePathMessage, studyEarningMessage, nextActionLink, nextActionLabel } =
+    output;
 
   return (
     <motion.div
@@ -35,40 +48,61 @@ const ResultDescription = ({ result }: { result: StreamResult }) => {
             : "border-l-primary/60"
       }`}
     >
+      {urgencyLevel === "high" && (
+        <div
+          className="mb-4 rounded-xl border border-red-500/50 bg-red-500/10 px-4 py-3 text-center text-sm font-display font-semibold text-red-800 dark:text-red-200 animate-pulse"
+          role="status"
+        >
+          ⚡ Time-sensitive: Abhi action lena zaroori hai!
+        </div>
+      )}
+
       <h2 className="font-display font-bold text-xl text-foreground mb-3">
         Aapke Liye Ye Kyun Best Hai? 🎯
       </h2>
 
-      <p className="text-muted-foreground leading-relaxed whitespace-pre-line mb-4">
-        {guidance.primaryMessage}
-      </p>
+      <div className="mb-4 rounded-xl bg-background/80 border border-border/60 p-4">
+        <p className="font-body text-foreground leading-relaxed whitespace-pre-line">{primaryMessage}</p>
+      </div>
 
-      {guidance.alertMessage?.trim() && (
-        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-100">
-          <p className="font-body leading-relaxed whitespace-pre-line">{guidance.alertMessage.trim()}</p>
+      {alertMessage?.trim() && (
+        <div className="mb-4 border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-950/20 p-4 rounded-r-xl">
+          <p className="font-body text-sm leading-relaxed whitespace-pre-line text-amber-950 dark:text-amber-100">
+            {alertMessage.trim()}
+          </p>
         </div>
       )}
 
-      {guidance.alternatePathMessage?.trim() && (
-        <div className="mb-4 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-950 dark:border-blue-900/50 dark:bg-blue-950/40 dark:text-blue-100">
-          <p className="font-body leading-relaxed whitespace-pre-line">{guidance.alternatePathMessage.trim()}</p>
+      {alternatePathMessage?.trim() && (
+        <div className="mb-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950/20 p-4 rounded-r-xl">
+          <h3 className="font-display font-bold text-sm text-blue-950 dark:text-blue-100 mb-2">
+            Alternate Path Available 🛤️
+          </h3>
+          <p className="font-body text-sm leading-relaxed whitespace-pre-line text-blue-950 dark:text-blue-100">
+            {alternatePathMessage.trim()}
+          </p>
         </div>
       )}
 
-      {guidance.studyEarningMessage?.trim() && (
-        <div className="mb-4 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-950 dark:border-green-900/50 dark:bg-green-950/40 dark:text-green-100">
-          <p className="font-body leading-relaxed whitespace-pre-line">{guidance.studyEarningMessage.trim()}</p>
+      {studyEarningMessage?.trim() && (
+        <div className="mb-4 border-l-4 border-green-500 bg-green-50 dark:bg-green-950/20 p-4 rounded-r-xl">
+          <h3 className="font-display font-bold text-sm text-green-950 dark:text-green-100 mb-2">
+            Padhai ke Saath Kamaai 💰
+          </h3>
+          <p className="font-body text-sm leading-relaxed whitespace-pre-line text-green-950 dark:text-green-100">
+            {studyEarningMessage.trim()}
+          </p>
         </div>
       )}
 
-      {guidance.nextActionLink && guidance.nextActionLink !== "#" && (
+      {nextActionLink && nextActionLink !== "#" && (
         <div className="pt-2 flex flex-wrap items-center gap-2">
           <span className="text-sm font-display font-semibold text-foreground">Aage kya karein:</span>
           <Link
-            to={guidance.nextActionLink}
+            to={nextActionLink}
             className="inline-flex items-center justify-center rounded-full gradient-hero px-4 py-2 text-xs font-display font-bold text-primary-foreground hover:opacity-90 transition-opacity"
           >
-            {guidance.nextActionLabel}
+            {nextActionLabel}
           </Link>
         </div>
       )}

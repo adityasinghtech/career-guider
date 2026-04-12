@@ -21,6 +21,8 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import ExamCountdown from "@/components/dashboard/ExamCountdown";
+import CareerReadinessScore from "@/components/dashboard/CareerReadinessScore";
 
 interface QuizResult {
   id: string;
@@ -224,6 +226,12 @@ const StudentDashboard = () => {
     () => normalizeStream(latestStream || profileStreamFromStorage),
     [latestStream, profileStreamFromStorage],
   );
+
+  const checklistPercent = useMemo(() => {
+    const n = checklistItems.length;
+    if (n === 0) return 0;
+    return checklistItems.filter((i) => i.checked).length / n;
+  }, [checklistItems]);
 
   useEffect(() => {
     if (!user) return;
@@ -475,6 +483,13 @@ const StudentDashboard = () => {
       {/* Overview Tab */}
       {activeTab === "overview" && (
         <>
+          <CareerReadinessScore
+            quizCount={results.length}
+            hasGoal={Boolean(profile?.career_goal)}
+            checklistPercent={checklistPercent}
+            streakDays={streakCount}
+          />
+
           {/* SECTION 1 — Journey */}
           <motion.section
             initial={{ opacity: 0, y: 10 }}
@@ -627,6 +642,8 @@ const StudentDashboard = () => {
               <p className="text-muted-foreground text-xs font-body mt-1">Career goal</p>
             </motion.button>
           </div>
+
+          <ExamCountdown stream={effectiveStream} />
 
           {/* SECTION 4 — Aapki Story */}
           <motion.section
