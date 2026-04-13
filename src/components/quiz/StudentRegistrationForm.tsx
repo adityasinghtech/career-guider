@@ -51,11 +51,14 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
     phone: "",
     email: "",
     city: "",
-    interest: "",
+    interest: "" as FormData["interest"],
     class: "",
   });
   const [dreamGoal, setDreamGoal] = useState("");
   const [selectedSituations, setSelectedSituations] = useState<string[]>([]);
+  const [marksPercent, setMarksPercent] = useState("");
+  const [budget, setBudget] = useState("");
+  const [locationType, setLocationType] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitting, setSubmitting] = useState(false);
 
@@ -82,6 +85,17 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
     localStorage.setItem("selectedInterest", result.data.interest);
     localStorage.setItem("dreamGoal", dreamGoal);
     localStorage.setItem("situation", JSON.stringify(selectedSituations));
+
+    // Save extended profile including new optional fields
+    try {
+      const existingProfile = JSON.parse(localStorage.getItem("pathfinder_quiz_profile") || "{}");
+      localStorage.setItem("pathfinder_quiz_profile", JSON.stringify({
+        ...existingProfile,
+        ...(marksPercent ? { marksPercent: parseFloat(marksPercent) } : {}),
+        ...(budget ? { budget } : {}),
+        ...(locationType ? { locationType } : {}),
+      }));
+    } catch {/* silently fail */}
 
     setSubmitting(true);
 
@@ -304,6 +318,61 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
             ))}
           </div>
           {errors.class && <p className="text-destructive text-xs mt-1 font-body">{errors.class}</p>}
+        </div>
+
+        {/* Optional: Marks Percentage */}
+        <div className="space-y-2">
+          <label className="font-display font-semibold text-sm text-foreground">
+            10th/12th mein percentage kya thi?
+            <span className="text-muted-foreground font-normal"> (optional)</span>
+          </label>
+          <input
+            type="number"
+            min="0"
+            max="100"
+            placeholder="jaise: 75 ya 82"
+            value={marksPercent}
+            onChange={(e) => setMarksPercent(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border-2 border-border bg-card font-body text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary transition-colors"
+          />
+          <p className="text-muted-foreground text-xs font-body">💡 Yeh optional hai — isse aapko better guidance milegi</p>
+        </div>
+
+        {/* Optional: Budget */}
+        <div className="space-y-2">
+          <label className="font-display font-semibold text-sm text-foreground">
+            Education budget kaisa hai?
+            <span className="text-muted-foreground font-normal"> (optional)</span>
+          </label>
+          <select
+            value={budget}
+            onChange={(e) => setBudget(e.target.value)}
+            className="border-2 border-border rounded-xl px-4 py-3 bg-card font-body text-foreground w-full outline-none focus:border-primary transition-colors cursor-pointer"
+          >
+            <option value="">Select karo (optional)</option>
+            <option value="low">Sarkari college prefer — scholarship chahiye</option>
+            <option value="medium">Thoda invest kar sakte hain</option>
+            <option value="high">Premium colleges consider kar sakte hain</option>
+          </select>
+        </div>
+
+        {/* Optional: Location Type */}
+        <div className="space-y-2">
+          <label className="font-display font-semibold text-sm text-foreground">
+            Aap kahan rehte/rehti hain?
+            <span className="text-muted-foreground font-normal"> (optional)</span>
+          </label>
+          <select
+            value={locationType}
+            onChange={(e) => setLocationType(e.target.value)}
+            className="border-2 border-border rounded-xl px-4 py-3 bg-card font-body text-foreground w-full outline-none focus:border-primary transition-colors cursor-pointer"
+          >
+            <option value="">Select karo (optional)</option>
+            <option value="metro">Bada shahar (Delhi, Mumbai, Bangalore...)</option>
+            <option value="tier2">Medium shahar</option>
+            <option value="tier3">Chhota shahar ya kasba</option>
+            <option value="rural">Gaon ya rural area</option>
+          </select>
         </div>
       </div>
 

@@ -40,15 +40,50 @@ const categoryLabels: Record<string, string> = {
 const ResultScholarships = ({ result }: { result: StreamResult }) => {
   const [activeCategory, setActiveCategory] = useState("Bihar");
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState("All");
+
+  // Read student profile for personalised filter
+  const profile = useMemo(() => {
+    try { return JSON.parse(localStorage.getItem("pathfinder_quiz_profile") || "{}"); }
+    catch { return {}; }
+  }, []);
+  const studentCategory: string | null = profile.category || null;
+
+  // Top-level filter options
+  const filterOptions = [
+    "All",
+    "National",
+    "Bihar",
+    "UP",
+    "International",
+    ...(studentCategory && studentCategory !== "general" ? ["Aapke liye 🎯"] : []),
+  ];
+
+  // Pre-scoped pool based on top-level filter
+  const scopedScholarships = useMemo(() => {
+    if (activeFilter === "All") return result.scholarships;
+    if (activeFilter === "Aapke liye 🎯") {
+      return result.scholarships.filter(
+        (s) =>
+          s.category === "National" ||
+          s.eligibility?.toLowerCase().includes(studentCategory?.toLowerCase() ?? "")
+      );
+    }
+    return result.scholarships.filter((s) => s.category === activeFilter);
+  }, [result.scholarships, activeFilter, studentCategory]);
 
   const availableCategories = useMemo(() => {
     return categoryOrder.filter((cat) =>
-      result.scholarships.some((s) => s.category === cat)
+      scopedScholarships.some((s) => s.category === cat)
     );
-  }, [result.scholarships]);
+  }, [scopedScholarships]);
 
   const filteredScholarships = useMemo(() => {
-    let scholarships = result.scholarships.filter((s) => s.category === activeCategory);
+    let scholarships = scopedScholarships.filter((s) => s.category === activeCategory);
+    if (!scholarships.length && availableCategories.length) {
+      // If current category becomes empty after filter change, fall back to first available
+      scholarships = scopedScholarships.filter((s) => s.category === availableCategories[0]);
+    }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       scholarships = scholarships.filter(
@@ -58,7 +93,7 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
       );
     }
     return scholarships;
-  }, [result.scholarships, activeCategory, searchQuery]);
+  }, [scopedScholarships, activeCategory, availableCategories, searchQuery]);
 
   return (
     <motion.div
@@ -70,6 +105,49 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
       <h2 className="font-display font-bold text-xl text-foreground mb-4 flex items-center gap-2">
         <Award className="w-5 h-5 text-primary" /> Scholarships — State Wise 💸
       </h2>
+
+      {/* Top-level personalised filter */}
+      <div className="mb-4">
+        <div className="flex gap-2 flex-wrap">
+          {filterOptions.map((opt) => {
+            const isPersonalised = opt === "Aapke liye 🎯";
+            const isActive = activeFilter === opt;
+            return (
+              <button
+                key={opt}
+                onClick={() => {
+                  setActiveFilter(opt);
+                  setSearchQuery("");
+                  // Reset category to first available when filter changes
+                  const first = categoryOrder.find((cat) =>
+                    (opt === "All" ? result.scholarships : result.scholarships.filter(
+                      (s) => opt === "Aapke liye 🎯"
+                        ? s.category === "National" || s.eligibility?.toLowerCase().includes(studentCategory?.toLowerCase() ?? "")
+                        : s.category === opt
+                    )).some((s) => s.category === cat)
+                  );
+                  if (first) setActiveCategory(first);
+                }}
+                className={`px-3 py-1.5 rounded-full font-display font-semibold text-xs transition-all border ${
+                  isPersonalised && isActive
+                    ? "bg-amber-500 border-amber-500 text-white"
+                    : isPersonalised
+                    ? "border-amber-400 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/30"
+                    : isActive
+                    ? "gradient-hero border-transparent text-primary-foreground"
+                    : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                }`}
+              >
+                {opt}
+              </button>
+            );
+          })}
+        </div>
+        <p className="text-xs text-muted-foreground mt-2">
+          {scopedScholarships.length} scholarship{scopedScholarships.length !== 1 ? "s" : ""}
+          {activeFilter !== "All" ? ` — ${activeFilter}` : ""}
+        </p>
+      </div>
 
       {/* Search */}
       <div className="relative mb-4">

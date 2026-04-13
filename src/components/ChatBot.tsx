@@ -56,6 +56,17 @@ function buildInitialMessage(profile: any): Message {
     confidenceMsg = `Quiz se pata chala ki aap ek **${personality}** hain — multiple streams explore karo! 🌟`;
   }
 
+  if (profile.marksPercent) {
+    confidenceMsg += `\nTumhare marks: ${profile.marksPercent}% — `;
+    if (profile.marksPercent >= 80) confidenceMsg += "bahut accha! Top colleges target karo.";
+    else if (profile.marksPercent >= 65) confidenceMsg += "theek hai! Government colleges possible hain.";
+    else confidenceMsg += "scholarship options aur government colleges explore karo.";
+  }
+
+  if (profile.budget === "low") {
+    confidenceMsg += "\n💡 Budget constraint note kiya — government colleges aur scholarships pe focus karunga.";
+  }
+
   return {
     role: "assistant",
     content: `Namaste! 👋 Maine aapka quiz result dekh liya! ${emoji}\n\n${confidenceMsg}\n\nAb seedha poochhein:\n- 🎓 Kaunse colleges best hain?\n- 📝 Kaunse exams dene chahiye?\n- 💰 Scholarships kaise milegi?\n- 🗺️ Career roadmap kya hoga?\n\nKuch bhi poochhein — main aapke **${stream} stream** ke hisaab se specifically bataunga! 🚀`,

@@ -9,15 +9,12 @@ const stats = [
   { number: "3 min", label: "Quiz Duration", emoji: "⚡" },
 ];
 
-const floatingBadges = [
-  { text: "AI Engineer 🤖", x: "10%", y: "20%", delay: 0 },
-  { text: "Doctor 👨‍⚕️", x: "85%", y: "15%", delay: 0.5 },
-  { text: "CA ₹50L 💰", x: "5%", y: "70%", delay: 1 },
-  { text: "IIT Topper 🏆", x: "88%", y: "65%", delay: 1.5 },
+const careerBadges = [
+  "AI Engineer 🤖",
+  "Doctor 👨‍⚕️",
+  "CA ₹50L 💰",
+  "IIT Topper 🏆",
 ];
-
-const badge3d =
-  "shadow-[0_8px_32px_rgba(0,0,0,0.12)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.2)] hover:-translate-y-1 transition-all duration-300";
 
 const HeroSection = () => (
   <section className="pt-28 pb-20 px-4 relative overflow-hidden">
@@ -31,19 +28,6 @@ const HeroSection = () => (
         style={{ animationDirection: "reverse", animationDuration: "30s" }}
       />
     </div>
-
-    {floatingBadges.map((badge, i) => (
-      <motion.div
-        key={i}
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: badge.delay + 0.8, duration: 0.5 }}
-        className={`hidden lg:block absolute text-xs font-display font-semibold bg-card/80 backdrop-blur-sm border border-border/50 px-3 py-1.5 rounded-full animate-float ${badge3d}`}
-        style={{ left: badge.x, top: badge.y, animationDelay: `${badge.delay}s` }}
-      >
-        {badge.text}
-      </motion.div>
-    ))}
 
     <div className="max-w-5xl mx-auto text-center relative z-10">
       <motion.div
@@ -71,10 +55,30 @@ const HeroSection = () => (
             <span className="text-3xl md:text-5xl lg:text-6xl"> — Aapka Future, Aapki Choice! 🚀</span>
           </h1>
 
+          {/* Clean Horizontal Badges Row */}
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="flex flex-wrap justify-center items-center gap-3 md:gap-4 mb-8"
+          >
+            {careerBadges.map((badge, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 + (i * 0.1), duration: 0.4 }}
+                className="bg-gray-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-orange-100 dark:hover:bg-orange-500/20 hover:text-orange-600 dark:hover:text-orange-400 font-display font-medium px-4 py-2 rounded-full text-sm shadow-sm transition-colors cursor-default border border-transparent hover:border-orange-200 dark:hover:border-orange-500/30"
+              >
+                {badge}
+              </motion.div>
+            ))}
+          </motion.div>
+
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
             className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto mb-4 font-body leading-relaxed"
           >
             15 sawaal ka <strong className="text-foreground">FREE quiz</strong> dijiye aur jaaniye — Science, Commerce ya Arts — aapke liye kaunsa stream{" "}

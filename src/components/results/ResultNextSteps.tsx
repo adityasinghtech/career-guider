@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import type { QuizProfile } from "@/data/quizData";
 import { CalendarClock, Route } from "lucide-react";
 
@@ -174,6 +175,7 @@ interface ResultNextStepsProps {
 }
 
 const ResultNextSteps = ({ fallbackStream = "science" }: ResultNextStepsProps) => {
+  const navigate = useNavigate();
   const quizProfile = useMemo<QuizProfile | null>(() => {
     try {
       const raw = localStorage.getItem("pathfinder_quiz_profile");
@@ -290,6 +292,12 @@ const ResultNextSteps = ({ fallbackStream = "science" }: ResultNextStepsProps) =
           ))}
         </motion.ul>
       </div>
+      <button
+        onClick={() => navigate("/after-12th")}
+        className="w-full mt-4 px-4 py-3 rounded-xl border-2 border-border bg-card font-display font-semibold text-sm text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all text-center"
+      >
+        📅 12th ke baad complete guide →
+      </button>
     </motion.section>
   );
 };
