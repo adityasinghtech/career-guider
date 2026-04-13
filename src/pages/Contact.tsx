@@ -16,7 +16,7 @@ const CONTACT_ISSUE_MESSAGE_PREFIX: Record<ContactIssueTypeId, string> = {
 };
 
 /** Replace with your WhatsApp number (digits only, country code without +) */
-const PLACEHOLDER_WHATSAPP_NUMBER = "+91 9315861151";
+const PLACEHOLDER_WHATSAPP_NUMBER = "+919315861151";
 
 const issueTypeOptions: {
   id: ContactIssueTypeId;
