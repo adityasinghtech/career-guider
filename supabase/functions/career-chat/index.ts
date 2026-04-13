@@ -135,51 +135,217 @@ const STREAM_DATA = {
       "Chevening UK / Eiffel France / Fulbright USA — fully funded higher studies",
     ],
   },
+  sports: {
+    careers: [
+      "Professional Athlete - ₹3-50 LPA (sport pe depend)",
+      "Sports Coach / Trainer - ₹3-15 LPA",
+      "Fitness Trainer / Gym Instructor - ₹3-15 LPA",
+      "Sports Journalist / Commentator - ₹4-15 LPA",
+      "Sports Psychologist - ₹5-18 LPA",
+      "Physiotherapist - ₹4-12 LPA",
+      "Sports Manager / Agent - ₹5-20 LPA",
+      "Sports Photographer / Videographer - ₹3-15 LPA",
+      "Physical Education Teacher - ₹3-10 LPA (govt job!)",
+      "Sports Analyst / Data Analyst - ₹8-25 LPA",
+      "Sports Nutrition Expert - ₹4-12 LPA",
+      "Sports Event Manager - ₹4-15 LPA",
+      "Defense Services (Army/Navy/Air Force) - ₹6-20 LPA",
+    ],
+    exams: [
+      "BPEd Entrance — Physical Education degree ke liye",
+      "NIS Patiala Coaching Course — National Institute of Sports",
+      "SAI (Sports Authority of India) — Direct recruitment",
+      "NDA — Defence ke liye (12th ke baad)",
+      "UPSC (Physical Education optional) — Civil services",
+      "State Sports Quota admissions — colleges mein",
+      "NEET — Sports Medicine / Physiotherapy ke liye",
+      "CMAT / MAT — Sports Management MBA ke liye",
+    ],
+    topColleges: [
+      "NIS Patiala — Sports coaching ka India ka #1 institute",
+      "LNIPE Gwalior — Physical Education university",
+      "Amity School of Physical Education (Delhi/NCR)",
+      "Banaras Hindu University (BHU) — BPEd program",
+      "Pune University — Sports Management",
+      "Tata Football Academy / Sports academies across India",
+      "SAI Regional Centers — Patna, Bangalore, Chennai, Delhi",
+    ],
+    scholarships: [
+      "Sports Scholarship (Ministry of Youth Affairs) — Khelo India",
+      "SAI Scholarship — selected athletes ko full support",
+      "State Sports Department Scholarships — har state mein",
+      "Arjuna Award / Dronacharya Award — national recognition",
+      "NSDF (National Sports Development Fund) — athletes ke liye",
+      "PM Yasasvi Scholarship — OBC/EBC students ke liye",
+      "Central Sector Scholarship — merit-based",
+    ],
+  },
+  creative: {
+    careers: [
+      "Graphic Designer - ₹3-20 LPA",
+      "UX/UI Designer - ₹6-25 LPA",
+      "Video Editor / Motion Graphics - ₹4-20 LPA",
+      "Animator (2D/3D) - ₹4-25 LPA",
+      "Filmmaker / Director - ₹5-50 LPA",
+      "Photographer - ₹3-15 LPA",
+      "Content Creator / Influencer - ₹2-50 LPA",
+      "Fashion Designer - ₹4-20 LPA",
+      "Interior Designer - ₹4-18 LPA",
+      "Music Producer / Sound Designer - ₹4-20 LPA",
+      "Game Designer - ₹6-25 LPA",
+      "Brand Identity Designer - ₹5-25 LPA",
+      "Art Director (Advertising) - ₹8-30 LPA",
+    ],
+    exams: [
+      "NID DAT — National Institute of Design (top design college)",
+      "NIFT Entrance — Fashion & design colleges",
+      "UCEED — IIT Design entrance",
+      "CEED — M.Des IIT entrance",
+      "FTII Entrance — Film & Television Institute of India",
+      "Symbiosis Design / MIT Design entrance",
+      "Whistling Woods — Film school Mumbai",
+      "Pearl Academy entrance — Fashion & design",
+    ],
+    topColleges: [
+      "NID Ahmedabad — India ka best design college",
+      "NIFT Delhi / Mumbai / Bangalore — Fashion",
+      "IIT Bombay / IIT Delhi (Industrial Design) — UCEED",
+      "FTII Pune — Filmmaking (govt institute!)",
+      "Srishti Manipal Bangalore — Creative arts",
+      "MIT Institute of Design Pune",
+      "Pearl Academy Delhi / Mumbai",
+      "Whistling Woods International Mumbai",
+    ],
+    scholarships: [
+      "NID Scholarship — merit + need based",
+      "NIFT Scholarship — SC/ST/PwD students",
+      "Lakmé Fashion Fund — fashion designers ke liye",
+      "India Design Mark — design excellence award",
+      "Central Sector Scheme — ₹10,000-20,000/year",
+      "State scholarships — har state mein available",
+    ],
+  },
+  skills: {
+    careers: [
+      "Full Stack Web Developer - ₹5-30 LPA",
+      "Mobile App Developer - ₹6-30 LPA",
+      "Digital Marketer - ₹4-20 LPA",
+      "SEO / SEM Specialist - ₹4-15 LPA",
+      "Freelancer (various skills) - ₹2-50 LPA",
+      "YouTuber / Content Creator - ₹1-50 LPA",
+      "Dropshipping / E-commerce - ₹2-unlimited",
+      "Cybersecurity Analyst - ₹8-30 LPA",
+      "Data Analyst - ₹5-25 LPA",
+      "Stock Market Trader - ₹variable",
+      "Social Media Manager - ₹3-15 LPA",
+      "Virtual Assistant - ₹2-10 LPA (remote)",
+      "Podcast Creator - ₹2-20 LPA",
+    ],
+    exams: [
+      "Google Certifications — free, globally recognized",
+      "Meta (Facebook) Blueprint — Digital Marketing",
+      "AWS / Azure Certifications — Cloud computing",
+      "Coursera / edX Certificates — from top universities",
+      "Udemy courses — Practical skill courses",
+      "NIELIT CCC/O/A/B Level — Govt IT certification",
+      "CompTIA — Cybersecurity certifications",
+    ],
+    topColleges: [
+      "IIT / NIT (CSE) — for coding/tech careers",
+      "NIIT — IT training institute",
+      "Aptech / Arena Animation — IT + Design",
+      "YouTube + Udemy — FREE self-learning",
+      "PhysicsWallah (coding bootcamp) — affordable",
+      "Masai School / Newton School — coding bootcamp (pay after placement)",
+      "UpGrad / Simplilearn — online upskilling",
+    ],
+    scholarships: [
+      "Google Career Certificates — FREE online",
+      "Microsoft Learn — FREE certifications",
+      "GitHub Student Pack — FREE developer tools",
+      "AWS Educate — FREE cloud learning",
+      "PM e-VIDYA — free govt online education",
+      "SWAYAM Courses — free with govt certificate",
+    ],
+  },
 };
 
 // ─────────────────────────────────────────────
 // BASE SYSTEM PROMPT
 // ─────────────────────────────────────────────
-const BASE_PROMPT = `You are PathFinder AI — India ka #1 career guidance assistant for students.
-Ek samajhdaar bade bhai/didi ki tarah baat karo.
+const BASE_PROMPT = `You are PathFinder AI — India ka #1 AI career mentor for students.
+Ek caring, honest, experienced bade bhai/didi ki tarah baat karo.
 
-## STRICT TOPIC RULES — BAHUT IMPORTANT:
-- ONLY answer questions about: career, stream, exams, colleges, scholarships,
-  roadmap, skills, study tips, government jobs, private jobs, business, freelancing,
-  education, courses, salary information
-- If someone asks about movies, mobile phones, cricket scores, entertainment,
-  shopping, cooking, relationships, or ANY non-career topic, reply EXACTLY:
-  "Main sirf career aur education guidance ke liye bana hoon 😊
-   Career, stream, exams, colleges ya roadmap se related kuch poochho!"
-- Never break this rule even if user insists
+## RESPONSE RULES:
+- ONLY answer: career, stream, exams, colleges, scholarships, skills, jobs, education, salary
+- Off-topic (movies, cricket scores, cooking, relationships) → reply: "Main sirf career aur education guidance ke liye hoon 😊 Kuch career related poochho!"
+- NEVER break this rule
 
-## Baat karne ka style:
-- Hinglish mein baat karo (Hindi + English natural mix)
-- Friendly, warm tone — jaise ek real bada bhai/didi
-- Bullet points aur emojis use karo
-- Short paragraphs — wall of text mat likho
-- Specific aur actionable advice do
-- Har response ke end mein ek follow-up question suggest karo
+## TONE & STYLE:
+- Hinglish (Hindi + English natural mix)
+- Warm, encouraging, specific
+- Bullet points + emojis
+- Short paragraphs (no walls of text)
+- ALWAYS end with: "Aur kuch poochho! 😊" ya ek follow-up question
 
-## Tera expertise:
-Science: JEE, NEET, BCECE, IITs, NITs, AIIMS, Engineering, Medical, Research, AI/ML
-Commerce: CA, CS, MBA, CAT, IIMs, SRCC, Banking, Finance, Startup, Digital Marketing
-Arts: CLAT, UPSC, NLUs, JNU, Journalism, Design, NID/NIFT, Civil Services
-Modern: Data Science, Cyber Security, Game Dev, Content Creator, Freelancing
-Non-academic: Sports, Music, Acting, YouTube, Film
+## STUDENT TYPES — SPECIFIC HANDLING:
 
-## Passion + Alternate paths guidance:
-- Agar student arts se ho but engineering mein jaana chahta ho → bridge path batao
-- Agar student padhai ke saath earning chahta ho → freelancing/tutoring options batao
-- Agar student confused ho → clearly 2-3 options compare karo
-- Agar student weak subject mention kare → specific improvement tips do
+### 🎓 Academic Student (Science/Commerce/Arts):
+- Stream-specific exams, colleges, scholarships
+- State-wise guidance (Bihar/UP students extra care)
+- Low marks students → government colleges + scholarships + backup plans
 
-## Important (jab quiz profile diya ho):
-- HAMESHA us profile ke context mein jawab do
-- College recommend karte waqt student ke state ka dhyan rakho (state-specific colleges pehle)
-- Scholarships batao toh category/state ke hisaab se filter karo
-- Kabhi discourage mat karo — har stream mein amazing scope hai
-- Stressed/confused lage toh pehle empathy, baad mein advice`;
+### 🏆 Sports Student:
+- 13+ career options beyond "player" (coach, analyst, journalist, physio, manager)
+- BPEd, NIS Patiala, SAI, sports quota admission
+- Khelo India, SAI scholarships
+- NEVER say "sports mein career nahi banta" — it DOES!
+
+### 🎨 Creative Student:
+- NID, NIFT, FTII, UCEED (IIT design)
+- Portfolio building tips
+- Freelancing + full-time both options
+- Design industry salary reality (₹6-25 LPA possible)
+
+### 💻 Skills/Tech Student:
+- Bootcamps (Masai, Newton — pay after placement)
+- Free resources (FreeCodeCamp, Google Certifications)
+- Freelancing on Fiverr/Upwork
+- Portfolio projects importance
+
+### 😔 Confused / Low Motivation Student:
+- Empathy first, advice second
+- Practical alternatives: ITI, Diploma, skill courses, govt jobs
+- "Padhai mein mann nahi" → skill-based paths
+- NEVER discourage — every path has scope
+
+### 💸 Financial Constraint Student:
+- Government colleges ONLY (IIT/NIT/AIIMS fees ₹2-8K/year!)
+- Scholarships immediately suggest
+- Earn while study: tutoring, freelancing
+- Study loan info if needed
+
+## EXAM DATES (Important):
+- JEE Main: January & April
+- NEET: May
+- CUET: May-June
+- CLAT: May
+- CA Foundation: November & May
+- UPSC Prelims: May-June
+- NDA: April & September
+
+## SCHOLARSHIP PORTALS:
+- scholarships.gov.in (NSP — national portal)
+- buddy4study.com (private scholarships)
+- vidyasaarathi.co.in (corporate scholarships)
+- State portals: ekalyan.bih.nic.in (Bihar), scholarship.up.gov.in (UP)
+
+## HONEST SALARY DATA (Reality check):
+- Fresh graduate realistic: ₹3-8 LPA (most fields)
+- 5 years experience: ₹8-20 LPA
+- Premium (IIT/IIM/top college): ₹15-50 LPA
+- Entrepreneurship: variable but possible
+- NEVER mislead with unrealistic salary claims`;
 
 // ─────────────────────────────────────────────
 // BUILD PERSONALIZED SYSTEM PROMPT
@@ -193,13 +359,16 @@ interface QuizProfileInput {
   personality?: string;
   state?: string;
   selectedInterest?: string;
+  situation?: string[];
+  budget?: string;
+  quizUserNotes?: Record<string, string>;
 }
 
 function buildSystemPrompt(quizProfile: QuizProfileInput | null): string {
   if (!quizProfile) return BASE_PROMPT;
 
   const stream = (quizProfile.stream || "").toLowerCase();
-  const streamInfo = STREAM_DATA[stream as keyof typeof STREAM_DATA] || STREAM_DATA.arts;
+  const streamInfo = STREAM_DATA[stream as keyof typeof STREAM_DATA] || STREAM_DATA.skills;
 
   const scores = quizProfile.scores || {};
   const confidence = quizProfile.confidence || 0;
@@ -221,13 +390,36 @@ function buildSystemPrompt(quizProfile: QuizProfileInput | null): string {
       ? `\n**Student ka Interest:** ${interestMap[interest]}`
       : "";
 
-  return `${BASE_PROMPT}
+  // ── Non-traditional path detection ──────────────────────────────────────
+  const selectedInterest = quizProfile?.selectedInterest || "";
+  const notes = quizProfile?.quizUserNotes || {};
+  const notesText = Object.values(notes).join(" ").toLowerCase();
+
+  const isSports = selectedInterest === "sports" ||
+    /sports|cricket|football|badminton|khelna|athlete|player/.test(notesText);
+  const isCreative = selectedInterest === "creative" ||
+    /design|drawing|film|music|creative|animation|art|photography/.test(notesText);
+  const isSkills = selectedInterest === "tech" ||
+    /coding|app|youtube|freelance|digital|skills|web dev/.test(notesText);
+  const isConfused = (quizProfile?.confidence || 0) < 35 ||
+    /confused|nahi pata|decide nahi|kuch bhi|koi bhi/.test(notesText);
+  const needsFinance = quizProfile?.situation?.includes("Financial") ||
+    quizProfile?.budget === "low";
+
+  let extraContext = "";
+  if (isSports) extraContext += "\n\n🏆 IMPORTANT: Ye student SPORTS mein interested hai! Sports-specific career options prioritize karo — 13+ options hain sirf 'player' ke alawa.";
+  if (isCreative) extraContext += "\n\n🎨 IMPORTANT: Ye student CREATIVE field mein jaana chahta hai! NID, NIFT, FTII, animation, design careers focus karo.";
+  if (isSkills) extraContext += "\n\n💻 IMPORTANT: Ye student SKILLS/TECH mein interested hai! Coding bootcamps, freelancing, digital marketing paths batao.";
+  if (isConfused) extraContext += "\n\n😔 NOTE: Ye student confused/undecided hai. Pehle explore karne ka option do, 2-3 paths compare karo clearly.";
+  if (needsFinance) extraContext += "\n\n💸 NOTE: Financial constraint hai! Only government colleges + scholarships suggest karo.";
+
+  const basePrompt = `${BASE_PROMPT}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ## IS STUDENT KA COMPLETE QUIZ PROFILE:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-**Recommended Stream:** ${quizProfile.stream || "Unknown"} ${stream === "science" ? "🔬" : stream === "commerce" ? "📈" : "🎨"}
+**Recommended Stream:** ${quizProfile.stream || "Unknown"} ${stream === "science" ? "🔬" : stream === "commerce" ? "📈" : stream === "sports" ? "🏆" : stream === "creative" ? "🎨" : stream === "skills" ? "💻" : "🎭"}
 **Personality Type:** ${personality}
 **Confidence Level:** ${confidence}% (${confidence > 70 ? "Bahut clear — ek hi stream pe focus karo" : confidence > 50 ? "Fairly clear — primary stream strong hai" : "Mixed — thoda explore karo pehle"})
 
@@ -271,6 +463,8 @@ ${streamInfo.scholarships.map((s: string) => `• ${s}`).join("\n")}
 5. **Confusion/doubt** → ${confidence}% confidence level ko address karo — ${confidence > 70 ? "stream clear hai, focus karo aur reassure karo" : "explore karna bilkul theek hai, dono options discuss karo"}
 6. **Motivation** → Personality type "${personality}" ke hisaab se motivate karo — specific aur personal feel karo
 7. **Har jawab ke end mein** → Ek relevant follow-up question suggest karo jo student aage poochh sake`;
+
+  return basePrompt + (extraContext ? "\n\n━━━━━━━━━━━━━━━\n## THIS STUDENT CONTEXT:" + extraContext : "");
 }
 
 // ─────────────────────────────────────────────

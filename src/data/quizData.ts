@@ -231,7 +231,7 @@ export interface College {
 }
 
 export interface StreamResult {
-  stream: "Science" | "Commerce" | "Arts";
+  stream: "Science" | "Commerce" | "Arts" | "Sports" | "Creative" | "Skills";
   emoji: string;
   tagline: string;
   description: string;
@@ -892,6 +892,181 @@ export const streamResults: Record<string, StreamResult> = {
       "📺 Art Side of Life — Drawing aur creative skills",
     ],
   },
+
+  // ─── NON-TRADITIONAL STREAMS ───────────────────────────────────────────
+  sports: {
+    stream: "Sports",
+    emoji: "🏆",
+    tagline: "Champion ka dil hai tumhara! 🏅",
+    description: "Tumhara energy aur passion physical world ke liye hai! Sports field mein sirf player hi nahi — coach, manager, journalist, physiotherapist, analyst — 15+ amazing careers hain. India mein sports industry boom kar raha hai!",
+    careers: [
+      "🏋️ Fitness Trainer / Coach - ₹3-15 LPA",
+      "🎙️ Sports Journalist - ₹4-15 LPA",
+      "📊 Sports Analyst - ₹8-25 LPA",
+      "🧠 Sports Psychologist - ₹5-18 LPA",
+      "🏥 Physiotherapist - ₹4-12 LPA",
+      "🏆 Sports Manager / Agent - ₹5-20 LPA",
+      "🎓 Physical Education Teacher - ₹3-10 LPA",
+      "⚔️ Defense Services - ₹6-20 LPA",
+    ],
+    modernCareers: [
+      { title: "Sports Data Analyst", salary: "₹8-25 LPA", description: "IPL/ISL teams hire analysts", trend: "📊 Booming" },
+      { title: "E-Sports Player/Manager", salary: "₹3-20 LPA", description: "Gaming as career", trend: "🎮 Exploding" },
+      { title: "Sports Content Creator", salary: "₹2-30 LPA", description: "YouTube/Instagram sports niche", trend: "📱 Growing" },
+      { title: "Sports Tech Startup", salary: "₹unlimited", description: "Fitness apps, wearables", trend: "🚀 Future" },
+    ],
+    nonAcademicCareers: [],
+    examsToPrepare: [
+      "🏃 BPEd Entrance — Physical Education degree ke liye",
+      "🎖️ NDA — Defence ke liye (12th ke baad)",
+      "🏅 SAI Recruitment — Sports Authority of India",
+      "🧬 NEET — Physiotherapy / Sports Medicine ke liye",
+      "📊 CMAT — Sports Management MBA ke liye",
+      "🎓 NIS Patiala — National Institute of Sports coaching",
+    ],
+    roadmap: [
+      { month: "Month 1-2", task: "Apna main sport identify karo. District level mein participate karo. Physical fitness routine start karo — daily 2-3 hours practice." },
+      { month: "Month 3-4", task: "NIS Patiala ya state sports academy ka pata karo. BPEd ya Sports Management course research karo. SAI training centers join karo." },
+      { month: "Month 5-6", task: "State level competition mein participate karo. Sports journalism/management mein interest hai toh content create karo. Certificates collect karo." },
+      { month: "Month 7-8", task: "Scholarship apply karo — Khelo India, state sports scholarship. Coach ya mentor dhundho. Video portfolio banao apne performance ka." },
+      { month: "Month 9-10", task: "College admission ke liye sports quota apply karo. Sabhi major colleges mein sports quota seats hoti hain. Physical + Academic dono balance karo." },
+      { month: "Month 11-12", task: "Career decide karo — player, coach, manager, analyst, journalist? Accordingly degree ya certification select karo. Network build karo sports community mein!" },
+    ],
+    colleges: [
+      { name: "NIS Patiala", location: "Patiala, Punjab", fees: "₹20-50K/year", rating: "⭐⭐⭐⭐⭐", state: "Punjab", cutoff: "Entrance + physical test", collegeType: "top" },
+      { name: "LNIPE Gwalior", location: "Gwalior, MP", fees: "₹15-30K/year", rating: "⭐⭐⭐⭐⭐", state: "Madhya Pradesh", cutoff: "BPEd entrance", collegeType: "government" },
+      { name: "BHU Physical Education", location: "Varanasi, UP", fees: "₹10-20K/year", rating: "⭐⭐⭐⭐⭐", state: "UP", cutoff: "CUET + physical" },
+      { name: "SAI Training Centers", location: "All India", fees: "Free! 🎉", rating: "⭐⭐⭐⭐⭐", state: "Other States", cutoff: "Selection trial" },
+    ],
+    scholarships: [
+      { name: "🏅 Khelo India Scholarship", amount: "₹5 lakh/year", eligibility: "Selected national level players", deadline: "Year round", link: "https://kheloindia.gov.in", category: "National" },
+      { name: "🎖️ SAI Scholarship", amount: "Full support + stipend", eligibility: "SAI center trainees", deadline: "At admission", link: "https://sai.gov.in", category: "National" },
+      { name: "🏆 State Sports Scholarship", amount: "₹10,000-50,000/year", eligibility: "State-level players", deadline: "After selection", link: "https://scholarships.gov.in", category: "National" },
+    ],
+    youtubeChannels: [
+      "📺 Khelo India — Official sports development content",
+      "📺 Sports Tak — Hindi sports news",
+      "📺 Cricket Next — Cricket analysis",
+      "📺 The Field — Sports journalism",
+      "📺 Sportskeeda — Multi-sport coverage",
+    ],
+  },
+
+  creative: {
+    stream: "Creative",
+    emoji: "🎨",
+    tagline: "Creator aur innovator hain aap! ✨",
+    description: "Aapki creativity aur imagination aapki superpower hai! Design, film, animation, music, fashion — India ka creative industry ₹1 lakh crore se upar hai. NID, NIFT, FTII — world-class education milti hai. Global companies Indian designers hire karte hain!",
+    careers: [
+      "🎨 Graphic/UX Designer - ₹6-25 LPA",
+      "🎬 Filmmaker / Animator - ₹5-30 LPA",
+      "📸 Photographer / Videographer - ₹3-15 LPA",
+      "👗 Fashion Designer - ₹4-20 LPA",
+      "🏠 Interior Designer - ₹4-18 LPA",
+      "🎮 Game Designer - ₹6-25 LPA",
+      "🎵 Music Producer - ₹4-20 LPA",
+      "📱 Content Creator / Influencer - ₹2-50 LPA",
+    ],
+    modernCareers: [
+      { title: "UI/UX Designer (Tech)", salary: "₹8-30 LPA", description: "App/web design — highest demand", trend: "🔥 Hottest" },
+      { title: "3D Animator / VFX Artist", salary: "₹6-25 LPA", description: "Bollywood, OTT, Gaming", trend: "📈 Growing" },
+      { title: "Brand Identity Designer", salary: "₹8-30 LPA", description: "Logo, brand, marketing", trend: "💼 Stable" },
+      { title: "AI Art / Prompt Engineer", salary: "₹5-20 LPA", description: "New field, huge opportunity", trend: "🚀 Emerging" },
+    ],
+    nonAcademicCareers: [],
+    examsToPrepare: [
+      "🎨 NID DAT — National Institute of Design (India ka #1)",
+      "👗 NIFT Entrance — Fashion & Textile Design",
+      "🏗️ UCEED — IIT Design entrance",
+      "🎬 FTII Entrance — Film & Television Institute",
+      "🎓 CEED — M.Des IIT entrance",
+      "📐 Srishti / MIT Design entrance",
+    ],
+    roadmap: [
+      { month: "Month 1-2", task: "Portfolio banana shuru karo — sketchbook, digital art, photography. Adobe tools seekho — Photoshop, Illustrator (free trial available). YouTube tutorials se shuru karo." },
+      { month: "Month 3-4", task: "NID/NIFT previous year papers practice karo — creative thinking + drawing tests. Behance profile banao. Daily 1 creative project banao." },
+      { month: "Month 5-6", task: "Mock tests aur portfolio reviews karo. Internship ya freelance projects start karo — even unpaid experience matters. Creative competitions participate karo." },
+      { month: "Month 7-8", task: "Entrance exam applications fill karo. NID April/May mein hota hai, NIFT January mein. Strong portfolio ready karo — 15-20 best works." },
+      { month: "Month 9-10", task: "Design workshops attend karo. Behance, Instagram pe portfolio share karo. Industry professionals se connect karo LinkedIn pe." },
+      { month: "Month 11-12", task: "Final exam prep. Interview practice — creative colleges interview bhi lete hain. Backup as freelancing start karo toh income bhi aayegi!" },
+    ],
+    colleges: [
+      { name: "NID Ahmedabad", location: "Ahmedabad, Gujarat", fees: "₹3-4L/year", rating: "⭐⭐⭐⭐⭐", state: "Gujarat", cutoff: "NID DAT: Top 100 rank", collegeType: "top" },
+      { name: "NIFT Delhi", location: "New Delhi", fees: "₹2-3L/year", rating: "⭐⭐⭐⭐⭐", state: "Delhi", cutoff: "NIFT Entrance: Top 500", collegeType: "top" },
+      { name: "FTII Pune", location: "Pune, Maharashtra", fees: "₹1-2L/year 🔥", rating: "⭐⭐⭐⭐⭐", state: "Maharashtra", cutoff: "FTII Entrance: Very competitive", collegeType: "top" },
+      { name: "IIT Bombay (IDC)", location: "Mumbai", fees: "₹2-2.5L/year", rating: "⭐⭐⭐⭐⭐", state: "Maharashtra", cutoff: "UCEED: Top 100 rank", collegeType: "top" },
+    ],
+    scholarships: [
+      { name: "🎨 NID Scholarship", amount: "Merit + need based", eligibility: "NID students", deadline: "At admission", link: "https://nid.edu", category: "National" },
+      { name: "👗 NIFT Fee Waiver", amount: "Full fee waiver", eligibility: "SC/ST/PwD students", deadline: "At admission", link: "https://nift.ac.in", category: "National" },
+      { name: "💡 Central Sector Scheme", amount: "₹10,000-20,000/year", eligibility: "Top 20 percentile, <₹8L income", deadline: "Oct-Dec", link: "https://scholarships.gov.in", category: "National" },
+    ],
+    youtubeChannels: [
+      "📺 The Futur — Design career guidance (English)",
+      "📺 Satori Graphics — Graphic design tutorials",
+      "📺 NID entrance preparation — NID/NIFT prep",
+      "📺 Ranveer on Branding — Indian design perspective",
+      "📺 Film Riot — Filmmaking tutorials",
+    ],
+  },
+
+  skills: {
+    stream: "Skills",
+    emoji: "💻",
+    tagline: "Digital world ka expert banne wale ho! 🚀",
+    description: "Degree se zyada aaj skills matter karti hain! Coding, design, digital marketing, video editing — 3-6 mahine ki skill se ₹20-50K/month kama sakte ho. Freelancing se ghar baith ke world ke clients ke saath kaam karo. India ka tech industry fastest growing hai!",
+    careers: [
+      "💻 Full Stack Developer - ₹5-30 LPA",
+      "📱 App Developer (Android/iOS) - ₹6-30 LPA",
+      "📊 Data Analyst - ₹5-25 LPA",
+      "🔒 Cybersecurity Analyst - ₹8-30 LPA",
+      "📢 Digital Marketer - ₹4-20 LPA",
+      "🎬 Video Editor / Creator - ₹4-20 LPA",
+      "🤖 AI/ML Engineer - ₹12-50 LPA",
+      "🌐 Freelancer (multi-skill) - ₹2-50 LPA",
+    ],
+    modernCareers: [
+      { title: "AI Prompt Engineer", salary: "₹8-30 LPA", description: "AI tools master karo", trend: "🔥 Newest" },
+      { title: "No-Code Developer", salary: "₹5-20 LPA", description: "Bubble, Webflow se apps banao", trend: "📈 Growing" },
+      { title: "Freelance Developer", salary: "₹3-50 LPA", description: "Upwork, Fiverr pe work", trend: "💻 Flexible" },
+      { title: "Tech YouTuber", salary: "₹2-30 LPA", description: "Tech reviews, tutorials", trend: "📱 Booming" },
+    ],
+    nonAcademicCareers: [],
+    examsToPrepare: [
+      "💻 Google IT Certifications — FREE, globally accepted",
+      "☁️ AWS/Azure Cloud Certifications — ₹20-50K/year jobs",
+      "🔒 CEH (Cybersecurity) — Ethical hacking",
+      "📊 Google Analytics / Meta Blueprint — Digital marketing",
+      "🏛️ NIELIT O/A/B Level — Govt IT certification",
+      "🎓 CompTIA A+/Network+ — IT fundamentals",
+    ],
+    roadmap: [
+      { month: "Month 1-2", task: "Ek skill choose karo — Web Dev ya Digital Marketing ya Data Analysis. YouTube se free sikho (CS50, FreeCodeCamp, W3Schools). Daily 2-3 hours practice." },
+      { month: "Month 3-4", task: "Ek real project banao — website, app, or campaign. GitHub pe upload karo. Google ya Meta ka free certification lo. Portfolio ready karo." },
+      { month: "Month 5-6", task: "Fiverr ya Upwork pe profile banao. Pehle ₹500-1000 gig se start karo. Local businesses ke liye free projects karo — experience ke liye." },
+      { month: "Month 7-8", task: "Income start hogi — ₹5,000-15,000/month. Skills upgrade karo. Reviews aur ratings build karo. LinkedIn professional profile optimize karo." },
+      { month: "Month 9-10", task: "Full-time freelancing ya job apply karo. TCS, Infosys, startups — sabhi hire karte hain portfolio wale candidates. Salary negotiation seekho." },
+      { month: "Month 11-12", task: "Specialization choose karo — React Dev, AI/ML, SEO specialist. Advanced courses karo. Passive income sources build karo (courses, templates)." },
+    ],
+    colleges: [
+      { name: "Masai School", location: "Online / Bangalore", fees: "Pay after placement!", rating: "⭐⭐⭐⭐⭐", state: "Karnataka", cutoff: "Aptitude test", collegeType: "private" },
+      { name: "Newton School of Technology", location: "Online", fees: "Pay after placement!", rating: "⭐⭐⭐⭐⭐", state: "Other States", cutoff: "Online test", collegeType: "private" },
+      { name: "IIT (Free Online via NPTEL)", location: "Online", fees: "FREE! 🎉", rating: "⭐⭐⭐⭐⭐", state: "Other States", cutoff: "No cutoff — open access" },
+      { name: "Google Career Certificates", location: "Online (Coursera)", fees: "₹1,800/month (financial aid available)", rating: "⭐⭐⭐⭐⭐", state: "International", cutoff: "No cutoff" },
+    ],
+    scholarships: [
+      { name: "💻 Google Career Certificate Aid", amount: "Full financial aid", eligibility: "Low income students", deadline: "Apply anytime", link: "https://coursera.org", category: "International" },
+      { name: "🌐 Microsoft Learn Free", amount: "Free learning + certifications", eligibility: "Everyone", deadline: "Always open", link: "https://learn.microsoft.com", category: "International" },
+      { name: "📦 GitHub Student Pack", amount: "₹50,000+ worth free tools", eligibility: ".edu email ya student ID", deadline: "Any time", link: "https://education.github.com", category: "International" },
+    ],
+    youtubeChannels: [
+      "📺 FreeCodeCamp — Web development complete free",
+      "📺 Apna College — Hindi mein coding",
+      "📺 CodeWithHarry — Hindi tech tutorials",
+      "📺 Hitesh Choudhary — Full stack development",
+      "📺 Ishan Sharma — Digital marketing + freelancing",
+    ],
+  },
 };
 
 export interface QuizProfile {
@@ -969,6 +1144,30 @@ export function buildQuizProfile(answers: number[][]): QuizProfile {
   let stream = "arts";
   if (totals.science >= totals.commerce && totals.science >= totals.arts) stream = "science";
   else if (totals.commerce >= totals.science && totals.commerce >= totals.arts) stream = "commerce";
+
+  // Check for non-traditional path hints from quiz notes
+  try {
+    const notes = JSON.parse(localStorage.getItem("quizUserNotes") || "{}");
+    const notesText = Object.values(notes).join(" ").toLowerCase();
+    if (
+      notesText.includes("sports") || notesText.includes("cricket") ||
+      notesText.includes("football") || notesText.includes("khelna")
+    ) {
+      stream = "sports";
+    } else if (
+      notesText.includes("design") || notesText.includes("drawing") ||
+      notesText.includes("film") || notesText.includes("music") ||
+      notesText.includes("creative") || notesText.includes("animation")
+    ) {
+      stream = "creative";
+    } else if (
+      notesText.includes("coding") || notesText.includes("app") ||
+      notesText.includes("youtube") || notesText.includes("freelance") ||
+      notesText.includes("digital") || notesText.includes("skills")
+    ) {
+      stream = "skills";
+    }
+  } catch {}
 
   return {
     stream,

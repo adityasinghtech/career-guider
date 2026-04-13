@@ -149,6 +149,65 @@ function writeChecklistStream(stream: StreamKey, items: ChecklistItem[]) {
   localStorage.setItem("pathfinder_checklist", JSON.stringify([...all, ...next]));
 }
 
+// ─── Admin Replies Section ────────────────────────────────────────────────
+interface AdminReply {
+  id: string;
+  name: string;
+  message: string;
+  admin_reply: string;
+  replied_at: string | null;
+  created_at: string;
+}
+
+const AdminRepliesSection = ({ userEmail }: { userEmail: string | undefined }) => {
+  const [replies, setReplies] = useState<AdminReply[]>([]);
+
+  useEffect(() => {
+    if (!userEmail) return;
+    supabase
+      .from("contact_messages")
+      .select("id, name, message, admin_reply, replied_at, created_at")
+      .eq("email", userEmail)
+      .not("admin_reply", "is", null)
+      .order("replied_at", { ascending: false })
+      .then(({ data }) => setReplies((data as unknown as AdminReply[]) || []));
+  }, [userEmail]);
+
+  if (replies.length === 0) return null;
+
+  return (
+    <div className="bg-card border-2 border-green-500/30 rounded-2xl p-5 mt-4">
+      <h3 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
+        💬 Admin ke Replies
+      </h3>
+      <div className="space-y-3">
+        {replies.map((reply) => (
+          <div
+            key={reply.id}
+            className="bg-green-500/5 border border-green-500/20 rounded-xl p-4"
+          >
+            <p className="text-xs text-muted-foreground mb-1 font-body">
+              Aapka message: "{reply.message?.slice(0, 60)}{reply.message?.length > 60 ? "..." : ""}"
+            </p>
+            <p className="text-sm font-body text-foreground font-medium">
+              🧑‍💼 Admin: {reply.admin_reply}
+            </p>
+            <p className="text-xs text-muted-foreground mt-2">
+              {reply.replied_at
+                ? new Date(reply.replied_at).toLocaleDateString("en-IN", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })
+                : ""}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 function computeVisitStreak(): number {
   const today = formatLocalDate(new Date());
   const last = localStorage.getItem("pathfinder_last_visit");
@@ -884,6 +943,7 @@ const StudentDashboard = () => {
               ))}
             </div>
           )}
+          <AdminRepliesSection userEmail={user?.email} />
         </div>
       )}
 

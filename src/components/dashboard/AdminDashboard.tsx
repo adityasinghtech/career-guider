@@ -60,6 +60,9 @@ interface ContactMessage {
   is_read: boolean;
   issue_type?: string | null;
   created_at: string;
+  admin_reply?: string | null;
+  replied_at?: string | null;
+  status?: string;
 }
 
 function normalizeIssueTypeFromDb(raw: string | null | undefined): ContactIssueKind | null {
@@ -107,6 +110,101 @@ interface UserRole {
 
 const CLASS_ORDER = ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "12th Pass"] as const;
 
+// ─── Admin Reply Sub-component ───────────────────────────────────────────────
+const AdminReplySection = ({
+  message,
+  onReplySent,
+}: {
+  message: ContactMessage;
+  onReplySent: (id: string, reply: string) => void;
+}) => {
+  const [showReply, setShowReply] = useState(false);
+  const [replyText, setReplyText] = useState(message.admin_reply || "");
+  const [sending, setSending] = useState(false);
+
+  const handleSendReply = async () => {
+    if (!replyText.trim()) return;
+    setSending(true);
+    const { error } = await supabase
+      .from("contact_messages")
+      .update({
+        admin_reply: replyText.trim(),
+        status: "replied",
+        replied_at: new Date().toISOString(),
+        is_read: true,
+      } as any)
+      .eq("id", message.id);
+    if (error) {
+      toast.error("Reply bhej nahi paaye");
+    } else {
+      toast.success("Reply save ho gayi! ✅");
+      onReplySent(message.id, replyText.trim());
+      setShowReply(false);
+    }
+    setSending(false);
+  };
+
+  if (message.admin_reply && !showReply) {
+    return (
+      <div className="mt-3 p-3 bg-green-500/10 border border-green-500/30 rounded-xl">
+        <p className="text-xs font-display font-semibold text-green-700 dark:text-green-400 mb-1">
+          ✅ Admin Reply bhej di gayi:
+        </p>
+        <p className="text-sm text-foreground/80 font-body">{message.admin_reply}</p>
+        <p className="text-xs text-muted-foreground mt-1">
+          {message.replied_at ? new Date(message.replied_at).toLocaleString("en-IN") : ""}
+        </p>
+        <button
+          onClick={() => { setReplyText(message.admin_reply || ""); setShowReply(true); }}
+          className="text-xs text-primary font-display font-semibold mt-2 hover:underline"
+        >
+          ✏️ Edit Reply
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-3">
+      {!showReply ? (
+        <button
+          onClick={() => setShowReply(true)}
+          className="text-xs font-display font-semibold px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors flex items-center gap-1"
+        >
+          <Send className="w-3 h-3" /> Reply Karein
+        </button>
+      ) : (
+        <div className="space-y-2">
+          <textarea
+            value={replyText}
+            onChange={(e) => setReplyText(e.target.value)}
+            placeholder="Yahan reply likhein..."
+            rows={3}
+            className="w-full px-3 py-2 rounded-xl border-2 border-border bg-background font-body text-foreground text-sm placeholder:text-muted-foreground/50 outline-none focus:border-primary transition-colors resize-none"
+            maxLength={500}
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={handleSendReply}
+              disabled={sending || !replyText.trim()}
+              className="text-xs font-display font-semibold px-4 py-2 rounded-lg gradient-hero text-primary-foreground hover:opacity-90 disabled:opacity-50 flex items-center gap-1"
+            >
+              {sending ? "Bhej rahe hain..." : "✈️ Reply Save Karo"}
+            </button>
+            <button
+              onClick={() => setShowReply(false)}
+              className="text-xs font-display font-semibold px-3 py-2 rounded-lg border border-border text-muted-foreground hover:bg-muted"
+            >
+              Cancel
+            </button>
+          </div>
+          <p className="text-xs text-muted-foreground">{replyText.length}/500</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
 function isCreatedToday(iso: string): boolean {
   const d = new Date(iso);
   const t = new Date();
@@ -150,7 +248,7 @@ const AdminDashboard = () => {
         supabase.from("contact_messages").select("*").order("created_at", { ascending: false }),
         supabase.from("user_roles").select("*"),
       ]);
-      setStudents(resProfiles.data || []);
+      setStudents((resProfiles.data as StudentData[]) || []);
       setQuizResults(resResults.data || []);
       setContactMessages((resMessages.data as ContactMessage[]) || []);
       setUserRoles((resRoles.data as UserRole[]) || []);
@@ -265,6 +363,7 @@ const AdminDashboard = () => {
       business: 0,
       creative: 0,
       sports: 0,
+      skills: 0,
       undecided: 0,
     };
 
@@ -286,6 +385,8 @@ const AdminDashboard = () => {
       if (st === "science") interestCounts.tech++;
       else if (st === "commerce") interestCounts.business++;
       else if (st === "arts") interestCounts.creative++;
+      else if (st === "sports") interestCounts.sports++;
+      else if (st === "skills") interestCounts.skills++;
       else interestCounts.undecided++;
     });
 
@@ -464,7 +565,18 @@ const AdminDashboard = () => {
             />
           </div>
 
-          {filteredStudents.length === 0 ? (
+          {filteredStudents.length === 0 && !search ? (
+            <div className="text-center py-12">
+              <div className="text-5xl mb-4">👋</div>
+              <p className="font-display font-bold text-lg text-foreground mb-2">Abhi tak koi student registered nahi hua</p>
+              <p className="text-muted-foreground font-body text-sm">
+                Jab students quiz complete karenge, woh yahan dikhenge.
+              </p>
+              <p className="text-xs text-muted-foreground mt-2">
+                💡 Tip: Students ko share karo: career-guider-six.vercel.app
+              </p>
+            </div>
+          ) : filteredStudents.length === 0 ? (
             <p className="text-center text-muted-foreground font-body py-8">Koi student nahi mila</p>
           ) : (
             <div className="space-y-3">
@@ -684,6 +796,15 @@ const AdminDashboard = () => {
                                   Naya
                                 </span>
                               )}
+                              {msg.status === 'replied' ? (
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/15 text-green-700 dark:text-green-400 font-display font-semibold border border-green-500/30">
+                                  ✅ Replied
+                                </span>
+                              ) : (
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-400 font-display font-semibold border border-amber-500/30">
+                                  ⏳ Pending
+                                </span>
+                              )}
                             </div>
                             <p className="text-sm text-muted-foreground mb-2">
                               {msg.email && <span>{msg.email}</span>}
@@ -694,6 +815,18 @@ const AdminDashboard = () => {
                             <p className="text-xs text-muted-foreground mt-2">
                               {new Date(msg.created_at).toLocaleString("en-IN")}
                             </p>
+                            <AdminReplySection
+                              message={msg}
+                              onReplySent={(id, reply) => {
+                                setContactMessages((prev) =>
+                                  prev.map((m) =>
+                                    m.id === id
+                                      ? { ...m, admin_reply: reply, status: 'replied', replied_at: new Date().toISOString() }
+                                      : m
+                                  )
+                                );
+                              }}
+                            />
                           </div>
                           {!msg.is_read && (
                             <button
@@ -836,16 +969,16 @@ const AdminDashboard = () => {
           <div className="bg-card border-2 border-border rounded-2xl p-6">
             <h3 className="font-display font-bold text-lg text-foreground mb-2">🎯 Interest Distribution</h3>
             <p className="text-xs text-muted-foreground font-body mb-4">
-              Har quiz ke liye: scores close ho to &quot;Undecided&quot;, warna stream → Tech / Business / Creative. Sports abhi quiz DB
-              se track nahi hota.
+              Har quiz ke liye: scores close ho to &quot;Undecided&quot;, warna stream → category mein count hota hai.
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               {(
                 [
                   { key: "tech", label: "💻 Tech", v: analyticsExtra.interestCounts.tech },
                   { key: "business", label: "💼 Business", v: analyticsExtra.interestCounts.business },
                   { key: "creative", label: "🎨 Creative", v: analyticsExtra.interestCounts.creative },
-                  { key: "sports", label: "🏏 Sports", v: analyticsExtra.interestCounts.sports },
+                  { key: "sports", label: "🏆 Sports", v: analyticsExtra.interestCounts.sports },
+                  { key: "skills", label: "🛠️ Skills", v: analyticsExtra.interestCounts.skills },
                   { key: "undecided", label: "🤷 Undecided", v: analyticsExtra.interestCounts.undecided },
                 ] as const
               ).map((row) => (

@@ -106,6 +106,22 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
         <Award className="w-5 h-5 text-primary" /> Scholarships — State Wise 💸
       </h2>
 
+      {/* NSP Portal Quick Link */}
+      <div className="mb-4 p-3 bg-primary/5 border border-primary/20 rounded-xl flex items-center justify-between gap-3">
+        <div>
+          <p className="text-sm font-display font-bold text-foreground">National Scholarship Portal</p>
+          <p className="text-xs text-muted-foreground">Sabhi govt scholarships ek jagah</p>
+        </div>
+        <a
+          href="https://scholarships.gov.in"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs font-display font-semibold px-3 py-2 rounded-lg gradient-hero text-primary-foreground hover:opacity-90 transition-opacity whitespace-nowrap flex-shrink-0"
+        >
+          Visit NSP 🔗
+        </a>
+      </div>
+
       {/* Top-level personalised filter */}
       <div className="mb-4">
         <div className="flex gap-2 flex-wrap">
@@ -184,29 +200,38 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
 
       <div className="space-y-4">
         {filteredScholarships.map((s) => (
-          <div key={s.name} className="bg-muted/50 rounded-xl p-4 space-y-2">
+          <div key={s.name} className="bg-muted/50 rounded-xl p-4 space-y-2 border border-border/50 hover:border-primary/30 transition-colors">
+            {/* Name */}
             <h3 className="font-display font-bold text-foreground">{s.name}</h3>
-            <div className="grid sm:grid-cols-2 gap-2 text-sm">
-              <div>
-                <span className="text-muted-foreground">Amount: </span>
-                <span className="text-primary font-semibold">{s.amount}</span>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Deadline: </span>
-                <span className="text-foreground font-medium">{s.deadline}</span>
-              </div>
-            </div>
+
+            {/* Amount — prominent */}
+            {s.amount && (
+              <span className="inline-block text-sm font-display font-bold text-green-700 dark:text-green-400">
+                💰 {s.amount}
+              </span>
+            )}
+
+            {/* Eligibility */}
             <p className="text-sm text-muted-foreground">
               <span className="font-medium text-foreground">Eligibility:</span> {s.eligibility}
             </p>
-            <a
-              href={s.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block text-sm text-primary font-semibold hover:underline"
-            >
-              Apply Karein →
-            </a>
+
+            {/* Deadline + Apply row */}
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              {s.deadline && (
+                <span className="text-xs text-amber-700 dark:text-amber-400 font-display font-semibold bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/30">
+                  ⏰ {s.deadline}
+                </span>
+              )}
+              <a
+                href={s.link || "https://scholarships.gov.in"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs font-display font-semibold px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+              >
+                Apply Now → 🔗
+              </a>
+            </div>
           </div>
         ))}
         {filteredScholarships.length === 0 && (
