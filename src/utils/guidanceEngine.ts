@@ -155,6 +155,9 @@ export function generateGuidance(profile: StudentProfile): GuidanceOutput {
       science: "Maths/Science tutoring (₹5–15K/month) • Coding freelancing on Fiverr • Science YouTube channel",
       commerce: "Tally data entry work • Social media management • CA articleship (stipend milta hai) • Stock market intern",
       arts: "Content writing (₹3–10K per article) • UPSC notes selling • Teaching assistant • Blog monetization",
+      sports: "Sports coaching (local kids) • Fitness training freelancing • Sports YouTube channel • Referee/umpire work",
+      creative: "Freelance design on Fiverr/Upwork • Social media content creation • Video editing for local businesses",
+      skills: "Upwork/Fiverr freelancing • Local business websites • Instagram/YouTube content • Online tutoring",
     };
     output.studyEarningMessage = `Padhai ke saath earning possible hai:\n${earningMap[stream] || "Freelancing, tutoring, ya skill-based part-time work explore karo"}\n\nGovernment help: NSP Scholarship (scholarships.gov.in) • PM Scholarship • State government schemes zaroor check karo.`;
   }
@@ -212,6 +215,27 @@ export function generateGuidance(profile: StudentProfile): GuidanceOutput {
       creative: "Arts + creativity = Perfect match! Design, Film, Writing, Content — creative economy is booming.",
       sports: "Arts + sports = Sports Journalism, Sports Law, Sports Psychology — all growing fields.",
       undecided: "Arts se UPSC (IAS/IPS), Law, Design, Journalism, Psychology — sab powerful careers hain.",
+    },
+    sports: {
+      tech: "Sports + tech = Sports Analytics, E-Sports, Fitness App development — India ka next big thing!",
+      business: "Sports + business = Sports Management, IPL/ISL team management, Sports Marketing — ₹5-20 LPA scope.",
+      creative: "Sports + creativity = Sports Journalism, Sports Photography, Sports Content Creator — passion ka paisa!",
+      sports: "Pure Sports path! Player → Coach → Manager → Analyst — ek hi passion, multiple careers. NIS Patiala target karo.",
+      undecided: "Sports mein sirf playing nahi — 13+ careers hain: Coach, Analyst, Manager, Journalist, Physiotherapist, PE Teacher!",
+    },
+    creative: {
+      tech: "Creative + tech = UI/UX Design, Motion Graphics, Game Design — ₹8-30 LPA! Highest demand combination.",
+      business: "Creative + business = Brand Manager, Art Director, Creative Agency founder — best of both worlds!",
+      creative: "Pure Creative path! NID, NIFT, FTII — India ke best design/film colleges. Portfolio build karo abhi se!",
+      sports: "Creative + sports = Sports Photographer, Sports Journalist, Sports Brand Marketing — niche + high earning.",
+      undecided: "Creative field mein explore karo — NID DAT, NIFT, FTII, Animation, UI/UX sab try karo. Portfolio = your resume!",
+    },
+    skills: {
+      tech: "Skills + tech = Full Stack Dev, AI/ML, Cybersecurity — ₹12-50 LPA without traditional degree possible!",
+      business: "Skills + business = Digital marketing agency, E-commerce, SaaS startup — zero to crore possible!",
+      creative: "Skills + creative = Video editor, Motion designer, Content creator — Fiverr pe ₹50K+/month possible.",
+      sports: "Skills + sports = Build sports apps, fitness platforms, sports analytics tools — tech meets passion!",
+      undecided: "Skills path — koi bhi 1 skill choose karo: Web Dev, Digital Marketing, Video Editing. 6 months mein income start!",
     },
   };
 
