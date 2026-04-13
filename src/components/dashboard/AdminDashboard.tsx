@@ -19,6 +19,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import DailyActivityChart from "./DailyActivityChart";
 
 interface StudentData {
   id: string;
@@ -225,6 +226,13 @@ function parseQuizScores(raw: unknown): { science: number; commerce: number; art
   return { science, commerce, arts };
 }
 
+interface FeedbackItem {
+  id: string;
+  message: string;
+  user_email: string | null;
+  created_at: string;
+}
+
 const AdminDashboard = () => {
   const { user, signOut } = useAuth();
   const [students, setStudents] = useState<StudentData[]>([]);
@@ -235,25 +243,102 @@ const AdminDashboard = () => {
   const [expandedStudent, setExpandedStudent] = useState<string | null>(null);
   const [suggestionText, setSuggestionText] = useState("");
   const [sendingTo, setSendingTo] = useState<{ studentId: string; resultId?: string } | null>(null);
-  const [activeTab, setActiveTab] = useState<"students" | "analytics" | "messages">("students");
+  const [activeTab, setActiveTab] = useState<"students" | "analytics" | "messages" | "feedback">("students");
+  const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>([]);
   const [messageIssueFilter, setMessageIssueFilter] = useState<MessageIssueFilter>("all");
   const [messagesUnreadOnly, setMessagesUnreadOnly] = useState(false);
   const [confirmAdmin, setConfirmAdmin] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Activity Feed
+  const [showActivityFeed, setShowActivityFeed] = useState(false);
+
+  const activityFeed = useMemo(() => {
+    const items: { type: 'student' | 'quiz' | 'message'; text: string; time: string; id: string }[] = [];
+    
+    students.slice(0, 5).forEach(s => items.push({
+      type: 'student',
+      text: `${s.full_name || 'Unknown'} joined (${s.city || 'Unknown city'})`,
+      time: s.created_at,
+      id: s.id
+    }));
+    
+    quizResults.slice(0, 5).forEach(r => {
+      const student = students.find(s => s.id === r.user_id);
+      items.push({
+        type: 'quiz',
+        text: `${student?.full_name || 'Student'} ne ${r.stream} quiz diya`,
+        time: r.created_at,
+        id: r.id
+      });
+    });
+    
+    contactMessages.slice(0, 5).forEach(m => items.push({
+      type: 'message',
+      text: `${m.name} ka message: "${m.message.slice(0, 40)}..."`,
+      time: m.created_at,
+      id: m.id
+    }));
+    
+    return items.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 10);
+  }, [students, quizResults, contactMessages]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const [resProfiles, resResults, resMessages, resRoles] = await Promise.all([
+      const [resProfiles, resResults, resMessages, resRoles, resFeedbacks] = await Promise.all([
         supabase.from("profiles").select("*").order("created_at", { ascending: false }),
         supabase.from("quiz_results").select("*").order("created_at", { ascending: false }),
         supabase.from("contact_messages").select("*").order("created_at", { ascending: false }),
         supabase.from("user_roles").select("*"),
+        supabase.from("feedback").select("*").order("created_at", { ascending: false }),
       ]);
       setStudents((resProfiles.data as StudentData[]) || []);
       setQuizResults(resResults.data || []);
       setContactMessages((resMessages.data as ContactMessage[]) || []);
       setUserRoles((resRoles.data as UserRole[]) || []);
+      setFeedbacks((resFeedbacks.data as FeedbackItem[]) || []);
+      setLoading(false);
     };
     fetchData();
+  }, []);
+
+  // Real-time subscriptions
+  useEffect(() => {
+    // New students
+    const profilesSub = supabase
+      .channel('profiles-changes')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'profiles' },
+        (payload) => {
+          setStudents(prev => [payload.new as StudentData, ...prev]);
+          toast.success(`🎉 Naya student join kiya: ${(payload.new as StudentData).full_name || 'Unknown'}`);
+        }
+      ).subscribe();
+
+    // New quiz results
+    const quizSub = supabase
+      .channel('quiz-changes')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'quiz_results' },
+        (payload) => {
+          setQuizResults(prev => [payload.new as QuizResultData, ...prev]);
+          toast.info(`📝 Naya quiz result aaya!`);
+        }
+      ).subscribe();
+
+    // New contact messages
+    const msgSub = supabase
+      .channel('messages-changes')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'contact_messages' },
+        (payload) => {
+          setContactMessages(prev => [payload.new as ContactMessage, ...prev]);
+          toast.warning(`💬 Naya message aaya! Reply zaroor dena.`);
+        }
+      ).subscribe();
+
+    return () => {
+      supabase.removeChannel(profilesSub);
+      supabase.removeChannel(quizSub);
+      supabase.removeChannel(msgSub);
+    };
   }, []);
 
   const markMessageRead = async (id: string) => {
@@ -294,6 +379,30 @@ const AdminDashboard = () => {
         s.city?.toLowerCase().includes(search.toLowerCase()))
   );
 
+  const studentStatusMap = useMemo(() => {
+    const map: Record<string, {
+      hasSuggestion: boolean;
+      hasMessage: boolean;
+      lastActivity: string | null;
+      pendingReply: boolean;
+    }> = {};
+    
+    students.forEach(s => {
+      const results = quizResults.filter(r => r.user_id === s.id);
+      const msgs = contactMessages.filter(m => m.email === s.email);
+      const pendingMsg = msgs.find(m => m.status !== 'replied' && !m.admin_reply);
+      
+      map[s.id] = {
+        hasSuggestion: false, // Will be updated if admin_suggestions data is fetched
+        hasMessage: msgs.length > 0,
+        lastActivity: results[0]?.created_at || s.created_at,
+        pendingReply: !!pendingMsg
+      };
+    });
+    
+    return map;
+  }, [students, quizResults, contactMessages]);
+
   const getStudentResults = (studentId: string) =>
     quizResults.filter((r) => r.user_id === studentId);
 
@@ -312,6 +421,33 @@ const AdminDashboard = () => {
       setSuggestionText("");
       setSendingTo(null);
     }
+  };
+
+  const exportStudentsCSV = () => {
+    const headers = ['Name', 'Email', 'Phone', 'City', 'Class', 'Joined', 'Quiz Results'];
+    const rows = students.map(s => {
+      const results = getStudentResults(s.id);
+      return [
+        s.full_name || '',
+        s.email || '',
+        s.phone || '',
+        s.city || '',
+        s.class || '',
+        new Date(s.created_at).toLocaleDateString('en-IN'),
+        results.map(r => r.stream).join('; ') || 'No quiz'
+      ];
+    });
+    
+    const csvContent = [headers, ...rows]
+      .map(row => row.map(cell => `"${cell}"`).join(','))
+      .join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `pathfinder-students-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    toast.success('CSV download ho rahi hai! 📁');
   };
 
   // Analytics
@@ -415,6 +551,22 @@ const AdminDashboard = () => {
     };
   }, [students, quizResults, contactMessages, user?.id]);
 
+  const statsWithTrend = useMemo(() => {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    
+    const studentsYesterday = students.filter(s => s.created_at.startsWith(yesterdayStr)).length;
+    const quizzesYesterday = quizResults.filter(r => r.created_at.startsWith(yesterdayStr)).length;
+    
+    return {
+      newStudentsToday: analyticsExtra.newStudentsToday,
+      studentsYesterday,
+      quizzesToday: analyticsExtra.quizzesToday,
+      quizzesYesterday,
+    };
+  }, [students, quizResults, analyticsExtra]);
+
   const senderTypeLabels: Record<string, string> = {
     student: "👨‍🎓 Student",
     parent: "👨‍👩‍👦 Parent",
@@ -444,6 +596,17 @@ const AdminDashboard = () => {
     const kind = resolveIssueKind(msg);
     return kind === messageIssueFilter;
   });
+
+  // Contact messages mein ek grouped view banao
+  const messageThreads = useMemo(() => {
+    const emailGroups: Record<string, ContactMessage[]> = {};
+    contactMessages.forEach(msg => {
+      const key = msg.email || msg.name;
+      if (!emailGroups[key]) emailGroups[key] = [];
+      emailGroups[key].push(msg);
+    });
+    return emailGroups;
+  }, [contactMessages]);
 
   return (
     <div className="space-y-6">
@@ -476,6 +639,54 @@ const AdminDashboard = () => {
         </div>
       </div>
 
+      {/* Live Indicator */}
+      <div className="flex items-center gap-2 mb-6">
+        <span className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse" />
+        <span className="text-xs font-display text-muted-foreground">
+          Live • Last refreshed: {new Date().toLocaleTimeString('en-IN')}
+        </span>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="flex flex-wrap gap-2 p-4 bg-muted/30 rounded-2xl border border-border">
+        <p className="w-full text-xs font-display font-semibold text-muted-foreground uppercase mb-1">
+          ⚡ Quick Actions
+        </p>
+        <button
+          onClick={() => setActiveTab('messages')}
+          className={`flex items-center gap-2 text-xs font-display font-semibold px-3 py-2 rounded-xl border-2 transition-all ${
+            unreadCount > 0 
+              ? 'gradient-hero text-primary-foreground border-transparent animate-pulse' 
+              : 'border-border bg-card hover:border-primary/40'
+          }`}
+        >
+          <Mail className="w-3.5 h-3.5" />
+          {unreadCount > 0 ? `${unreadCount} Unread Messages` : 'Messages'}
+        </button>
+        
+        <button
+          onClick={() => setActiveTab('analytics')}
+          className="flex items-center gap-2 text-xs font-display font-semibold px-3 py-2 rounded-xl border-2 border-border bg-card hover:border-primary/40 transition-all"
+        >
+          <BarChart3 className="w-3.5 h-3.5" />
+          Analytics
+        </button>
+        
+        <button
+          onClick={() => {
+            const pending = contactMessages.filter(m => m.status !== 'replied' && !m.admin_reply);
+            if (pending.length > 0) {
+              setActiveTab('messages');
+              setMessagesUnreadOnly(true);
+            }
+          }}
+          className="flex items-center gap-2 text-xs font-display font-semibold px-3 py-2 rounded-xl border-2 border-amber-500/40 bg-amber-500/10 text-amber-700 hover:bg-amber-500/20 transition-all"
+        >
+          <Send className="w-3.5 h-3.5" />
+          Pending Replies ({contactMessages.filter(m => m.status !== 'replied' && !m.admin_reply).length})
+        </button>
+      </div>
+
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-card border-2 border-border rounded-2xl p-5">
@@ -486,6 +697,9 @@ const AdminDashboard = () => {
             <span className="font-display font-bold text-2xl text-foreground">{totalStudents}</span>
           </div>
           <p className="text-muted-foreground text-sm font-body">Kul Students</p>
+          <p className="text-xs text-muted-foreground mt-1 font-body">
+            +{statsWithTrend.newStudentsToday} aaj
+          </p>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-card border-2 border-border rounded-2xl p-5">
@@ -496,6 +710,9 @@ const AdminDashboard = () => {
             <span className="font-display font-bold text-2xl text-foreground">{totalQuizzes}</span>
           </div>
           <p className="text-muted-foreground text-sm font-body">Kul Quiz Diye Gaye</p>
+          <p className="text-xs text-muted-foreground mt-1 font-body">
+            +{statsWithTrend.quizzesToday} aaj
+          </p>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card border-2 border-border rounded-2xl p-5">
@@ -506,6 +723,9 @@ const AdminDashboard = () => {
             <span className="font-display font-bold text-2xl text-foreground">{Object.keys(streamCounts).length}</span>
           </div>
           <p className="text-muted-foreground text-sm font-body">Active Streams</p>
+          <p className="text-xs text-muted-foreground mt-1 font-body">
+            {Object.keys(streamCounts).length > 0 ? "Trending 📈" : "No streams yet"}
+          </p>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-card border-2 border-border rounded-2xl p-5">
@@ -516,7 +736,47 @@ const AdminDashboard = () => {
             <span className="font-display font-bold text-2xl text-foreground">{unreadCount}</span>
           </div>
           <p className="text-muted-foreground text-sm font-body">Naye Messages</p>
+          <p className="text-xs text-muted-foreground mt-1 font-body">
+            +{analyticsExtra.messagesToday} aaj
+          </p>
         </motion.div>
+      </div>
+
+      <div className="bg-card border-2 border-border rounded-2xl p-4 mb-6">
+        <button
+          onClick={() => setShowActivityFeed(v => !v)}
+          className="w-full flex items-center justify-between font-display font-bold text-foreground"
+        >
+          <span className="flex items-center gap-2">
+            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            Live Activity Feed
+          </span>
+          <ChevronDown className={`w-4 h-4 transition-transform ${showActivityFeed ? 'rotate-180' : ''}`} />
+        </button>
+        
+        {showActivityFeed && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            className="mt-4 space-y-2"
+          >
+            {activityFeed.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-4">Koi activity nahi abhi tak</p>
+            ) : activityFeed.map((item) => (
+              <div key={item.id + item.time} className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/40 transition-colors">
+                <span className="text-lg">
+                  {item.type === 'student' ? '👤' : item.type === 'quiz' ? '📝' : '💬'}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-body text-foreground truncate">{item.text}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {new Date(item.time).toLocaleString("en-IN")}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        )}
       </div>
 
       {/* Tabs */}
@@ -550,30 +810,56 @@ const AdminDashboard = () => {
         >
           <BarChart3 className="w-4 h-4 inline mr-1" /> Analytics
         </button>
+        <button
+          onClick={() => setActiveTab("feedback")}
+          className={`font-display font-semibold text-sm px-5 py-2.5 rounded-xl transition-all border-2 ${
+            activeTab === "feedback"
+              ? "gradient-hero text-primary-foreground border-transparent shadow-card"
+              : "border-border text-muted-foreground hover:text-foreground bg-muted hover:border-primary/30"
+          }`}
+        >
+          ⭐ Feedback
+        </button>
       </div>
 
       {activeTab === "students" && (
         <div className="bg-card border-2 border-border rounded-2xl p-6">
-          <div className="relative mb-4">
-            <Search className="absolute left-3.5 top-3 w-4 h-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Naam, email, ya city se search karein..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-border bg-background font-body text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary transition-colors text-sm"
-            />
+          <div className="flex flex-col sm:flex-row gap-3 mb-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3.5 top-3 w-4 h-4 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Naam, email, ya city se search karein..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-border bg-background font-body text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary transition-colors text-sm"
+              />
+            </div>
+            <button
+              onClick={exportStudentsCSV}
+              className="flex items-center justify-center gap-2 text-sm font-display font-semibold px-4 py-2.5 rounded-xl border-2 border-border hover:border-primary/40 transition-all bg-card"
+            >
+              📥 Export CSV
+            </button>
           </div>
 
-          {filteredStudents.length === 0 && !search ? (
-            <div className="text-center py-12">
-              <div className="text-5xl mb-4">👋</div>
-              <p className="font-display font-bold text-lg text-foreground mb-2">Abhi tak koi student registered nahi hua</p>
-              <p className="text-muted-foreground font-body text-sm">
+          {loading ? (
+            <div className="space-y-3 animate-pulse mt-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="h-16 bg-muted/60 rounded-xl w-full border border-border" />
+              ))}
+            </div>
+          ) : filteredStudents.length === 0 && !search ? (
+            <div className="text-center py-16">
+              <div className="text-6xl mb-4">🎓</div>
+              <h3 className="font-display font-bold text-xl text-foreground mb-2">
+                Abhi tak koi student nahi
+              </h3>
+              <p className="text-muted-foreground font-body text-sm max-w-xs mx-auto">
                 Jab students quiz complete karenge, woh yahan dikhenge.
               </p>
-              <p className="text-xs text-muted-foreground mt-2">
-                💡 Tip: Students ko share karo: career-guider-six.vercel.app
+              <p className="text-xs text-primary font-display font-semibold mt-3">
+                💡 Share karo: career-guider-six.vercel.app
               </p>
             </div>
           ) : filteredStudents.length === 0 ? (
@@ -604,6 +890,28 @@ const AdminDashboard = () => {
                           <p className="text-xs text-muted-foreground">
                             {student.email} • {student.city || "N/A"} • {student.class || "N/A"}
                           </p>
+                          
+                          <div className="flex flex-wrap gap-1 mt-1.5">
+                            {studentStatusMap[student.id]?.hasMessage && (
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-display font-semibold border ${
+                                studentStatusMap[student.id]?.pendingReply 
+                                  ? 'bg-amber-500/15 text-amber-700 border-amber-500/30' 
+                                  : 'bg-green-500/15 text-green-700 border-green-500/30'
+                              }`}>
+                                {studentStatusMap[student.id]?.pendingReply ? '⏳ Reply Pending' : '✅ Replied'}
+                              </span>
+                            )}
+                            {getStudentResults(student.id).length > 0 && (
+                              <span className="text-[10px] px-2 py-0.5 rounded-full font-display font-semibold bg-blue-500/15 text-blue-700 border border-blue-500/30">
+                                📝 Quiz Diya
+                              </span>
+                            )}
+                            {getStudentResults(student.id).length === 0 && (
+                              <span className="text-[10px] px-2 py-0.5 rounded-full font-display font-semibold bg-muted text-muted-foreground border border-border">
+                                ⏸ Quiz Pending
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
@@ -719,6 +1027,29 @@ const AdminDashboard = () => {
           <h3 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
             <Mail className="w-5 h-5 text-primary" /> Contact Messages 📨
           </h3>
+
+          {/* Messages tab ke top pe add karo */}
+          <div className="grid grid-cols-3 gap-3 mb-5">
+            <div className="bg-amber-500/10 border border-amber-500/25 rounded-xl p-3 text-center">
+              <p className="text-2xl font-display font-bold text-amber-600">
+                {contactMessages.filter(m => m.status !== 'replied' && !m.admin_reply).length}
+              </p>
+              <p className="text-xs text-muted-foreground font-display">Pending Replies</p>
+            </div>
+            <div className="bg-green-500/10 border border-green-500/25 rounded-xl p-3 text-center">
+              <p className="text-2xl font-display font-bold text-green-600">
+                {contactMessages.filter(m => m.status === 'replied' || m.admin_reply).length}
+              </p>
+              <p className="text-xs text-muted-foreground font-display">Replied</p>
+            </div>
+            <div className="bg-primary/10 border border-primary/25 rounded-xl p-3 text-center">
+              <p className="text-2xl font-display font-bold text-primary">
+                {unreadCount}
+              </p>
+              <p className="text-xs text-muted-foreground font-display">Unread</p>
+            </div>
+          </div>
+
           {contactMessages.length === 0 ? (
             <p className="text-center text-muted-foreground font-body py-8">Abhi tak koi message nahi aaya</p>
           ) : (
@@ -860,6 +1191,8 @@ const AdminDashboard = () => {
               </span>
             </p>
           </div>
+
+          <DailyActivityChart quizResults={quizResults} students={students} />
 
           <div className="bg-card border-2 border-border rounded-2xl p-6">
             <h3 className="font-display font-bold text-lg text-foreground mb-4">📊 Stream-wise Breakdown</h3>
@@ -1023,6 +1356,31 @@ const AdminDashboard = () => {
               </div>
             )}
           </div>
+        </div>
+      )}
+
+      {activeTab === "feedback" && (
+        <div className="bg-card border-2 border-border rounded-2xl p-6">
+          <h3 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
+            ⭐ User Feedback
+          </h3>
+          {feedbacks.length === 0 ? (
+            <p className="text-center text-muted-foreground font-body py-8">Abhi tak koi feedback nahi</p>
+          ) : (
+            <div className="space-y-3">
+              {feedbacks.map(fb => (
+                <div key={fb.id} className="border border-border rounded-xl p-4 bg-muted/20">
+                  <p className="text-sm font-body text-foreground">{fb.message}</p>
+                  <div className="flex justify-between mt-2">
+                    <span className="text-xs text-muted-foreground">{fb.user_email || 'Anonymous'}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(fb.created_at).toLocaleString('en-IN')}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
