@@ -16,6 +16,11 @@ import AdminSetup from "./pages/AdminSetup";
 import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
 import CareerComparison from "./pages/CareerComparison";
+import StreamRecommender from "./pages/StreamRecommender";
+import LearningResources from "./pages/LearningResources";
+import AfterTwelfth from "./pages/AfterTwelfth";
+import PracticeQuiz from "./pages/PracticeQuiz";
+import DeepAnalysis from "./pages/DeepAnalysis";
 import ChatBot from "./components/ChatBot";
 
 const queryClient = new QueryClient();
@@ -40,6 +45,11 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/install" element={<Install />} />
             <Route path="/career-comparison" element={<CareerComparison />} />
+            <Route path="/stream-recommender" element={<StreamRecommender />} />
+            <Route path="/learning" element={<LearningResources />} />
+            <Route path="/after-12th" element={<AfterTwelfth />} />
+            <Route path="/practice-quiz" element={<PracticeQuiz />} />
+            <Route path="/deep-analysis" element={<DeepAnalysis />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <ChatBot />
