@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AnalysisResult {
   psychological_aptitude: { strengths: string[]; learning_style: string; career_personality: string };
@@ -118,16 +119,11 @@ Return a JSON object with EXACTLY this structure (no extra text):
 }`;
 
     try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 2000,
-          messages: [{ role: "user", content: prompt }],
-        }),
+      const { data: fnData, error: fnError } = await supabase.functions.invoke("deep-analysis", {
+        body: { prompt },
       });
-      const data = await response.json();
+      if (fnError) throw new Error(fnError.message);
+      const data = fnData;
       const text = data.content?.[0]?.text || "";
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (!jsonMatch) throw new Error("Analysis failed");
