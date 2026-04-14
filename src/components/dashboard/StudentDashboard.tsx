@@ -164,13 +164,40 @@ const AdminRepliesSection = ({ userEmail }: { userEmail: string | undefined }) =
 
   useEffect(() => {
     if (!userEmail) return;
-    supabase
-      .from("contact_messages")
-      .select("id, name, message, admin_reply, replied_at, created_at")
-      .eq("email", userEmail)
-      .not("admin_reply", "is", null)
-      .order("replied_at", { ascending: false })
-      .then(({ data }) => setReplies((data as unknown as AdminReply[]) || []));
+
+    const fetchReplies = async () => {
+      const { data } = await supabase
+        .from("contact_messages")
+        .select("id, name, message, admin_reply, replied_at, created_at")
+        .eq("email", userEmail)
+        .not("admin_reply", "is", null)
+        .order("replied_at", { ascending: false });
+      if (data) {
+        setReplies((data as unknown as AdminReply[]) || []);
+      }
+    };
+
+    fetchReplies();
+
+    const channel = supabase
+      .channel("public:contact_messages")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "contact_messages",
+          filter: `email=eq.${userEmail}`,
+        },
+        () => {
+          fetchReplies();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [userEmail]);
 
   if (replies.length === 0) return null;
