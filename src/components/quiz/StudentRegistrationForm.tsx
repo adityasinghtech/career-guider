@@ -11,7 +11,7 @@ const formSchema = z.object({
   email: z.string().trim().email("Sahi email address dalein").max(255, "Email bahut lamba hai"),
   city: z.string().trim().min(2, "Kripya apna city/district bataayein").max(100, "City name bahut lamba hai"),
   interest: z
-    .enum(["", "tech", "business", "creative", "sports", "undecided"])
+    .enum(["", "tech", "business", "creative", "sports", "vocational", "undecided"])
     .refine((v) => v !== "", { message: "Kripya apna interest select karein" }),
   class: z.string().min(1, "Kripya apni class select karein"),
 });
@@ -26,11 +26,12 @@ interface Props {
 
 const classOptions = ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "12th Pass"];
 
-const interestOptions: { value: "tech" | "business" | "creative" | "sports" | "undecided"; label: string }[] = [
+const interestOptions: { value: "tech" | "business" | "creative" | "sports" | "vocational" | "undecided"; label: string }[] = [
   { value: "tech", label: "💻 Technology & Science" },
   { value: "business", label: "💼 Business & Finance" },
   { value: "creative", label: "🎨 Arts & Creativity" },
   { value: "sports", label: "🏏 Sports & Fitness" },
+  { value: "vocational", label: "🔧 Skill & Vocational Training" },
   { value: "undecided", label: "🤷 Abhi decide nahi" },
 ];
 

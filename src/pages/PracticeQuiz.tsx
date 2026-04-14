@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Question {
   question: string;
@@ -22,8 +23,6 @@ const subjectMap: Record<StreamKey, string[]> = {
   commerce: ["Economics", "Accountancy", "Business Studies", "Mathematics"],
   arts: ["History", "Geography", "Political Science", "Hindi Literature", "English Literature"],
 };
-
-const CLAUDE_API_URL = "https://api.anthropic.com/v1/messages";
 
 export default function PracticeQuiz() {
   const [stream, setStream] = useState<StreamKey>("science");
@@ -61,41 +60,20 @@ export default function PracticeQuiz() {
     if (!topic.trim()) { setError("Topic likhna zaroori hai!"); return; }
     setLoading(true); setError(""); setQuestions([]); setQuizDone(false);
     try {
-      const prompt = `Generate ${numQuestions} multiple choice questions for Indian Class 11-12 students.
-Stream: ${stream}, Subject: ${subject}, Topic: ${topic}, Difficulty: ${difficulty}
-
-For each question return JSON array with this exact structure:
-[{
-  "question": "Question text here?",
-  "options": ["Option A", "Option B", "Option C", "Option D"],
-  "correct": "Option A",
-  "explanation": "Why this is correct - 2-3 sentences",
-  "conceptBridge": "How this relates to entrance exams like JEE/NEET/CUET"
-}]
-
-Return ONLY the JSON array, no other text.`;
-
-      const response = await fetch(CLAUDE_API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 2000,
-          messages: [{ role: "user", content: prompt }],
-        }),
+      const { data: fnData, error: fnError } = await supabase.functions.invoke('practice-quiz-generate', {
+        body: { stream, subject, topic, difficulty, numQuestions }
       });
 
-      const data = await response.json();
-      const text = data.content?.[0]?.text || "";
-      const jsonMatch = text.match(/\[[\s\S]*\]/);
-      if (!jsonMatch) throw new Error("Questions generate nahi huye");
-      const parsed: Question[] = JSON.parse(jsonMatch[0]);
-      setQuestions(parsed);
+      if (fnError) throw new Error(fnError.message);
+      if (fnData?.error) throw new Error(fnData.error);
+      if (!fnData?.questions) throw new Error("Questions generate nahi huye");
+
+      setQuestions(fnData.questions);
       setCurrentIdx(0);
       setUserAnswers({});
       setShowExplanation(false);
-    } catch {
-      setError("Questions generate nahi ho sake. Topic dobara try karo ya thodi der baad koshish karo.");
+    } catch (err: any) {
+      setError(err.message || "Questions generate nahi ho sake. Topic dobara try karo ya thodi der baad koshish karo.");
     } finally {
       setLoading(false);
     }

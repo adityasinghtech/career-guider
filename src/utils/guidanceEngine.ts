@@ -158,6 +158,7 @@ export function generateGuidance(profile: StudentProfile): GuidanceOutput {
       sports: "Sports coaching (local kids) • Fitness training freelancing • Sports YouTube channel • Referee/umpire work",
       creative: "Freelance design on Fiverr/Upwork • Social media content creation • Video editing for local businesses",
       skills: "Upwork/Fiverr freelancing • Local business websites • Instagram/YouTube content • Online tutoring",
+      vocational: "Local electrical/mechanical repair shop • PMKVY trainer • Government contract work • Small business owner",
     };
     output.studyEarningMessage = `Padhai ke saath earning possible hai:\n${earningMap[stream] || "Freelancing, tutoring, ya skill-based part-time work explore karo"}\n\nGovernment help: NSP Scholarship (scholarships.gov.in) • PM Scholarship • State government schemes zaroor check karo.`;
   }
@@ -236,6 +237,13 @@ export function generateGuidance(profile: StudentProfile): GuidanceOutput {
       creative: "Skills + creative = Video editor, Motion designer, Content creator — Fiverr pe ₹50K+/month possible.",
       sports: "Skills + sports = Build sports apps, fitness platforms, sports analytics tools — tech meets passion!",
       undecided: "Skills path — koi bhi 1 skill choose karo: Web Dev, Digital Marketing, Video Editing. 6 months mein income start!",
+    },
+    vocational: {
+      tech: "Vocational + tech = Smart Home Technician, Solar Specialist, IoT repair — modern technical skills!",
+      business: "Vocational + business = Apni workshop, retail shop, or service center — entrepreneurship gateway.",
+      creative: "Vocational + creative = Interior photography, event setup, boutique business — hands-on creativity.",
+      sports: "Vocational + sports = Gym equipment maintenance, sports facility management — niche technical work.",
+      undecided: "Vocational path — ITI, PMKVY, Apprenticeship. Padhai se zyada kaam sikhne pe focus!",
     },
   };
 
