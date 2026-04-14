@@ -10,23 +10,39 @@ const streamColors: Record<string, string> = {
   Science: "from-blue-500 to-purple-600",
   Commerce: "from-amber-500 to-orange-600",
   Arts: "from-pink-500 to-rose-600",
+  Sports: "from-emerald-500 to-teal-600",
+  Vocational: "from-orange-500 to-red-600",
+  Creative: "from-indigo-500 to-blue-600",
+  Skills: "from-cyan-500 to-blue-500",
 };
 
 const streamEmojis: Record<string, string> = {
   Science: "🔬",
   Commerce: "📊",
   Arts: "🎨",
+  Sports: "🏆",
+  Vocational: "🔧",
+  Creative: "🎨",
+  Skills: "💻",
 };
 
 const ResultHeroCard = ({ result, allScores }: Props) => {
   const total = allScores.science + allScores.commerce + allScores.arts || 1;
-  const percentages = {
+  const percentages: Record<string, number> = {
     Science: Math.round((allScores.science / total) * 100),
     Commerce: Math.round((allScores.commerce / total) * 100),
     Arts: Math.round((allScores.arts / total) * 100),
   };
 
-  const sorted = Object.entries(percentages).sort((a, b) => b[1] - a[1]);
+  // For non-traditional streams, we show a high match percentage
+  if (!percentages[result.stream]) {
+    percentages[result.stream] = 95;
+  }
+
+  const sorted = Object.entries(percentages)
+    .filter(([_, val]) => val > 0)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
 
   return (
     <motion.div

@@ -231,7 +231,7 @@ export interface College {
 }
 
 export interface StreamResult {
-  stream: "Science" | "Commerce" | "Arts" | "Sports" | "Creative" | "Skills";
+  stream: "Science" | "Commerce" | "Arts" | "Sports" | "Creative" | "Skills" | "Vocational";
   emoji: string;
   tagline: string;
   description: string;
@@ -900,14 +900,13 @@ export const streamResults: Record<string, StreamResult> = {
     tagline: "Champion ka dil hai tumhara! 🏅",
     description: "Tumhara energy aur passion physical world ke liye hai! Sports field mein sirf player hi nahi — coach, manager, journalist, physiotherapist, analyst — 15+ amazing careers hain. India mein sports industry boom kar raha hai!",
     careers: [
-      "🏋️ Fitness Trainer / Coach - ₹3-15 LPA",
+      "🏃 Sports Coach - ₹3-15 LPA",
+      "🏋️ Physical Trainer - ₹3-12 LPA",
       "🎙️ Sports Journalist - ₹4-15 LPA",
-      "📊 Sports Analyst - ₹8-25 LPA",
+      "🏆 Sports Management - ₹5-20 LPA",
+      "🏥 Sports Medicine - ₹6-25 LPA",
+      "🎮 eSports Athlete - ₹3-30 LPA",
       "🧠 Sports Psychologist - ₹5-18 LPA",
-      "🏥 Physiotherapist - ₹4-12 LPA",
-      "🏆 Sports Manager / Agent - ₹5-20 LPA",
-      "🎓 Physical Education Teacher - ₹3-10 LPA",
-      "⚔️ Defense Services - ₹6-20 LPA",
     ],
     modernCareers: [
       { title: "Sports Data Analyst", salary: "₹8-25 LPA", description: "IPL/ISL teams hire analysts", trend: "📊 Booming" },
@@ -917,38 +916,92 @@ export const streamResults: Record<string, StreamResult> = {
     ],
     nonAcademicCareers: [],
     examsToPrepare: [
-      "🏃 BPEd Entrance — Physical Education degree ke liye",
-      "🎖️ NDA — Defence ke liye (12th ke baad)",
-      "🏅 SAI Recruitment — Sports Authority of India",
+      "🎓 NIS Patiala Diploma — National Institute of Sports coaching",
+      "🏃 LNCPE Entrance — Physical Education",
+      "🎖️ Sports Quota Admissions — DU, BHU, JNU (trials based)",
       "🧬 NEET — Physiotherapy / Sports Medicine ke liye",
       "📊 CMAT — Sports Management MBA ke liye",
-      "🎓 NIS Patiala — National Institute of Sports coaching",
     ],
     roadmap: [
-      { month: "Month 1-2", task: "Apna main sport identify karo. District level mein participate karo. Physical fitness routine start karo — daily 2-3 hours practice." },
-      { month: "Month 3-4", task: "NIS Patiala ya state sports academy ka pata karo. BPEd ya Sports Management course research karo. SAI training centers join karo." },
-      { month: "Month 5-6", task: "State level competition mein participate karo. Sports journalism/management mein interest hai toh content create karo. Certificates collect karo." },
-      { month: "Month 7-8", task: "Scholarship apply karo — Khelo India, state sports scholarship. Coach ya mentor dhundho. Video portfolio banao apne performance ka." },
-      { month: "Month 9-10", task: "College admission ke liye sports quota apply karo. Sabhi major colleges mein sports quota seats hoti hain. Physical + Academic dono balance karo." },
-      { month: "Month 11-12", task: "Career decide karo — player, coach, manager, analyst, journalist? Accordingly degree ya certification select karo. Network build karo sports community mein!" },
+      { month: "Month 1-2", task: "District Level: Apna main sport identify karo aur district level tournaments mein participate karo. Daily 3-4 hours fitness & skill practice." },
+      { month: "Month 3-4", task: "State Level: State trials ke liye prepare karo. Coaching certifications (like NIS diploma prep) ke baare mein research karo." },
+      { month: "Month 5-6", task: "National Level: SAI (Sports Authority of India) Training Centers join karne ka target rakho. Nutrition aur sports psychology fundamentals seekho." },
+      { month: "Month 7-8", task: "Scholarships: TOPS scheme (Target Olympic Podium Scheme), Khelo India aur NSF scholarships ke liye profile banao." },
+      { month: "Month 9-10", task: "College Placement: DU, BHU, JNU mein Sports Quota admission ke liye apply karo. Certificates arrange aur verify karao." },
+      { month: "Month 11-12", task: "International Progression: Top leagues, brand sponsorships ya national camps ke liye aim karo. YouTube/Social media par journey document karo!" },
     ],
     colleges: [
       { name: "NIS Patiala", location: "Patiala, Punjab", fees: "₹20-50K/year", rating: "⭐⭐⭐⭐⭐", state: "Punjab", cutoff: "Entrance + physical test", collegeType: "top" },
+      { name: "LNCPE (Lakshmibai National College)", location: "Thiruvananthapuram, Kerala", fees: "₹15-30K/year", rating: "⭐⭐⭐⭐⭐", state: "Kerala", cutoff: "Entrance + Fitness Test", collegeType: "government" },
       { name: "LNIPE Gwalior", location: "Gwalior, MP", fees: "₹15-30K/year", rating: "⭐⭐⭐⭐⭐", state: "Madhya Pradesh", cutoff: "BPEd entrance", collegeType: "government" },
-      { name: "BHU Physical Education", location: "Varanasi, UP", fees: "₹10-20K/year", rating: "⭐⭐⭐⭐⭐", state: "UP", cutoff: "CUET + physical" },
-      { name: "SAI Training Centers", location: "All India", fees: "Free! 🎉", rating: "⭐⭐⭐⭐⭐", state: "Other States", cutoff: "Selection trial" },
+      { name: "SAI Training Centers", location: "Locations Across India", fees: "Free! 🎉", rating: "⭐⭐⭐⭐⭐", state: "Other States", cutoff: "Selection trial" },
     ],
     scholarships: [
-      { name: "🏅 Khelo India Scholarship", amount: "₹5 lakh/year", eligibility: "Selected national level players", deadline: "Year round", link: "https://kheloindia.gov.in", category: "National" },
-      { name: "🎖️ SAI Scholarship", amount: "Full support + stipend", eligibility: "SAI center trainees", deadline: "At admission", link: "https://sai.gov.in", category: "National" },
-      { name: "🏆 State Sports Scholarship", amount: "₹10,000-50,000/year", eligibility: "State-level players", deadline: "After selection", link: "https://scholarships.gov.in", category: "National" },
+      { name: "🏅 TOPS Scheme", amount: "Target Olympic Podium Scheme support", eligibility: "Elite athletes with Olympic potential", deadline: "Year round", link: "https://sportsauthorityofindia.nic.in", category: "National" },
+      { name: "🎖️ Khelo India Scholarship", amount: "₹5 lakh/year", eligibility: "Selected national level players", deadline: "Year round", link: "https://kheloindia.gov.in", category: "National" },
+      { name: "🏆 NSF Scholarships", amount: "Varies by federation", eligibility: "National Sports Federation recognized players", deadline: "Varies", link: "https://yas.nic.in", category: "National" },
+      { name: "📍 State Sports Scholarships", amount: "₹10,000-50,000/year", eligibility: "State-level players", deadline: "After selection", link: "https://scholarships.gov.in", category: "National" },
     ],
     youtubeChannels: [
+      "📺 Jeet Selal Aesthetics — Sports science & fitness motivation",
       "📺 Khelo India — Official sports development content",
-      "📺 Sports Tak — Hindi sports news",
-      "📺 Cricket Next — Cricket analysis",
-      "📺 The Field — Sports journalism",
-      "📺 Sportskeeda — Multi-sport coverage",
+      "📺 Sports Tak — Hindi sports news & management",
+      "📺 Abhinav Bindra Targeting Performance — Olympic mindset",
+      "📺 The Field — Sports journalism & inside stories",
+    ],
+  },
+
+  vocational: {
+    stream: "Vocational",
+    emoji: "🔧",
+    tagline: "Skills se success tak! 🛠️",
+    description: "Traditional padhai mein interest nahi hai? Koi baat nahi! Practical skills aur vocational training se aap jaldi job lag sakte hain ya apna kaam shuru kar sakte hain. ITI, PMKVY aur Apprenticeship aapke gateways hain!",
+    careers: [
+      "🔌 Electrician - ₹2-6 LPA",
+      "🔧 Fitter / Plumber - ₹2-5 LPA",
+      "🔥 Welder - ₹2-5 LPA",
+      "💻 COPA (Computer Operator) - ₹2-4 LPA",
+      "🚂 Railway Group D - ₹3-5 LPA + Perks",
+      "📫 Post Office Staff - ₹2-4 LPA + Perks",
+      "👷 Govt Contractor - Varies (High Potential)",
+      "🏪 Business Owner (Shop/Service) - Unlimited! 🚀",
+    ],
+    modernCareers: [
+      { title: "Smart Home Technician", salary: "₹3-8 LPA", description: "IoT devices and automation setup", trend: "🔥 Hottest" },
+      { title: "Solar Panel Technician", salary: "₹3-6 LPA", description: "Green energy installations", trend: "📈 Growing" },
+      { title: "Automotive Mechatronics", salary: "₹4-10 LPA", description: "EV and modern car repair", trend: "🚗 Rising" },
+      { title: "Micro-Entrepreneur", salary: "Unlimited", description: "Local service business", trend: "💼 Stable" },
+    ],
+    nonAcademicCareers: [],
+    examsToPrepare: [
+      "🛠️ State ITI Entrance — District level training institutes",
+      "🚂 Railway Group D / ALP — Indian Railways recruitment",
+      "🏛️ SSC CHSL / MTS — Central govt posts after 10th/12th",
+      "📫 India Post GDS — Gramin Dak Sevak merit based",
+    ],
+    roadmap: [
+      { month: "Month 1-2", task: "Interest identify karo: Electrical, Mechanical, ya Computer? Local ITI college visit karo aur admission process samjho." },
+      { month: "Month 3-4", task: "PMKVY (Pradhan Mantri Kaushal Vikas Yojana) ke free short-term courses join karo. Practical hand-on experience lo." },
+      { month: "Month 5-6", task: "NAPS (National Apprenticeship Promotion Scheme) portal par register karo. Paid apprenticeship dhundho to learn while earning." },
+      { month: "Month 7-8", task: "Govt Job Prep: SSC CHSL, Railway Group D ya Post Office vacancies ke liye form fill karo aur previous year papers lagao." },
+      { month: "Month 9-10", task: "Apna business start karna hai? Udyam Registration (MSME) portal par register karo aur formalities samjho." },
+      { month: "Month 11-12", task: "Business finance ke liye MUDRA loan ya PM SVANidhi scheme ke through funding apply karo aur kaam start karo! 🚀" },
+    ],
+    colleges: [
+      { name: "Government ITI", location: "Every District in India", fees: "₹1-5K/year", rating: "⭐⭐⭐⭐⭐", state: "National", cutoff: "10th Merit / Entrance", collegeType: "government" },
+      { name: "NSTI (National Skill Training Institute)", location: "Major Cities", fees: "Minimal", rating: "⭐⭐⭐⭐⭐", state: "National", cutoff: "CITS Entrance", collegeType: "government" },
+    ],
+    scholarships: [
+      { name: "🛠️ PMKVY Free Training", amount: "Free skill training + Certification", eligibility: "School dropouts, unemployed youth", deadline: "Year round", link: "https://www.pmkvyofficial.org", category: "National" },
+      { name: "💼 NAPS Stipend", amount: "₹5000-9000/month stipend", eligibility: "Apprenticeship candidates", deadline: "Year round", link: "https://www.apprenticeshipindia.gov.in", category: "National" },
+      { name: "🏦 PM MUDRA Yojana", amount: "Upto ₹10 Lakh Loan", eligibility: "Small business beginners", deadline: "Always open", link: "https://www.mudra.org.in", category: "National" },
+    ],
+    youtubeChannels: [
+      "📺 ITI Classes Online — Technical trade tutorials",
+      "📺 Study For Dreams — Railway/SSC Group D prep",
+      "📺 Skill India Official — PMKVY updates",
+      "📺 Business Ideas Hindi — Small business case studies",
+      "📺 EveryDayIndia — Practical technical skills in Hindi",
     ],
   },
 
@@ -1166,6 +1219,12 @@ export function buildQuizProfile(answers: number[][]): QuizProfile {
       notesText.includes("digital") || notesText.includes("skills")
     ) {
       stream = "skills";
+    } else if (
+      notesText.includes("padhai nahi") || notesText.includes("iti") ||
+      notesText.includes("kaam") || notesText.includes("vocation") ||
+      notesText.includes("skills") || notesText.includes("mechanical")
+    ) {
+      stream = "vocational";
     }
   } catch {}
 
