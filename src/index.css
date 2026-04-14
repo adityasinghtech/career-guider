@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
@@ -46,8 +46,8 @@
     --shadow-elevated: 0 12px 40px -8px hsl(25 95% 53% / 0.2);
     --shadow-glow: 0 0 60px -12px hsl(25 95% 53% / 0.25);
 
-    --font-display: 'Outfit', sans-serif;
-    --font-body: 'DM Sans', sans-serif;
+    --font-display: 'Sora', sans-serif;
+    --font-body: 'Manrope', sans-serif;
 
     /* For glass orbs, shadows, and rgba() utilities */
     --primary-rgb: 249 115 22;
