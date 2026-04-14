@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 const MENTOR_LINES = [
   "Aram se socho — galat jawab nahi hota, bas pattern dikh raha hai.",
   "Jo mann mein aaye woh neeche likh bhi sakte ho — mentor waali feel ke liye.",
-  "Skip = us sawaal ka score skip; phir Aage dabana mat bhoolna.",
+  "Skip dabate hi agla sawaal aa jayega — score add nahi hoga.",
   "Doubt ho toh apna point likh do — result page pe use karenge.",
   "Yeh quiz tumhari story samajhne ke liye hai, marksheet nahi.",
 ];
@@ -58,6 +58,8 @@ const Quiz = () => {
       next[current] = [];
       return next;
     });
+    // Auto advance to next question or form
+    goNext();
   };
 
   const updateNote = (text: string) => {
@@ -245,8 +247,7 @@ const Quiz = () => {
                     onClick={skipQuestion}
                     className="flex items-center justify-center gap-2 font-display font-semibold px-5 py-3 rounded-xl border-2 border-border bg-card text-foreground hover:bg-muted/60 transition-colors"
                   >
-                    <SkipForward className="w-4 h-4" />{" "}
-                    {skipped[current] ? "Skipped (Aage dabao)" : "Skip — score nahi"}
+                    <SkipForward className="w-4 h-4" /> Skip — score nahi
                   </button>
                   <button
                     type="button"
