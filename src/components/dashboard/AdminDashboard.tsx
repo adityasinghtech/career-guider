@@ -132,7 +132,6 @@ const AdminReplySection = ({
         admin_reply: replyText.trim(),
         status: "replied",
         replied_at: new Date().toISOString(),
-        is_read: true,
       })
       .eq("id", message.id);
     if (error) {
