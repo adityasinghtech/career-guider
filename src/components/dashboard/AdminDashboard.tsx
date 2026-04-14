@@ -133,7 +133,7 @@ const AdminReplySection = ({
         status: "replied",
         replied_at: new Date().toISOString(),
         is_read: true,
-      } as any)
+      })
       .eq("id", message.id);
     if (error) {
       toast.error("Reply bhej nahi paaye");

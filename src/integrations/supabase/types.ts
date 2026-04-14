@@ -93,6 +93,9 @@ export type Database = {
           name: string
           phone: string | null
           sender_type: string
+          admin_reply: string | null
+          replied_at: string | null
+          status: string | null
         }
         Insert: {
           created_at?: string
@@ -104,6 +107,9 @@ export type Database = {
           name: string
           phone?: string | null
           sender_type?: string
+          admin_reply?: string | null
+          replied_at?: string | null
+          status?: string | null
         }
         Update: {
           created_at?: string
@@ -115,6 +121,9 @@ export type Database = {
           name?: string
           phone?: string | null
           sender_type?: string
+          admin_reply?: string | null
+          replied_at?: string | null
+          status?: string | null
         }
         Relationships: []
       }
