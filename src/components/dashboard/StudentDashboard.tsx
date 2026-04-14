@@ -17,12 +17,19 @@ import {
   ListChecks,
   ChevronDown,
   ChevronUp,
+  FileText,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import ExamCountdown from "@/components/dashboard/ExamCountdown";
 import CareerReadinessScore from "@/components/dashboard/CareerReadinessScore";
+
+interface CareerAnalysis {
+  id: string;
+  analysis: any;
+  created_at: string;
+}
 
 interface QuizResult {
   id: string;
@@ -408,19 +415,22 @@ const StudentDashboard = () => {
   const [checklistItems, setChecklistItems] = useState<ChecklistItem[]>([]);
   const [profileStreamFromStorage, setProfileStreamFromStorage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"overview" | "results" | "suggestions" | "profile">("overview");
+  const [careerAnalyses, setCareerAnalyses] = useState<CareerAnalysis[]>([]);
   const [timelineExpanded, setTimelineExpanded] = useState(false);
 
   useEffect(() => {
     if (!user) return;
 
     const fetchData = async () => {
-      const [resResults, resSugg, resProfile] = await Promise.all([
+      const [resResults, resSugg, resProfile, resAnalyses] = await Promise.all([
         supabase.from("quiz_results").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
         supabase.from("admin_suggestions").select("*").eq("student_id", user.id).order("created_at", { ascending: false }),
         supabase.from("profiles").select("*").eq("id", user.id).single(),
+        supabase.from("career_analyses" as any).select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
       ]);
       setResults(resResults.data || []);
       setSuggestions(resSugg.data || []);
+      setCareerAnalyses((resAnalyses.data as unknown as CareerAnalysis[]) || []);
       if (resProfile.data) {
         const p = resProfile.data as unknown as Profile;
         setProfile(p);
@@ -1024,6 +1034,38 @@ const StudentDashboard = () => {
               </ul>
             </div>
           </motion.div>
+
+          {/* SECTION 5 — Career Analyses */}
+          {careerAnalyses.length > 0 && (
+            <motion.section
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 shadow-card"
+            >
+              <h2 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-primary" /> My AI Career Reports
+              </h2>
+              <div className="space-y-3">
+                {careerAnalyses.map((report) => (
+                  <div key={report.id} className="flex items-center justify-between p-4 rounded-xl border border-border bg-muted/20">
+                    <div>
+                      <p className="font-display font-semibold text-sm">Career Report</p>
+                      <p className="text-xs text-muted-foreground font-body">
+                        Generated on {new Date(report.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </p>
+                    </div>
+                    <Link 
+                      to="/deep-analysis" 
+                      state={{ savedAnalysis: report.analysis }}
+                      className="text-xs bg-primary/10 text-primary px-3 py-1.5 rounded-lg font-display font-bold hover:bg-primary hover:text-white transition-all"
+                    >
+                      View Report
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </motion.section>
+          )}
         </>
       )}
 
