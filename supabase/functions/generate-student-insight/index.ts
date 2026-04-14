@@ -5,11 +5,12 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response("ok", { headers: corsHeaders });
   }
 
   try {
@@ -87,7 +88,7 @@ serve(async (req) => {
       Avoid any pleasantries, just return the JSON object.`;
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-3.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -99,17 +100,22 @@ serve(async (req) => {
 
     if (!response.ok) {
       const errTxt = await response.text();
-      throw new Error(`Gemini API Error: ${response.status} - ${errTxt}`);
+      throw new Error(`AI Service Error (${response.status}): ${errTxt}`);
     }
 
     const data = await response.json();
     const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
     
+    if (!text) {
+      console.error("Empty response from Gemini:", JSON.stringify(data));
+      throw new Error("AI ne insight generate nahi kiya. Thodi der baad try karein.");
+    }
+
     // Extract JSON
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       console.error("Raw AI response:", text);
-      throw new Error("AI did not return valid JSON");
+      throw new Error("AI did not return valid JSON. Response was: " + text.substring(0, 100) + "...");
     }
     
     const insight = JSON.parse(jsonMatch[0]);
@@ -129,8 +135,9 @@ serve(async (req) => {
     });
   } catch (err) {
     console.error("Error in generate-student-insight:", err.message);
+    // Returning 200 so the frontend can read the error JSON
     return new Response(JSON.stringify({ error: err.message }), {
-      status: 500,
+      status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }

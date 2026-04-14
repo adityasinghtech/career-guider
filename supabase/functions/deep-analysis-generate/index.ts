@@ -5,11 +5,12 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response("ok", { headers: corsHeaders });
   }
 
   try {
@@ -20,6 +21,8 @@ serve(async (req) => {
       throw new Error("GEMINI_API_KEY is not configured.");
     }
 
+    // Insert usage event (Disabled until analytics_events table is created)
+    /*
     if (userId) {
       const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
       const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
@@ -34,6 +37,7 @@ serve(async (req) => {
         });
       }
     }
+    */
 
     const prompt = `You are an expert Indian career counselor. Analyze this student profile and give comprehensive guidance.
 
@@ -78,7 +82,7 @@ Return a JSON object with EXACTLY this structure (no extra text):
 }`;
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-3.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -91,24 +95,30 @@ Return a JSON object with EXACTLY this structure (no extra text):
     if (!response.ok) {
       const errText = await response.text();
       console.error("Gemini API Error:", errText);
-      throw new Error(`Gemini API generated an error: ${response.status}`);
+      throw new Error(`AI Service Error (${response.status}): ${errText}`);
     }
 
     const data = await response.json();
     const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
     
+    if (!text) {
+      console.error("Empty response from Gemini:", JSON.stringify(data));
+      throw new Error("AI ne koi answer nahi diya. Thodi der baad try karein.");
+    }
+
     // Attempt to extract JSON from response
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       console.error("Failed to parse AI response:", text);
-      throw new Error("Failed to extract JSON object from AI response.");
+      throw new Error("AI did not return valid JSON. Response was: " + text.substring(0, 100) + "...");
     }
     
     let analysis;
     try {
       analysis = JSON.parse(jsonMatch[0]);
     } catch (e) {
-      throw new Error("Invalid JSON returned by AI.");
+      console.error("JSON Parse Error:", e);
+      throw new Error("Invalid JSON structure in AI response.");
     }
 
     return new Response(JSON.stringify({ analysis }), {
@@ -117,8 +127,9 @@ Return a JSON object with EXACTLY this structure (no extra text):
   } catch (err) {
     const errorMsg = err instanceof Error ? err.message : String(err);
     console.error("Edge function error:", errorMsg);
+    // Returning 200 so the frontend can read the error JSON instead of generic 'non-2xx' error
     return new Response(JSON.stringify({ error: errorMsg }), {
-      status: 500,
+      status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }

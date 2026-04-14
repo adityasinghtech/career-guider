@@ -1,11 +1,16 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, TrendingUp, Brain, MapPin, DollarSign, Target, Shield } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import { Loader2, TrendingUp, Brain, MapPin, DollarSign, Target, Shield, Download, Share2 } from "lucide-react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
+import CareerReportPDF from "@/components/analysis/CareerReportPDF";
+import { toast } from "sonner";
 
 interface AnalysisResult {
   psychological_aptitude: { strengths: string[]; learning_style: string; career_personality: string };
@@ -45,6 +50,7 @@ const demandColor = (d: string) =>
   : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300";
 
 export default function DeepAnalysis() {
+  const location = useLocation();
   const [profile, setProfile] = useState({
     marks10th: "", marks12th: "", stream: "",
     interests: [] as string[], personality: "balanced" as Personality,
@@ -52,10 +58,34 @@ export default function DeepAnalysis() {
   });
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState<TabKey>("aptitude");
+  const [session, setSession] = useState<any>(null);
+  const [dbProfile, setDbProfile] = useState<any>(null);
 
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session) {
+        fetchProfile(session.user.id);
+      }
+    });
+  }, []);
+
+  async function fetchProfile(userId: string) {
+    const { data } = await supabase.from("profiles").select("*").eq("id", userId).single();
+    if (data) setDbProfile(data);
+  }
+
+  useEffect(() => {
+    // Check if we came from dashboard with a saved analysis
+    if (location.state?.savedAnalysis) {
+      setAnalysis(location.state.savedAnalysis);
+      setActiveTab("aptitude");
+      toast.info("Saved report loaded!");
+    }
+
     try {
       const p = JSON.parse(localStorage.getItem("pathfinder_quiz_profile") || "{}");
       setProfile((prev) => ({
@@ -95,13 +125,61 @@ export default function DeepAnalysis() {
 
       setAnalysis(fnData.analysis);
       setActiveTab("aptitude");
+
+      // Save to database if logged in
+      if (session) {
+        const { error: saveError } = await supabase
+          .from("career_analyses" as any)
+          .insert({
+            user_id: session.user.id,
+            analysis: fnData.analysis,
+          });
+        
+        if (saveError) {
+          console.error("Save Error:", saveError);
+          toast.error("Analysis save nahi ho saki, lekin report taiyar hai!");
+        } else {
+          toast.success("Analysis saved to your profile!");
+        }
+      }
     } catch (err: any) {
-      console.error(err);
-      setError(err.message || "Analysis nahi ho saka. Thodi der baad try karo.");
+      console.error("Deep Analysis Error:", err);
+      // If the edge function returns a json with {error: "..."}, err.message will be that string
+      setError(err.message || "Something went wrong. Please check your internet or try again later.");
     } finally {
       setLoading(false);
     }
   }
+
+  const handleDownloadPDF = async () => {
+    if (!analysis) return;
+    setExporting(true);
+    try {
+      const element = document.getElementById("career-report-pdf");
+      if (!element) throw new Error("Report element not found");
+      
+      const canvas = await html2canvas(element, { scale: 2 });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`PathFinder_Career_Report_${dbProfile?.full_name || 'Student'}.pdf`);
+      toast.success("PDF Downloaded!");
+    } catch (err) {
+      console.error(err);
+      toast.error("PDF generate karne mein dikkat aayi.");
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleShareWhatsApp = () => {
+    const career = analysis?.top_careers?.[0]?.title || "Naye Career Paths";
+    const text = `Hi! Maine PathFinder AI par apna deep career analysis kiya. Mere liye best career "${career}" hai! \n\nCheck out my roadmap here: ${window.location.origin}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -258,6 +336,26 @@ export default function DeepAnalysis() {
             </motion.div>
           ) : (
             <motion.div key="results" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-5">
+              {/* Export Actions */}
+              <div className="flex gap-2 mb-4">
+                <Button 
+                  onClick={handleDownloadPDF} 
+                  disabled={exporting}
+                  className="flex-1 bg-primary text-white font-display font-semibold gap-2 py-6 rounded-xl shadow-lg hover:shadow-primary/20 transition-all"
+                >
+                  {exporting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
+                  Download PDF Report
+                </Button>
+                <Button 
+                  onClick={handleShareWhatsApp}
+                  variant="outline"
+                  className="flex-1 border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 font-display font-semibold gap-2 py-6 rounded-xl"
+                >
+                  <Share2 className="w-5 h-5" />
+                  Share on WhatsApp
+                </Button>
+              </div>
+
               {/* Tabs */}
               <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
                 {tabs.map((tab) => (
@@ -426,6 +524,18 @@ export default function DeepAnalysis() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Hidden component for PDF generation */}
+        <div style={{ position: 'absolute', left: '-9999px', top: '0' }}>
+          {analysis && (
+            <CareerReportPDF 
+              analysis={analysis} 
+              studentName={dbProfile?.full_name || 'Student'} 
+              studentClass={dbProfile?.class || 'N/A'}
+              studentStream={dbProfile?.stream || profile.stream}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
