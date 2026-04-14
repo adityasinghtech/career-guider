@@ -11,7 +11,8 @@ import {
 
 const streamKeyFromResult = (result: StreamResult): string => {
   const s = result.stream.toLowerCase();
-  if (s === "science" || s === "commerce" || s === "arts") return s;
+  const supported = ["science", "commerce", "arts", "sports", "vocational", "creative", "skills"];
+  if (supported.includes(s)) return s;
   return "science";
 };
 

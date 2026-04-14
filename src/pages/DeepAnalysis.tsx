@@ -76,61 +76,28 @@ export default function DeepAnalysis() {
 
   async function runAnalysis() {
     setLoading(true); setError("");
-    const prompt = `You are an expert Indian career counselor. Analyze this student profile and give comprehensive guidance.
-
-Student Profile:
-- 10th Marks: ${profile.marks10th || "Not provided"}%
-- 12th Marks: ${profile.marks12th || "Not provided"}%
-- Stream: ${profile.stream || "Not specified"}
-- Interests: ${profile.interests.join(", ") || "Not specified"}
-- Personality: ${profile.personality}
-- Budget: ${profile.budget}
-- Location: ${profile.location}
-
-Return a JSON object with EXACTLY this structure (no extra text):
-{
-  "psychological_aptitude": {
-    "strengths": ["strength1", "strength2", "strength3"],
-    "learning_style": "Visual/Practical/Theoretical learner description",
-    "career_personality": "What kind of work environment suits them"
-  },
-  "financial_feasibility": {
-    "estimated_4year_cost": "₹X - ₹Y lakhs",
-    "scholarship_potential": "High/Medium/Low with reasons",
-    "roi_timeline": "Estimated years to recoup education cost"
-  },
-  "top_careers": [
-    {"title": "Career Name", "salary": "₹X-Y LPA", "demand": "High/Medium/Low", "path": "How to reach this career"}
-  ],
-  "target_colleges": [
-    {"name": "College Name", "location": "City, State", "fees": "₹X/year", "exam": "Entrance exam needed"}
-  ],
-  "structured_roadmap": {
-    "now": ["Action 1", "Action 2", "Action 3"],
-    "year1": ["Year 1 milestone 1", "Year 1 milestone 2"],
-    "year2": ["Year 2 milestone 1", "Year 2 milestone 2"],
-    "longterm": ["5 year goal 1", "5 year goal 2"]
-  },
-  "backup_paths": [
-    {"title": "Backup Option", "description": "Why this is a good backup"}
-  ],
-  "competition_level": "This field has X competition level because...",
-  "success_tips": ["Tip 1", "Tip 2", "Tip 3", "Tip 4"]
-}`;
-
     try {
-      const { data: fnData, error: fnError } = await supabase.functions.invoke("deep-analysis", {
-        body: { prompt },
+      const { data: fnData, error: fnError } = await supabase.functions.invoke("deep-analysis-generate", {
+        body: {
+          marks10th: profile.marks10th,
+          marks12th: profile.marks12th,
+          stream: profile.stream,
+          interests: profile.interests,
+          personality: profile.personality,
+          budget: profile.budget,
+          location: profile.location
+        },
       });
+
       if (fnError) throw new Error(fnError.message);
-      const data = fnData;
-      const text = data.content?.[0]?.text || "";
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) throw new Error("Analysis failed");
-      setAnalysis(JSON.parse(jsonMatch[0]));
+      if (fnData?.error) throw new Error(fnData.error);
+      if (!fnData?.analysis) throw new Error("Analysis failed");
+
+      setAnalysis(fnData.analysis);
       setActiveTab("aptitude");
-    } catch {
-      setError("Analysis nahi ho saka. Thodi der baad try karo.");
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Analysis nahi ho saka. Thodi der baad try karo.");
     } finally {
       setLoading(false);
     }

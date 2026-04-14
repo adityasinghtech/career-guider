@@ -96,7 +96,10 @@ const Quiz = () => {
     } catch {
       situation = [];
     }
-    const stream = profile.stream;
+    let stream = profile.stream;
+    if (selectedInterest === "sports" || selectedInterest === "vocational") {
+      stream = selectedInterest;
+    }
 
     // Store quiz profile for chatbot personalization
     const mentorNotes = questionNotes.map((n) => n.trim()).filter(Boolean);
@@ -120,14 +123,12 @@ const Quiz = () => {
         scores: profile.scores,
       });
 
-      await supabase.from("profiles").upsert(
+      await supabase.from("profiles").update(
         {
-          id: user.id,
           stream,
           updated_at: new Date().toISOString(),
-        },
-        { onConflict: "id" },
-      );
+        }
+      ).eq("id", user.id);
     }
 
     navigate(`/results/${stream}`);
