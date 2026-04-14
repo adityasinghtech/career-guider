@@ -235,6 +235,140 @@ const AdminRepliesSection = ({ userEmail }: { userEmail: string | undefined }) =
   );
 };
 
+// ─── Help & Support Section ────────────────────────────────────────────────
+const HelpSupportSection = ({ user, profile }: { user: any; profile: Profile | null }) => {
+  const [message, setMessage] = useState("");
+  const [issueType, setIssueType] = useState("Quiz Issue");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [recentMessages, setRecentMessages] = useState<any[]>([]);
+
+  const fetchRecentMessages = async () => {
+    if (!user?.email) return;
+    const { data } = await supabase
+      .from("contact_messages")
+      .select("id, message, admin_reply, status, created_at")
+      .eq("email", user.email)
+      .eq("sender_type", "student")
+      .order("created_at", { ascending: false })
+      .limit(3);
+    if (data) setRecentMessages(data);
+  };
+
+  useEffect(() => {
+    fetchRecentMessages();
+
+    if (!user?.email) return;
+    const channel = supabase
+      .channel("public:contact_messages:help")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "contact_messages",
+          filter: `email=eq.${user.email}`,
+        },
+        () => fetchRecentMessages()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user?.email]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!message.trim() || !user || !profile) return;
+    
+    setIsSubmitting(true);
+    const prefix = `[${issueType.toUpperCase()}] `;
+    
+    const { error } = await supabase.from("contact_messages").insert({
+      name: profile.full_name || "Student",
+      email: user.email,
+      phone: profile.phone || "",
+      message: prefix + message,
+      sender_type: "student",
+      issue_type: issueType,
+      is_read: false,
+    });
+    
+    setIsSubmitting(false);
+    
+    if (error) {
+      toast.error("Message bhejne mein problem aayi.");
+    } else {
+      toast.success("Message bhej diya! Admin jald reply karenge 🙏");
+      setMessage("");
+    }
+  };
+
+  return (
+    <div className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 mt-6 shadow-card">
+      <h3 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
+        🛠️ Help & Support
+      </h3>
+      
+      <form onSubmit={handleSubmit} className="space-y-4 mb-6">
+        <div>
+          <label className="text-xs font-display font-semibold text-muted-foreground block mb-1">Issue Type</label>
+          <select
+            value={issueType}
+            onChange={(e) => setIssueType(e.target.value)}
+            className="w-full px-3 py-2 rounded-xl border-2 border-border bg-background text-foreground text-sm font-body focus:border-primary focus:outline-none"
+          >
+            <option value="Quiz Issue">Quiz Issue</option>
+            <option value="Login Issue">Login Issue</option>
+            <option value="Career Guidance">Career Guidance</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label className="text-xs font-display font-semibold text-muted-foreground block mb-1">Aapki Problem</label>
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            maxLength={500}
+            rows={3}
+            placeholder="Apni problem likhein..."
+            className="w-full px-3 py-2 rounded-xl border-2 border-border bg-background text-foreground text-sm font-body focus:border-primary focus:outline-none resize-none"
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={isSubmitting || !message.trim()}
+          className="gradient-hero text-primary-foreground font-display font-semibold px-4 py-2 rounded-xl hover:opacity-90 transition-opacity text-sm disabled:opacity-50 flex items-center gap-2"
+        >
+          {isSubmitting ? "Bhej rahe hain..." : "Message Bhejo 📨"}
+        </button>
+      </form>
+
+      {recentMessages.length > 0 && (
+        <div>
+          <h4 className="text-sm font-display font-semibold text-foreground mb-3">Aapke Pichle Messages:</h4>
+          <div className="space-y-2">
+            {recentMessages.map((msg) => (
+              <div key={msg.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl border border-border bg-muted/20">
+                <p className="text-sm font-body text-foreground line-clamp-2 flex-1">
+                  {msg.message}
+                </p>
+                <div className="shrink-0 flex items-center gap-2">
+                  <span className={`text-xs px-2 py-1 rounded-full font-semibold border ${
+                    msg.admin_reply ? "bg-green-500/10 text-green-600 border-green-500/20" : "bg-orange-500/10 text-orange-600 border-orange-500/20"
+                  }`}>
+                    {msg.admin_reply ? "Replied" : "Pending"}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 function computeVisitStreak(): number {
   const today = formatLocalDate(new Date());
   const last = localStorage.getItem("pathfinder_last_visit");
@@ -971,6 +1105,7 @@ const StudentDashboard = () => {
             </div>
           )}
           <AdminRepliesSection userEmail={user?.email} />
+          <HelpSupportSection user={user} profile={profile} />
         </div>
       )}
 
