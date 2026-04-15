@@ -17,13 +17,13 @@ const streamColors: Record<string, string> = {
 };
 
 const streamEmojis: Record<string, string> = {
-  Science: "<span aria-hidden='true'>🔬</span>",
-  Commerce: "<span aria-hidden='true'>📊</span>",
-  Arts: "<span aria-hidden='true'>🎨</span>",
-  Sports: "<span aria-hidden='true'>🏆</span>",
-  Vocational: "<span aria-hidden='true'>🔧</span>",
-  Creative: "<span aria-hidden='true'>🎨</span>",
-  Skills: "<span aria-hidden='true'>💻</span>",
+  Science: "🔬",
+  Commerce: "📊",
+  Arts: "🎨",
+  Sports: "🏆",
+  Vocational: "🔧",
+  Creative: "🎨",
+  Skills: "💻",
 };
 
 const ResultHeroCard = ({ result, allScores }: Props) => {
@@ -57,7 +57,7 @@ const ResultHeroCard = ({ result, allScores }: Props) => {
         </h1>
         <p className="font-display font-bold text-xl opacity-90">{result.tagline}</p>
         <div className="mt-2 inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm font-display font-semibold">
-          <span aria-hidden='true'>🎯</span> {percentages[result.stream]}% Match
+          🎯 {percentages[result.stream]}% Match
         </div>
       </div>
 
@@ -76,8 +76,9 @@ const ResultHeroCard = ({ result, allScores }: Props) => {
                 className={`h-full rounded-full ${i === 0 ? "bg-white" : "bg-white/50"}`}
               />
             </div>
-            <span className="font-display font-bold text-sm w-10 text-right">
-              {i === 0 ? `<span aria-hidden='true'>🥇</span> ${pct}%` : i === 1 ? `<span aria-hidden='true'>🥈</span> ${pct}%` : `<span aria-hidden='true'>🥉</span> ${pct}%`}
+            <span className="font-display font-bold text-sm w-10 text-right flex items-center gap-1 justify-end">
+              {i === 0 ? "🥇" : i === 1 ? "🥈" : "🥉"}
+              <span>{pct}%</span>
             </span>
           </div>
         ))}
@@ -87,3 +88,4 @@ const ResultHeroCard = ({ result, allScores }: Props) => {
 };
 
 export default ResultHeroCard;
+

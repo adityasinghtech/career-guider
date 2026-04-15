@@ -111,7 +111,7 @@ const ExamCountdown = ({ stream }: { stream: string }) => {
       transition={{ delay: 0.15 }}
       className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 shadow-card"
     >
-      <h2 className="font-display font-bold text-lg text-foreground mb-4">Upcoming Exams <span aria-hidden="true">⏰</span></h2>
+      <h2 className="font-display font-bold text-lg text-foreground mb-4">Upcoming Exams ⏰</h2>
       <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory">
         {upcoming.map((exam) => (
           <div
@@ -136,3 +136,4 @@ const ExamCountdown = ({ stream }: { stream: string }) => {
 };
 
 export default ExamCountdown;
+

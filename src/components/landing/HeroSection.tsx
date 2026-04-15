@@ -3,17 +3,17 @@ import { motion } from "framer-motion";
 import { Sparkles, Zap, ArrowRight, Rocket } from "lucide-react";
 
 const stats = [
-  { number: "10K+", label: "Students Guided", emoji: "<span aria-hidden='true'>🎓</span>" },
-  { number: "500+", label: "Schools Connected", emoji: "<span aria-hidden='true'>🏫</span>" },
-  { number: "95%", label: "Accuracy Rate", emoji: "<span aria-hidden='true'>🎯</span>" },
-  { number: "3 min", label: "Quiz Duration", emoji: "<span aria-hidden='true'>⚡</span>" },
+  { number: "10K+", label: "Students Guided", emoji: "🎓" },
+  { number: "500+", label: "Schools Connected", emoji: "🏫" },
+  { number: "95%", label: "Accuracy Rate", emoji: "🎯" },
+  { number: "3 min", label: "Quiz Duration", emoji: "⚡" },
 ];
 
 const careerBadges = [
-  "AI Engineer <span aria-hidden='true'>🤖</span>",
-  "Doctor <span aria-hidden='true'>👨‍⚕️</span>",
-  "CA ₹50L <span aria-hidden='true'>💰</span>",
-  "IIT Topper <span aria-hidden='true'>🏆</span>",
+  { label: "AI Engineer", icon: "🤖" },
+  { label: "Doctor", icon: "👨‍⚕️" },
+  { label: "CA ₹50L", icon: "💰" },
+  { label: "IIT Topper", icon: "🏆" },
 ];
 
 const HeroSection = () => (
@@ -43,7 +43,7 @@ const HeroSection = () => (
             transition={{ delay: 0.2, duration: 0.5 }}
             className="inline-flex items-center gap-2 gradient-hero-subtle border border-primary/20 text-primary font-display font-semibold px-5 py-2.5 rounded-full text-sm mb-8"
           >
-            <Sparkles className="w-4 h-4" /> <span aria-hidden="true">🇮🇳</span> India ka #1 FREE Career Guidance Platform
+            <Sparkles className="w-4 h-4" /> 🇮🇳 India ka #1 FREE Career Guidance Platform
           </motion.div>
 
           <h1 className="font-display font-black text-4xl md:text-6xl lg:text-7xl text-foreground leading-[1.1] mb-8 tracking-tight">
@@ -52,11 +52,11 @@ const HeroSection = () => (
               Raasta Hum Dikhayenge
             </span>
             <br className="hidden sm:block" />
-            <span className="text-3xl md:text-5xl lg:text-6xl"> — Aapka Future, Aapki Choice! <span aria-hidden="true">🚀</span></span>
+            <span className="text-3xl md:text-5xl lg:text-6xl"> — Aapka Future, Aapki Choice! 🚀</span>
           </h1>
 
           {/* Clean Horizontal Badges Row */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.5 }}
@@ -70,7 +70,7 @@ const HeroSection = () => (
                 transition={{ delay: 0.3 + (i * 0.1), duration: 0.4 }}
                 className="bg-gray-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-orange-100 dark:hover:bg-orange-500/20 hover:text-orange-600 dark:hover:text-orange-400 font-display font-medium px-4 py-2 rounded-full text-sm shadow-sm transition-colors cursor-default border border-transparent hover:border-orange-200 dark:hover:border-orange-500/30"
               >
-                {badge}
+                {badge.label} {badge.icon}
               </motion.div>
             ))}
           </motion.div>
@@ -83,7 +83,7 @@ const HeroSection = () => (
           >
             15 sawaal ka <strong className="text-foreground">FREE quiz</strong> dijiye aur jaaniye — Science, Commerce ya Arts — aapke liye kaunsa stream{" "}
             <strong className="text-foreground">perfect</strong> hai.
-            Saath mein milega <strong className="text-foreground">15-year career roadmap</strong>, top colleges, scholarships aur free courses! <span aria-hidden="true">🎯</span>
+            Saath mein milega <strong className="text-foreground">15-year career roadmap</strong>, top colleges, scholarships aur free courses! 🎯
           </motion.p>
 
           <motion.p
@@ -92,7 +92,7 @@ const HeroSection = () => (
             transition={{ delay: 0.5 }}
             className="text-sm text-primary font-display font-semibold mb-0 flex items-center justify-center gap-1"
           >
-            <Zap className="w-4 h-4" /> 10,000+ students ne apna career clear kiya — ab aapki baari! <span aria-hidden="true">⚡</span>
+            <Zap className="w-4 h-4" /> 10,000+ students ne apna career clear kiya — ab aapki baari! ⚡
           </motion.p>
         </div>
 
@@ -113,7 +113,7 @@ const HeroSection = () => (
             href="#features"
             className="border-2 border-border text-foreground font-display font-semibold px-8 py-4 rounded-xl text-lg hover:bg-muted hover:border-primary/20 transition-all"
           >
-            Pehle Dekho Lein <span aria-hidden="true">👀</span>
+            Pehle Dekho Lein 👀
           </a>
         </motion.div>
 
@@ -125,7 +125,7 @@ const HeroSection = () => (
         >
           {["100% Free", "Instant Results", "Parents PDF Report", "15-Year Roadmap"].map((badge) => (
             <span key={badge} className="flex items-center gap-1 bg-muted/60 px-3 py-1.5 rounded-full border border-border/30">
-              <span aria-hidden="true">✅</span> {badge}
+              ✅ {badge}
             </span>
           ))}
         </motion.div>
@@ -154,3 +154,4 @@ const HeroSection = () => (
 );
 
 export default HeroSection;
+

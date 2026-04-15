@@ -27,9 +27,8 @@ const ActivityFeed = ({ activityFeed }: ActivityFeedProps) => {
           Live Activity Feed
         </span>
         <ChevronDown
-          className={`w-4 h-4 transition-transform ${
-            showActivityFeed ? "rotate-180" : ""
-          }`}
+          className={`w-4 h-4 transition-transform ${showActivityFeed ? "rotate-180" : ""
+            }`}
         />
       </button>
 
@@ -51,10 +50,10 @@ const ActivityFeed = ({ activityFeed }: ActivityFeedProps) => {
               >
                 <span className="text-lg">
                   {item.type === "student"
-                    ? "<span aria-hidden='true'>👤</span>"
+                    ? "👤"
                     : item.type === "quiz"
-                    ? "<span aria-hidden='true'>📝</span>"
-                    : "<span aria-hidden='true'>💬</span>"}
+                    ? "📝"
+                    : "💬"}
                 </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-body text-foreground truncate">
@@ -65,12 +64,14 @@ const ActivityFeed = ({ activityFeed }: ActivityFeedProps) => {
                   </p>
                 </div>
               </div>
-            ))
+      ))
           )}
-        </motion.div>
-      )}
-    </div>
+    </motion.div>
+  )
+}
+    </div >
   );
 };
 
 export default ActivityFeed;
+

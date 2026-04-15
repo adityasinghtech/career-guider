@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Award, Search } from "lucide-react";
+import { Award, Search, ExternalLink } from "lucide-react";
 import type { StreamResult } from "@/data/quizData";
 
 const categoryOrder = [
@@ -12,65 +12,70 @@ const categoryOrder = [
   "International",
 ];
 
-const categoryLabels: Record<string, string> = {
-  Bihar: '<span aria-hidden="true">🏛️</span> Bihar',
-  UP: '<span aria-hidden="true">🏛️</span> UP',
-  National: '<span aria-hidden="true">🇮🇳</span> National',
-  Delhi: '<span aria-hidden="true">🏙️</span> Delhi',
-  Maharashtra: '<span aria-hidden="true">🏙️</span> Maharashtra',
-  Karnataka: '<span aria-hidden="true">🏙️</span> Karnataka',
-  "Tamil Nadu": '<span aria-hidden="true">🏙️</span> Tamil Nadu',
-  "West Bengal": '<span aria-hidden="true">🏙️</span> West Bengal',
-  Rajasthan: '<span aria-hidden="true">🏛️</span> Rajasthan',
-  "Madhya Pradesh": '<span aria-hidden="true">🏛️</span> MP',
-  Gujarat: '<span aria-hidden="true">🏙️</span> Gujarat',
-  Telangana: '<span aria-hidden="true">🏙️</span> Telangana',
-  Kerala: '<span aria-hidden="true">🌴</span> Kerala',
-  Punjab: '<span aria-hidden="true">🏛️</span> Punjab',
-  Haryana: '<span aria-hidden="true">🏛️</span> Haryana',
-  Jharkhand: '<span aria-hidden="true">🏛️</span> Jharkhand',
-  Uttarakhand: '<span aria-hidden="true">🏔️</span> Uttarakhand',
-  Assam: '<span aria-hidden="true">🌿</span> Assam',
-  Odisha: '<span aria-hidden="true">🏛️</span> Odisha',
-  Chhattisgarh: '<span aria-hidden="true">🏛️</span> Chhattisgarh',
-  "Andhra Pradesh": '<span aria-hidden="true">🏛️</span> AP',
-  International: '<span aria-hidden="true">🌍</span> International',
+const categoryLabels: Record<string, { icon: string; label: string }> = {
+  Bihar: { icon: "🏛️", label: "Bihar" },
+  UP: { icon: "🏛️", label: "UP" },
+  National: { icon: "🇮🇳", label: "National" },
+  Delhi: { icon: "🏙️", label: "Delhi" },
+  Maharashtra: { icon: "🏙️", label: "Maharashtra" },
+  Karnataka: { icon: "🏙️", label: "Karnataka" },
+  "Tamil Nadu": { icon: "🏙️", label: "Tamil Nadu" },
+  "West Bengal": { icon: "🏙️", label: "West Bengal" },
+  Rajasthan: { icon: "🏛️", label: "Rajasthan" },
+  "Madhya Pradesh": { icon: "🏛️", label: "MP" },
+  Gujarat: { icon: "🏙️", label: "Gujarat" },
+  Telangana: { icon: "🏙️", label: "Telangana" },
+  Kerala: { icon: "🌴", label: "Kerala" },
+  Punjab: { icon: "🏛️", label: "Punjab" },
+  Haryana: { icon: "🏛️", label: "Haryana" },
+  Jharkhand: { icon: "🏛️", label: "Jharkhand" },
+  Uttarakhand: { icon: "🏔️", label: "Uttarakhand" },
+  Assam: { icon: "🌿", label: "Assam" },
+  Odisha: { icon: "🏛️", label: "Odisha" },
+  Chhattisgarh: { icon: "🏛️", label: "Chhattisgarh" },
+  "Andhra Pradesh": { icon: "🏛️", label: "AP" },
+  International: { icon: "🌍", label: "International" },
 };
 
 const ResultScholarships = ({ result }: { result: StreamResult }) => {
   const [activeCategory, setActiveCategory] = useState("Bihar");
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [activeFilterId, setActiveFilterId] = useState("All");
 
   // Read student profile for personalised filter
   const profile = useMemo(() => {
-    try { return JSON.parse(localStorage.getItem("pathfinder_quiz_profile") || "{}"); }
-    catch { return {}; }
+    try {
+      const stored = localStorage.getItem("pathfinder_quiz_profile");
+      return stored ? JSON.parse(stored) : {};
+    } catch {
+      return {};
+    }
   }, []);
+
   const studentCategory: string | null = profile.category || null;
 
   // Top-level filter options
-  const filterOptions = [
-    "All",
-    "National",
-    "Bihar",
-    "UP",
-    "International",
-    ...(studentCategory && studentCategory !== "general" ? ["Aapke liye <span aria-hidden='true'>🎯</span>"] : []),
-  ];
+  const filterOptions = useMemo(() => [
+    { id: "All", label: "All" },
+    { id: "National", label: "National" },
+    { id: "Bihar", label: "Bihar" },
+    { id: "UP", label: "UP" },
+    { id: "International", label: "International" },
+    ...(studentCategory && studentCategory !== "general" ? [{ id: "Personalised", label: "Aapke liye", icon: "🎯" }] : []),
+  ], [studentCategory]);
 
   // Pre-scoped pool based on top-level filter
   const scopedScholarships = useMemo(() => {
-    if (activeFilter === "All") return result.scholarships;
-    if (activeFilter === "Aapke liye <span aria-hidden='true'>🎯</span>") {
+    if (activeFilterId === "All") return result.scholarships;
+    if (activeFilterId === "Personalised") {
       return result.scholarships.filter(
         (s) =>
           s.category === "National" ||
           s.eligibility?.toLowerCase().includes(studentCategory?.toLowerCase() ?? "")
       );
     }
-    return result.scholarships.filter((s) => s.category === activeFilter);
-  }, [result.scholarships, activeFilter, studentCategory]);
+    return result.scholarships.filter((s) => s.category === activeFilterId);
+  }, [result.scholarships, activeFilterId, studentCategory]);
 
   const availableCategories = useMemo(() => {
     return categoryOrder.filter((cat) =>
@@ -78,12 +83,16 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
     );
   }, [scopedScholarships]);
 
+  // Ensure active category is valid for current filter
+  useMemo(() => {
+    if (availableCategories.length > 0 && !availableCategories.includes(activeCategory)) {
+      setActiveCategory(availableCategories[0]);
+    }
+  }, [availableCategories, activeCategory]);
+
   const filteredScholarships = useMemo(() => {
     let scholarships = scopedScholarships.filter((s) => s.category === activeCategory);
-    if (!scholarships.length && availableCategories.length) {
-      // If current category becomes empty after filter change, fall back to first available
-      scholarships = scopedScholarships.filter((s) => s.category === availableCategories[0]);
-    }
+    
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       scholarships = scholarships.filter(
@@ -93,7 +102,9 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
       );
     }
     return scholarships;
-  }, [scopedScholarships, activeCategory, availableCategories, searchQuery]);
+  }, [scopedScholarships, activeCategory, searchQuery]);
+
+  const activeFilterLabel = filterOptions.find(f => f.id === activeFilterId)?.label || "All";
 
   return (
     <motion.div
@@ -103,7 +114,7 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
       className="bg-card rounded-2xl p-6 shadow-card"
     >
       <h2 className="font-display font-bold text-xl text-foreground mb-4 flex items-center gap-2">
-        <Award className="w-5 h-5 text-primary" /> Scholarships — State Wise <span aria-hidden="true">💸</span>
+        <Award className="w-5 h-5 text-primary" /> Scholarships — State Wise 💸
       </h2>
 
       {/* NSP Portal Quick Link */}
@@ -118,7 +129,7 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
           rel="noopener noreferrer"
           className="text-xs font-display font-semibold px-3 py-2 rounded-lg gradient-hero text-primary-foreground hover:opacity-90 transition-opacity whitespace-nowrap flex-shrink-0"
         >
-          Visit NSP <span aria-hidden="true">🔗</span>
+          Visit NSP 🔗
         </a>
       </div>
 
@@ -126,26 +137,17 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
       <div className="mb-4">
         <div className="flex gap-2 flex-wrap">
           {filterOptions.map((opt) => {
-            const isPersonalised = opt === "Aapke liye <span aria-hidden='true'>🎯</span>";
-            const isActive = activeFilter === opt;
+            const isActive = activeFilterId === opt.id;
+            const isPersonalised = opt.id === "Personalised";
             return (
               <button
-                key={opt}
+                key={opt.id}
                 onClick={() => {
-                  setActiveFilter(opt);
+                  setActiveFilterId(opt.id);
                   setSearchQuery("");
-                  // Reset category to first available when filter changes
-                  const first = categoryOrder.find((cat) =>
-                    (opt === "All" ? result.scholarships : result.scholarships.filter(
-                      (s) => opt === "Aapke liye <span aria-hidden='true'>🎯</span>"
-                        ? s.category === "National" || s.eligibility?.toLowerCase().includes(studentCategory?.toLowerCase() ?? "")
-                        : s.category === opt
-                    )).some((s) => s.category === cat)
-                  );
-                  if (first) setActiveCategory(first);
                 }}
                 className={`px-3 py-1.5 rounded-full font-display font-semibold text-xs transition-all border ${
-                  isPersonalised && isActive
+                  isActive && isPersonalised
                     ? "bg-amber-500 border-amber-500 text-white"
                     : isPersonalised
                     ? "border-amber-400 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/30"
@@ -154,14 +156,13 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
                     : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
                 }`}
               >
-                {opt}
+                {opt.label} {opt.icon}
               </button>
             );
           })}
         </div>
         <p className="text-xs text-muted-foreground mt-2">
-          {scopedScholarships.length} scholarship{scopedScholarships.length !== 1 ? "s" : ""}
-          {activeFilter !== "All" ? ` — ${activeFilter}` : ""}
+          {scopedScholarships.length} scholarship{scopedScholarships.length !== 1 ? "s" : ""} — {activeFilterLabel}
         </p>
       </div>
 
@@ -189,38 +190,34 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
                 : "bg-muted text-muted-foreground hover:bg-muted/80"
             }`}
           >
-            {categoryLabels[cat] || cat}
+            {categoryLabels[cat]?.icon || "🏛️"} {categoryLabels[cat]?.label || cat}
           </button>
         ))}
       </div>
 
       <p className="text-xs text-muted-foreground mb-3">
-        {filteredScholarships.length} scholarship{filteredScholarships.length !== 1 ? "s" : ""} — {categoryLabels[activeCategory] || activeCategory}
+        {filteredScholarships.length} scholarship{filteredScholarships.length !== 1 ? "s" : ""} — {categoryLabels[activeCategory]?.label || activeCategory}
       </p>
 
       <div className="space-y-4">
         {filteredScholarships.map((s) => (
           <div key={s.name} className="bg-muted/50 rounded-xl p-4 space-y-2 border border-border/50 hover:border-primary/30 transition-colors">
-            {/* Name */}
             <h3 className="font-display font-bold text-foreground">{s.name}</h3>
 
-            {/* Amount — prominent */}
             {s.amount && (
-              <span className="inline-block text-sm font-display font-bold text-green-700 dark:text-green-400">
-                <span aria-hidden="true">💰</span> {s.amount}
-              </span>
+              <p className="text-sm font-display font-bold text-green-700 dark:text-green-400 flex items-center gap-1.5">
+                💰 {s.amount}
+              </p>
             )}
 
-            {/* Eligibility */}
             <p className="text-sm text-muted-foreground">
               <span className="font-medium text-foreground">Eligibility:</span> {s.eligibility}
             </p>
 
-            {/* Deadline + Apply row */}
             <div className="flex flex-wrap items-center gap-2 pt-1">
               {s.deadline && (
                 <span className="text-xs text-amber-700 dark:text-amber-400 font-display font-semibold bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/30">
-                  <span aria-hidden="true">⏰</span> {s.deadline}
+                  ⏰ {s.deadline}
                 </span>
               )}
               <a
@@ -229,7 +226,7 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-xs font-display font-semibold px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
               >
-                Apply Now → <span aria-hidden="true">🔗</span>
+                Apply Now <ExternalLink className="w-3 h-3" />
               </a>
             </div>
           </div>
@@ -245,3 +242,4 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
 };
 
 export default ResultScholarships;
+

@@ -6,49 +6,49 @@ const testimonials = [
     name: "Priya Kumari",
     location: "Patna, Bihar",
     class: "Class 11 — Science",
-    text: "Mujhe pata hi nahi tha ki mera interest Science mein hai! PathFinder ne 3 minute mein clear kar diya. Ab IIT ki taiyari kar rahi hoon <span aria-hidden='true'>💪</span>",
+    text: "Mujhe pata hi nahi tha ki mera interest Science mein hai! PathFinder ne 3 minute mein clear kar diya. Ab IIT ki taiyari kar rahi hoon 💪",
     rating: 5,
-    emoji: "<span aria-hidden='true'>👩‍🔬</span>",
+    emoji: "👩‍🔬",
   },
   {
     name: "Rohit Sharma",
     location: "Lucknow, UP",
     class: "Class 10 — Confused tha!",
-    text: "Papa bolte the Science lo, dost bolte the Commerce. PathFinder ne meri strength dekhi aur Commerce suggest kiya. Ab CA ki taiyari kar raha hoon! <span aria-hidden='true'>📊</span>",
+    text: "Papa bolte the Science lo, dost bolte the Commerce. PathFinder ne meri strength dekhi aur Commerce suggest kiya. Ab CA ki taiyari kar raha hoon! 📊",
     rating: 5,
-    emoji: "<span aria-hidden='true'>👨‍💼</span>",
+    emoji: "👨‍💼",
   },
   {
     name: "Sneha Gupta",
     location: "Varanasi, UP",
     class: "Class 12 — Arts",
-    text: "Sabne bola Arts mein kya scope hai. PathFinder ne dikhaya ki Law mein kitna scope hai — CLAT crack karke NLU mein admission mil gaya! <span aria-hidden='true'>⚖️</span>",
+    text: "Sabne bola Arts mein kya scope hai. PathFinder ne dikhaya ki Law mein kitna scope hai — CLAT crack karke NLU mein admission mil gaya! ⚖️",
     rating: 5,
-    emoji: "<span aria-hidden='true'>👩‍⚖️</span>",
+    emoji: "👩‍⚖️",
   },
   {
     name: "Aman Kumar",
     location: "Muzaffarpur, Bihar",
     class: "Class 9 — Early Explorer",
-    text: "9th mein hi pata chal gaya ki mujhe Data Science mein jaana hai. Roadmap follow kar raha hoon — Python bhi seekh liya! <span aria-hidden='true'>🤖</span>",
+    text: "9th mein hi pata chal gaya ki mujhe Data Science mein jaana hai. Roadmap follow kar raha hoon — Python bhi seekh liya! 🤖",
     rating: 5,
-    emoji: "<span aria-hidden='true'>👨‍💻</span>",
+    emoji: "👨‍💻",
   },
   {
     name: "Anjali Devi",
     location: "Jaunpur, UP",
     class: "Class 10 — Village se",
-    text: "Hamare village mein koi career counselor nahi hai. PathFinder ne free mein itna accha guidance diya — PDF parents ko dikhayi toh bohot khush hue! <span aria-hidden='true'>🎉</span>",
+    text: "Hamare village mein koi career counselor nahi hai. PathFinder ne free mein itna accha guidance diya — PDF parents ko dikhayi toh bohot khush hue! 🎉",
     rating: 5,
-    emoji: "<span aria-hidden='true'>👩‍🎓</span>",
+    emoji: "👩‍🎓",
   },
   {
     name: "Ravi Ranjan",
     location: "Gaya, Bihar",
     class: "Class 11 — Commerce",
-    text: "Free courses ki list mili — Zerodha Varsity se stock market seekh raha hoon. Sab kuch free mein! PathFinder is a game changer <span aria-hidden='true'>🔥</span>",
+    text: "Free courses ki list mili — Zerodha Varsity se stock market seekh raha hoon. Sab kuch free mein! PathFinder is a game changer 🔥",
     rating: 5,
-    emoji: "<span aria-hidden='true'>📈</span>",
+    emoji: "📈",
   },
 ];
 
@@ -66,12 +66,12 @@ const TestimonialsSection = () => (
         className="text-center mb-14"
       >
         <span className="inline-block text-sm font-display font-semibold text-primary bg-primary/10 px-4 py-1.5 rounded-full mb-4 border border-primary/15">
-          <span aria-hidden='true'>❤️</span> Real Stories
+          ❤️ Real Stories
         </span>
         <h2 className="font-display font-bold text-3xl md:text-5xl text-foreground mb-4">
-          Students Kya Keh Rahe Hain? <span aria-hidden='true'>💬</span>
+          Students Kya Keh Rahe Hain? 💬
         </h2>
-        <p className="text-muted-foreground text-lg">Real students, real results — koi actor nahi! <span aria-hidden='true'>😄</span></p>
+        <p className="text-muted-foreground text-lg">Real students, real results — koi actor nahi! 😄</p>
       </motion.div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

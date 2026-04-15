@@ -1,294 +1,94 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Mic, MicOff, Volume2, X, HelpCircle } from 'lucide-react';
-import { useTextToSpeech } from '@/hooks/useTextToSpeech';
-import { useVoiceControl } from '@/hooks/useVoiceControl';
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Mic, MicOff, Volume2, Sparkles, X } from "lucide-react";
+import { useTextToSpeech } from "@/hooks/useTextToSpeech";
+import { useVoiceControl } from "@/hooks/useVoiceControl";
+import { useAccessibility } from "@/hooks/useAccessibility";
 
-const HELP_TEXT =
-  'Main aapki madad kar sakta hoon. Boliye: ' +
-  'Quiz shuru karo, ' +
-  'Home jao, ' +
-  'Dashboard dekho, ' +
-  'Career compare karo, ' +
-  'ya Learning resources dekho.';
+const VoiceAssistant = () => {
+  const { mode } = useAccessibility();
+  const { isSpeaking, stop: stopSpeaking, supported: ttsSupported } = useTextToSpeech();
+  const [isVisible, setIsVisible] = useState(false);
 
-const COMMANDS_GUIDE = [
-  { phrase: '"Quiz shuru"', action: 'Quiz pe jao' },
-  { phrase: '"Ghar" / "Home"', action: 'Home page' },
-  { phrase: '"Dashboard"', action: 'Dashboard' },
-  { phrase: '"Career compare"', action: 'Career comparison' },
-  { phrase: '"Seekhna hai" / "Learning"', action: 'Learning resources' },
-  { phrase: '"Madad" / "Help"', action: 'Help sunao' },
-];
-
-export default function VoiceAssistant() {
-  const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
-  const [lastCommand, setLastCommand] = useState('');
-  const { speak, stop, isSpeaking, supported: ttsSupported } = useTextToSpeech();
-
-  const handleNavigate = useCallback(
-    (path: string, announcement: string) => {
-      setLastCommand(announcement);
-      setIsOpen(false);
-      if (ttsSupported) speak(announcement);
-      navigate(path);
-    },
-    [navigate, speak, ttsSupported]
-  );
-
-  const handleHelp = useCallback(() => {
-    const text = HELP_TEXT;
-    setLastCommand(text);
-    speak(text);
-  }, [speak]);
-
-  // Voice Greeting: Speak when the assistant is opened
+  // Auto-show when voice mode is active
   useEffect(() => {
-    if (isOpen && ttsSupported && !isSpeaking) {
-      speak('Main aapki madad kar sakta hoon. Boliye "Help" commands sunne ke liye.');
+    if (mode === "voice" || mode === "blind") {
+      setIsVisible(true);
     }
-  }, [isOpen]);
+  }, [mode]);
 
-  const commands = useMemo(() => [
-    {
-      pattern: ['quiz shuru', 'quiz start', 'quiz'],
-      action: () => handleNavigate('/quiz', 'Quiz shuru ho raha hai!'),
-      description: 'Quiz pe jao',
+  const { isListening, transcript, supported: sttSupported, startListening, stopListening } = useVoiceControl([
+    { 
+      pattern: ["assistant hide", "assistant chhupao", "band karo"], 
+      action: () => setIsVisible(false),
+      description: "Hide the voice assistant"
     },
     {
-      pattern: ['ghar', 'home', 'wapas jao', 'main page'],
-      action: () => handleNavigate('/', 'Home page pe aa gaye.'),
-      description: 'Home page pe jao',
-    },
-    {
-      pattern: ['dashboard', 'mera page', 'meri profile'],
-      action: () => handleNavigate('/dashboard', 'Dashboard khul raha hai.'),
-      description: 'Dashboard pe jao',
-    },
-    {
-      pattern: ['career compare', 'compare karo', 'tulna'],
-      action: () => handleNavigate('/career-comparison', 'Career comparison page.'),
-      description: 'Career comparison page',
-    },
-    {
-      pattern: ['seekhna hai', 'learning', 'resources', 'padhna'],
-      action: () => handleNavigate('/learning', 'Learning resources page.'),
-      description: 'Learning resources',
-    },
-    {
-      pattern: ['deep analysis', 'analysis', 'gehri jaanch'],
-      action: () => handleNavigate('/deep-analysis', 'Deep analysis page.'),
-      description: 'Deep analysis pe jao',
-    },
-    {
-      pattern: ['contact', 'message', 'sampark'],
-      action: () => handleNavigate('/contact', 'Contact page.'),
-      description: 'Contact page pe jao',
-    },
-    {
-      pattern: ['madad chahiye', 'madad', 'help', 'kya karu'],
-      action: handleHelp,
-      description: 'Help sunao',
-    },
-  ], [handleNavigate, handleHelp]);
+      pattern: ["stop reading", "shant ho jao", "chup"],
+      action: () => stopSpeaking(),
+      description: "Stop speaking"
+    }
+  ]);
 
-  const { isListening, transcript, startListening, stopListening, supported: voiceSupported } =
-    useVoiceControl(commands);
-
-  // Keyboard shortcut
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      // Don't trigger if user is typing
-      if (e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement) return;
-
-      // Escape — close
-      if (e.key === 'Escape') {
-        setIsOpen(false);
-      }
-
-      if (e.altKey) {
-        const isV = e.key.toLowerCase() === 'v' || e.code === 'KeyV';
-        
-        if (isV) {
-          e.preventDefault();
-          e.stopPropagation();
-          console.info('Voice Assistant: Alt+V detected', { isListening });
-          
-          if (isListening) {
-            stopListening();
-          } else {
-            startListening();
-            setIsOpen(true);
-          }
-        }
-        // Alt + H — help
-        if (e.key === 'h') {
-          e.preventDefault();
-          handleHelp();
-        }
-        // Alt + S — stop
-        if (e.key === 's') {
-          e.preventDefault();
-          stop();
-          setLastCommand('Stop kiya gaya.');
-        }
-        // Alt + R — repeat
-        if (e.key === 'r') {
-          e.preventDefault();
-          if (lastCommand) speak(lastCommand);
-          else speak('Maaf kijiye, repeat karne ke liye kuch nahi hai.');
-        }
-      }
-    };
-    document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isListening, startListening, stopListening, handleHelp, lastCommand]);
-
-  // Clear lastCommand after 3 seconds
-  useEffect(() => {
-    if (!lastCommand) return;
-    const timer = setTimeout(() => setLastCommand(''), 3000);
-    return () => clearTimeout(timer);
-  }, [lastCommand]);
-
-  if (!voiceSupported && !ttsSupported) return null;
+  if (!isVisible) return null;
 
   return (
-    <>
-      {/* Tooltip / Command panel */}
-      {isOpen && (
-        <div
-          role="dialog"
-          aria-label="Voice Assistant Commands"
-          aria-modal="false"
-          className="fixed bottom-40 right-4 z-50 w-72 rounded-2xl border border-border bg-card/95 backdrop-blur-md shadow-2xl p-4 animate-in fade-in slide-in-from-bottom-2"
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <Mic className="w-4 h-4 text-primary" />
-              <span className="font-display font-bold text-sm text-foreground">
-                Voice Assistant
-              </span>
-            </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              aria-label="Panel band karo"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
+    <div className="fixed bottom-6 right-24 z-50">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+        className="bg-card/95 backdrop-blur-md border-2 border-primary/20 rounded-2xl p-4 shadow-elevated w-72"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <div className={`w-2 h-2 rounded-full animate-pulse ${isListening ? "bg-red-500" : "bg-green-500"}`} />
+            <h3 className="font-display font-bold text-sm">PathFinder Voice</h3>
           </div>
-
-          {/* Status */}
-          <div
-            aria-live="polite"
-            aria-atomic="true"
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg mb-3 text-xs font-body ${
-              isListening
-                ? 'bg-red-500/10 text-red-500 border border-red-500/30'
-                : isSpeaking
-                ? 'bg-primary/10 text-primary border border-primary/30'
-                : 'bg-muted text-muted-foreground'
-            }`}
+          <button 
+            onClick={() => setIsVisible(false)}
+            className="text-muted-foreground hover:text-foreground transition-colors"
           >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          <div className="bg-muted rounded-xl p-3 min-h-[60px] flex items-center justify-center text-center">
             {isListening ? (
-              <>
-                <MicOff className="w-3.5 h-3.5 animate-pulse" />
-                <span>Sun raha hoon... Boliye!</span>
-              </>
+              <p className="text-xs font-body italic text-foreground/80">"{transcript || "Suno..."}"</p>
             ) : isSpeaking ? (
-              <>
-                <Volume2 className="w-3.5 h-3.5 animate-pulse" />
-                <span>Bol raha hoon...</span>
-              </>
+              <div className="flex flex-col items-center gap-2">
+                <Volume2 className="w-4 h-4 text-primary animate-bounce" />
+                <p className="text-[10px] font-display font-bold text-primary uppercase tracking-wider">AI bol raha hai...</p>
+              </div>
             ) : (
-              <>
-                <Mic className="w-3.5 h-3.5" />
-                <span>
-                  <kbd className="px-1 py-0.5 bg-muted-foreground/20 rounded text-[10px]">Alt+V</kbd>{' '}
-                  dabao ya neeche click karo
-                </span>
-              </>
+              <p className="text-xs text-muted-foreground">"Aage", "Piche", ya "Skip" bolein</p>
             )}
           </div>
 
-          {/* Transcript */}
-          {transcript && (
-            <p className="text-xs text-muted-foreground font-body italic mb-3 px-1">
-              Suna: "{transcript}"
-            </p>
-          )}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={isListening ? stopListening : startListening}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-display font-bold text-xs transition-all ${
+                isListening 
+                  ? "bg-red-500 text-white shadow-lg shadow-red-500/20" 
+                  : "bg-primary text-primary-foreground hover:opacity-90"
+              }`}
+            >
+              {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+              {isListening ? "Stop Sunna" : "Command Bolein"}
+            </button>
+          </div>
 
-          {/* Last command feedback */}
-          {lastCommand && (
-            <p className="text-xs text-primary font-body font-medium mb-3 px-1">
-              <span aria-hidden="true">✓</span> {lastCommand}
-            </p>
-          )}
-
-          {/* Commands guide */}
-          <div className="space-y-1">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-display font-semibold mb-2 flex items-center gap-1">
-              <HelpCircle className="w-3 h-3" /> Available Commands
-            </p>
-            {COMMANDS_GUIDE.map((cmd) => (
-              <div key={cmd.phrase} className="flex items-center justify-between text-xs font-body">
-                <span className="text-primary font-mono">{cmd.phrase}</span>
-                <span className="text-muted-foreground">{cmd.action}</span>
-              </div>
-            ))}
+          <div className="flex items-center justify-center gap-1.5 opacity-50">
+            <Sparkles className="w-3 h-3 text-primary" />
+            <span className="text-[9px] font-display font-semibold uppercase tracking-tighter">AI Enabled Guidance</span>
           </div>
         </div>
-      )}
-
-      {/* Floating button */}
-      <button
-        type="button"
-        onClick={() => {
-          if (isListening) {
-            stopListening();
-          } else {
-            setIsOpen((prev) => !prev);
-            if (!isOpen) startListening();
-          }
-        }}
-        aria-label={
-          isListening
-            ? 'Sun raha hoon — band karne ke liye click karo'
-            : 'Voice assistant kholo — Alt+V ya click karo'
-        }
-        aria-pressed={isListening}
-        aria-haspopup="dialog"
-        aria-expanded={isOpen}
-        title="Voice Assistant (Alt+V)"
-        className={`fixed bottom-24 right-4 z-50 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg font-display font-semibold text-sm border-2 transition-all duration-200 select-none ${
-          isListening
-            ? 'bg-red-500 border-red-400 text-white shadow-red-500/30 shadow-xl scale-105 animate-pulse'
-            : isSpeaking
-            ? 'bg-primary border-primary/50 text-primary-foreground shadow-primary/30'
-            : 'bg-card border-border text-foreground hover:border-primary/60 hover:shadow-primary/10 hover:scale-105'
-        }`}
-      >
-        {isListening ? (
-          <>
-            <MicOff className="w-4 h-4" />
-            <span className="hidden sm:inline">Sun raha hoon...</span>
-          </>
-        ) : isSpeaking ? (
-          <>
-            <Volume2 className="w-4 h-4" />
-            <span className="hidden sm:inline">Bol raha hoon...</span>
-          </>
-        ) : (
-          <>
-            <Mic className="w-4 h-4" />
-            <span className="hidden sm:inline">Voice</span>
-          </>
-        )}
-      </button>
-    </>
+      </motion.div>
+    </div>
   );
-}
+};
+
+export default VoiceAssistant;

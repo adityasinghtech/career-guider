@@ -17,7 +17,7 @@ function resolveCollegeType(c: College): CollegeTypeTag {
   if (/\biiit\b/.test(n)) return "top";
   if (/\bbits\b/.test(n)) return "top";
   if (/polytechnic/.test(n) || /\bdiploma\b/.test(n)) return "polytechnic";
-  if (/international|<span aria-hidden='true'>🇺🇸<\/span>|<span aria-hidden='true'>🇬🇧<\/span>|<span aria-hidden='true'>🇩🇪<\/span>|<span aria-hidden='true'>🇨🇦<\/span>|<span aria-hidden='true'>🇫🇷<\/span>|<span aria-hidden='true'>🇸🇬<\/span>|<span aria-hidden='true'>🇰🇷<\/span>|<span aria-hidden='true'>🇯🇵<\/span>|<span aria-hidden='true'>🇦🇺<\/span>/.test(loc)) return "top";
+  if (/international|🇺🇸|🇬🇧|🇩🇪|🇨🇦|🇫🇷|🇸🇬|🇰🇷|🇯🇵|🇦🇺/.test(loc)) return "top";
   if (
     /iim |xlri|fms |mdi |nlsiu|nlud|^nlu |srcc|lse |harvard|wharton|insead|oxford|cambridge|stanford|^mit |eth |nus |kaist|mannheim|rotman|yonsei|mext|fulbright|commonwealth|daad|national law school|school of economics/.test(
       n,
@@ -187,7 +187,7 @@ const ResultColleges = ({ result }: { result: StreamResult }) => {
       className="bg-card rounded-2xl p-6 shadow-card border border-border"
     >
       <h2 className="font-display font-bold text-xl text-foreground mb-4 flex items-center gap-2">
-        <GraduationCap className="w-5 h-5 text-primary" /> Colleges — Top, Government & Local / Normal <span aria-hidden="true">🎓</span>
+        <GraduationCap className="w-5 h-5 text-primary" /> Colleges — Top, Government & Local / Normal 🎓
       </h2>
 
       {/* Search */}
@@ -210,11 +210,10 @@ const ResultColleges = ({ result }: { result: StreamResult }) => {
             key={opt.id}
             type="button"
             onClick={() => setCategoryFilter(opt.id)}
-            className={`px-3 py-1.5 rounded-lg font-display font-semibold text-xs whitespace-nowrap transition-colors flex-shrink-0 snap-start border-2 ${
-              categoryFilter === opt.id
+            className={`px-3 py-1.5 rounded-lg font-display font-semibold text-xs whitespace-nowrap transition-colors flex-shrink-0 snap-start border-2 ${categoryFilter === opt.id
                 ? "gradient-hero text-primary-foreground border-transparent"
                 : "bg-muted text-muted-foreground hover:bg-muted/80 border-border"
-            }`}
+              }`}
           >
             {opt.label}
           </button>
@@ -232,9 +231,8 @@ const ResultColleges = ({ result }: { result: StreamResult }) => {
               setActiveTab(state);
               setSearchQuery("");
             }}
-            className={`px-3 py-1.5 rounded-lg font-display font-semibold text-xs whitespace-nowrap transition-colors flex-shrink-0 ${
-              activeTab === state ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"
-            }`}
+            className={`px-3 py-1.5 rounded-lg font-display font-semibold text-xs whitespace-nowrap transition-colors flex-shrink-0 ${activeTab === state ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"
+              }`}
           >
             {stateLabels[state] || state}
           </button>
@@ -283,10 +281,11 @@ const ResultColleges = ({ result }: { result: StreamResult }) => {
       </div>
 
       <p className="text-sm text-muted-foreground font-body mt-5 pt-4 border-t border-border leading-relaxed">
-        <span aria-hidden="true">💡</span> Tip: Government colleges mein fees kam hoti hai. State-wise scholarship bhi milti hai — Scholarships section zaroor dekho!
+        💡 Tip: Government colleges mein fees kam hoti hai. State-wise scholarship bhi milti hai — Scholarships section zaroor dekho!
       </p>
     </motion.div>
   );
 };
 
 export default ResultColleges;
+

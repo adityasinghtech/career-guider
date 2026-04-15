@@ -27,7 +27,7 @@ const DailyActivityChart = ({ quizResults, students }: DailyActivityChartProps) 
   return (
     <div className="bg-card border-2 border-border rounded-2xl p-6">
       <h3 className="font-display font-bold text-lg text-foreground mb-1">
-        <span aria-hidden="true">📅</span> Last 7 Days Activity
+        📅 Last 7 Days Activity
       </h3>
       <p className="text-xs text-muted-foreground font-body mb-5">
         Daily quizzes diye gaye aur naye students joined
@@ -70,3 +70,4 @@ const DailyActivityChart = ({ quizResults, students }: DailyActivityChartProps) 
 };
 
 export default DailyActivityChart;
+

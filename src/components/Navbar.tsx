@@ -6,6 +6,8 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { Emoji, ScreenReaderOnly } from "./a11y/A11yUtils";
+import { useAccessibility } from "@/hooks/useAccessibility";
 
 const centerLinks = [
   { to: "/", label: "Home" },
@@ -25,6 +27,7 @@ const sidebarLinks = [
 const Navbar = () => {
   const location = useLocation();
   const { user, role, roleLoading } = useAuth();
+  const { mode, setMode } = useAccessibility();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dark, setDark] = useState(() => {
     if (typeof window !== "undefined") {
@@ -63,6 +66,7 @@ const Navbar = () => {
             </div>
             <span className="font-display font-extrabold text-xl md:text-2xl text-foreground tracking-tight ml-1">
               Path<span className="text-orange-500">Finder</span>
+              <ScreenReaderOnly> — Home Page</ScreenReaderOnly>
             </span>
           </Link>
 
@@ -95,9 +99,9 @@ const Navbar = () => {
             {location.pathname !== "/quiz" && (
               <Link
                 to="/quiz"
-                className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-display font-bold px-5 py-2 md:px-6 md:py-2 rounded-full text-xs md:text-[15px] shadow-md shadow-orange-500/20 hover:shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all duration-300 active:scale-95"
+                className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-display font-bold px-5 py-2 md:px-6 md:py-2 rounded-full text-xs md:text-[15px] shadow-md shadow-orange-500/20 hover:shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all duration-300 active:scale-95 flex items-center gap-2"
               >
-                Quiz Shuru Karein <span aria-hidden="true">🚀</span>
+                Quiz Shuru Karein <Emoji symbol="🚀" label="launching icon" />
               </Link>
             )}
 
@@ -124,9 +128,10 @@ const Navbar = () => {
             <button
               onClick={() => setMobileOpen(true)}
               className="p-1.5 rounded-lg text-foreground hover:bg-muted transition-colors focus:outline-none"
-              aria-label="Open menu"
+              aria-label="Side menu open karein"
+              aria-expanded={mobileOpen}
             >
-              <Menu className="w-6 h-6 md:w-7 md:h-7" />
+              <Menu className="w-6 h-6 md:w-7 md:h-7" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -224,20 +229,46 @@ const Navbar = () => {
                 <div className="h-px bg-border my-2" />
 
                 {/* Settings */}
-                <div>
-                  <span className="text-xs font-display font-semibold text-muted-foreground uppercase opacity-70 mb-2 block px-2">Settings</span>
-                  <button
-                    onClick={() => setDark(!dark)}
-                    className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-                  >
-                    <div className="flex items-center gap-3 font-display font-bold text-[15px]">
-                      {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                      {dark ? "Light Mode" : "Dark Mode"}
+                <div className="space-y-4">
+                  <div>
+                    <span className="text-xs font-display font-semibold text-muted-foreground uppercase opacity-70 mb-2 block px-2">Settings</span>
+                    <button
+                      onClick={() => setDark(!dark)}
+                      className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                    >
+                      <div className="flex items-center gap-3 font-display font-bold text-[15px]">
+                        {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                        {dark ? "Light Mode" : "Dark Mode"}
+                      </div>
+                      <div className={`w-8 h-4 rounded-full p-0.5 transition-colors ${dark ? 'bg-orange-500' : 'bg-muted-foreground/30'}`}>
+                        <div className={`bg-white w-3 h-3 rounded-full transition-transform ${dark ? 'translate-x-4' : 'translate-x-0'}`} />
+                      </div>
+                    </button>
+                  </div>
+
+                  <div>
+                    <span className="text-xs font-display font-semibold text-muted-foreground uppercase opacity-70 mb-2 block px-2">Accessibility</span>
+                    <div className="grid grid-cols-1 gap-2">
+                      {[
+                        { id: "normal", label: "Normal Mode", desc: "Standard experience" },
+                        { id: "voice", label: "Voice Control", desc: "Command by voice" },
+                        { id: "blind", label: "Blind Mode", desc: "Voice + Auto-guide" }
+                      ].map((m) => (
+                        <button
+                          key={m.id}
+                          onClick={() => setMode(m.id as any)}
+                          className={`w-full text-left p-3 rounded-xl border-2 transition-all ${
+                            mode === m.id 
+                              ? "border-orange-500 bg-orange-500/5 ring-1 ring-orange-500" 
+                              : "border-border hover:border-muted-foreground/30 bg-muted/20"
+                          }`}
+                        >
+                          <p className={`font-display font-bold text-sm ${mode === m.id ? "text-orange-500" : "text-foreground"}`}>{m.label}</p>
+                          <p className="text-[10px] text-muted-foreground font-body">{m.desc}</p>
+                        </button>
+                      ))}
                     </div>
-                    <div className={`w-8 h-4 rounded-full p-0.5 transition-colors ${dark ? 'bg-orange-500' : 'bg-muted-foreground/30'}`}>
-                      <div className={`bg-white w-3 h-3 rounded-full transition-transform ${dark ? 'translate-x-4' : 'translate-x-0'}`} />
-                    </div>
-                  </button>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -249,3 +280,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

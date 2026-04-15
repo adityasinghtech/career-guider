@@ -133,9 +133,9 @@ const CareerComparison = () => {
         `Cons: ${c.cons.join(" | ")}`,
       ].join("\n");
     });
-    const text = [`PathFinder — Career Comparison <span aria-hidden='true'>⚖️</span>`, "", ...lines].join("\n\n");
+    const text = [`PathFinder — Career Comparison ⚖️`, "", ...lines].join("\n\n");
     navigator.clipboard.writeText(text).then(
-      () => toast.success("Comparison copy ho gayi! <span aria-hidden='true'>📋</span>"),
+      () => toast.success("Comparison copy ho gayi! 📋"),
       () => toast.error("Copy nahi ho paaya"),
     );
   }, [resolved]);
@@ -152,7 +152,7 @@ const CareerComparison = () => {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
           <div>
             <h1 className="font-display font-bold text-2xl md:text-3xl text-foreground">
-              Career Comparison <span aria-hidden="true">⚖️</span>
+              Career Comparison ⚖️
             </h1>
             <p className="text-muted-foreground font-body text-sm mt-1">
               2–3 careers select karke side-by-side dekho — salary, exams, demand, aur pros/cons.
@@ -234,9 +234,8 @@ const CareerComparison = () => {
         </div>
 
         <div
-          className={`grid gap-4 ${
-            resolved.length >= 3 ? "lg:grid-cols-3" : "md:grid-cols-2"
-          } grid-cols-1`}
+          className={`grid gap-4 ${resolved.length >= 3 ? "lg:grid-cols-3" : "md:grid-cols-2"
+            } grid-cols-1`}
         >
           {resolved.map((career) => (
             <CareerCard key={career.id} career={career} />
@@ -254,3 +253,4 @@ const CareerComparison = () => {
 };
 
 export default CareerComparison;
+

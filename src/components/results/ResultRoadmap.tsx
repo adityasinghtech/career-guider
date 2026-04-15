@@ -9,7 +9,7 @@ const ResultRoadmap = ({ result }: { result: StreamResult }) => (
     className="bg-card rounded-2xl p-6 shadow-card"
   >
     <h2 className="font-display font-bold text-xl text-foreground mb-4">
-      12-Month Roadmap <span aria-hidden="true">🗺️</span>
+      12-Month Roadmap 🗺️
     </h2>
     <div className="space-y-4">
       {result.roadmap.map((step, i) => (
@@ -33,3 +33,4 @@ const ResultRoadmap = ({ result }: { result: StreamResult }) => (
 );
 
 export default ResultRoadmap;
+

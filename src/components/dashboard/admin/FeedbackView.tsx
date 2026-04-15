@@ -13,7 +13,7 @@ const FeedbackView = ({ feedbacks }: FeedbackViewProps) => {
   return (
     <div className="bg-card border-2 border-border rounded-2xl p-6">
       <h3 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
-        <span aria-hidden="true">⭐</span> User Feedback
+        ⭐ User Feedback
       </h3>
       {feedbacks.length === 0 ? (
         <p className="text-center text-muted-foreground font-body py-8">Abhi tak koi feedback nahi</p>
@@ -37,3 +37,4 @@ const FeedbackView = ({ feedbacks }: FeedbackViewProps) => {
 };
 
 export default FeedbackView;
+

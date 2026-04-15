@@ -76,8 +76,8 @@ function getRecommendation(
 
   const alternate: "science" | "commerce" | "arts" =
     primary === "science" ? (comScore >= artScore ? "commerce" : "arts") :
-    primary === "commerce" ? (sciScore >= artScore ? "science" : "arts") :
-    (comScore >= sciScore ? "commerce" : "science");
+      primary === "commerce" ? (sciScore >= artScore ? "science" : "arts") :
+        (comScore >= sciScore ? "commerce" : "science");
 
   const scholarships: string[] = ["National Scholarship Portal (NSP)", "Central Sector Scheme"];
   if (category === "sc" || category === "st") scholarships.push("SC/ST Post Matric Scholarship", "Pre-Matric Scholarship");
@@ -110,9 +110,9 @@ function getRecommendation(
 }
 
 const streamConfig = {
-  science: { label: "Science <span aria-hidden='true'>🔬</span>", color: "blue", bg: "bg-blue-50 dark:bg-blue-950/30", border: "border-blue-400", badge: "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300", bar: "bg-blue-500", emoji: "<span aria-hidden='true'>🔬</span>" },
-  commerce: { label: "Commerce <span aria-hidden='true'>📈</span>", color: "green", bg: "bg-green-50 dark:bg-green-950/30", border: "border-green-400", badge: "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300", bar: "bg-green-500", emoji: "<span aria-hidden='true'>📈</span>" },
-  arts: { label: "Arts <span aria-hidden='true'>🎨</span>", color: "purple", bg: "bg-purple-50 dark:bg-purple-950/30", border: "border-purple-400", badge: "bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300", bar: "bg-purple-500", emoji: "<span aria-hidden='true'>🎨</span>" },
+  science: { label: <>Science 🔬</>, color: "blue", bg: "bg-blue-50 dark:bg-blue-950/30", border: "border-blue-400", badge: "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300", bar: "bg-blue-500", emoji: "🔬" },
+  commerce: { label: <>Commerce 📈</>, color: "green", bg: "bg-green-50 dark:bg-green-950/30", border: "border-green-400", badge: "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300", bar: "bg-green-500", emoji: "📈" },
+  arts: { label: <>Arts 🎨</>, color: "purple", bg: "bg-purple-50 dark:bg-purple-950/30", border: "border-purple-400", badge: "bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300", bar: "bg-purple-500", emoji: "🎨" },
 };
 
 export default function StreamRecommender() {
@@ -156,7 +156,7 @@ export default function StreamRecommender() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-10"
         >
-          <div className="text-6xl mb-4"><span aria-hidden="true">🎯</span></div>
+          <div className="text-6xl mb-4">🎯</div>
           <h1 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-2">Stream Finder</h1>
           <p className="text-muted-foreground font-body text-lg">10th ke baad kaunsa stream? — Abhi pata karo!</p>
         </motion.div>
@@ -164,7 +164,7 @@ export default function StreamRecommender() {
         {!result ? (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
             <Card>
-              <CardHeader><CardTitle className="font-display"><span aria-hidden="true">📊</span> 10th mein percentage kya thi?</CardTitle></CardHeader>
+              <CardHeader><CardTitle className="font-display">📊 10th mein percentage kya thi?</CardTitle></CardHeader>
               <CardContent>
                 <input
                   type="number"
@@ -180,7 +180,7 @@ export default function StreamRecommender() {
             </Card>
 
             <Card>
-              <CardHeader><CardTitle className="font-display"><span aria-hidden="true">📚</span> Kaunse subjects strong hain? (multiple select)</CardTitle></CardHeader>
+              <CardHeader><CardTitle className="font-display">📚 Kaunse subjects strong hain? (multiple select)</CardTitle></CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
                   {SUBJECTS.map((s) => (
@@ -188,11 +188,10 @@ export default function StreamRecommender() {
                       key={s}
                       type="button"
                       onClick={() => toggleSubject(s)}
-                      className={`px-3 py-2 rounded-xl border-2 font-display font-semibold text-sm transition-all ${
-                        selectedSubjects.includes(s)
+                      className={`px-3 py-2 rounded-xl border-2 font-display font-semibold text-sm transition-all ${selectedSubjects.includes(s)
                           ? "border-primary bg-primary/10 text-foreground"
                           : "border-border bg-card text-muted-foreground hover:border-primary/40"
-                      }`}
+                        }`}
                     >
                       {s}
                     </button>
@@ -202,7 +201,7 @@ export default function StreamRecommender() {
             </Card>
 
             <Card>
-              <CardHeader><CardTitle className="font-display"><span aria-hidden="true">❤️</span> Kaunse fields mein interest hai? (multiple select)</CardTitle></CardHeader>
+              <CardHeader><CardTitle className="font-display">❤️ Kaunse fields mein interest hai? (multiple select)</CardTitle></CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
                   {INTERESTS.map((i) => (
@@ -210,11 +209,10 @@ export default function StreamRecommender() {
                       key={i}
                       type="button"
                       onClick={() => toggleInterest(i)}
-                      className={`px-3 py-2 rounded-xl border-2 font-display font-semibold text-sm transition-all ${
-                        selectedInterests.includes(i)
+                      className={`px-3 py-2 rounded-xl border-2 font-display font-semibold text-sm transition-all ${selectedInterests.includes(i)
                           ? "border-primary bg-primary/10 text-foreground"
                           : "border-border bg-card text-muted-foreground hover:border-primary/40"
-                      }`}
+                        }`}
                     >
                       {i}
                     </button>
@@ -225,7 +223,7 @@ export default function StreamRecommender() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Card>
-                <CardHeader><CardTitle className="font-display text-base"><span aria-hidden="true">🗺️</span> State</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="font-display text-base">🗺️ State</CardTitle></CardHeader>
                 <CardContent>
                   <select
                     value={state}
@@ -239,7 +237,7 @@ export default function StreamRecommender() {
               </Card>
 
               <Card>
-                <CardHeader><CardTitle className="font-display text-base"><span aria-hidden="true">🏷️</span> Category</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="font-display text-base">🏷️ Category</CardTitle></CardHeader>
                 <CardContent>
                   <select
                     value={category}
@@ -263,103 +261,106 @@ export default function StreamRecommender() {
               className="w-full gradient-hero text-primary-foreground font-display font-bold text-lg py-6 rounded-xl hover:opacity-90 transition-all disabled:opacity-60"
             >
               {loading ? (
-                <>Analyze kar raha hoon... <span aria-hidden="true">⏳</span></>
-              ) : "Stream Dhundo →"}
-            </Button>
+                <>Analyze kar raha hoon... ⏳</>
+              ) : (
+                "Stream Dhundo →"
+              )}
+          </Button>
           </motion.div>
-        ) : (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-            {/* Result Hero */}
-            <Card className={`border-2 ${streamConfig[result.primary].border} ${streamConfig[result.primary].bg}`}>
-              <CardContent className="pt-6 text-center">
-                <div className="text-7xl mb-3">{streamConfig[result.primary].emoji}</div>
-                <h2 className="font-display font-bold text-3xl text-foreground mb-2">
-                  {streamConfig[result.primary].label}
-                </h2>
-                <Badge className={`${streamConfig[result.primary].badge} text-sm px-3 py-1`}>
-                  {result.confidence}% Match <span aria-hidden="true">🎯</span>
-                </Badge>
-                <p className="mt-4 text-muted-foreground font-body">{result.reasoning}</p>
-              </CardContent>
-            </Card>
+      ) : (
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+        {/* Result Hero */}
+        <Card className={`border-2 ${streamConfig[result.primary].border} ${streamConfig[result.primary].bg}`}>
+          <CardContent className="pt-6 text-center">
+            <div className="text-7xl mb-3">{streamConfig[result.primary].emoji}</div>
+            <h2 className="font-display font-bold text-3xl text-foreground mb-2">
+              {streamConfig[result.primary].label}
+            </h2>
+            <Badge className={`${streamConfig[result.primary].badge} text-sm px-3 py-1`}>
+              {result.confidence}% Match 🎯
+            </Badge>
+            <p className="mt-4 text-muted-foreground font-body">{result.reasoning}</p>
+          </CardContent>
+        </Card>
 
-            {/* Score Bars */}
-            <Card>
-              <CardHeader><CardTitle className="font-display flex items-center gap-2"><TrendingUp className="w-5 h-5 text-primary" /> Stream Score Comparison</CardTitle></CardHeader>
-              <CardContent className="space-y-4">
-                {(["science", "commerce", "arts"] as const).map((stream) => (
-                  <div key={stream}>
-                    <div className="flex justify-between mb-1">
-                      <span className="font-display font-semibold text-sm text-foreground">{streamConfig[stream].label}</span>
-                      <span className="font-display font-bold text-sm text-foreground">{result.scores[stream]}%</span>
-                    </div>
-                    <div className="h-3 bg-muted rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${result.scores[stream]}%` }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                        className={`h-full rounded-full ${streamConfig[stream].bar}`}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Alternate */}
-            <Card>
-              <CardContent className="pt-4">
-                <p className="font-body text-muted-foreground">
-                  <span aria-hidden="true">💡</span> <span className="font-semibold text-foreground">Alternate option:</span> {streamConfig[result.alternate].label} bhi consider kar sakte ho!
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Next Steps */}
-            <Card>
-              <CardHeader><CardTitle className="font-display flex items-center gap-2"><BookOpen className="w-5 h-5 text-primary" /> Next Steps</CardTitle></CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
-                  {result.nextSteps.map((step, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <CheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                      <span className="font-body text-foreground">{step}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-
-            {/* Scholarships */}
-            <Card>
-              <CardHeader><CardTitle className="font-display"><span aria-hidden="true">💰</span> Eligible Scholarships</CardTitle></CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {result.scholarships.map((s, i) => (
-                    <Badge key={i} variant="secondary" className="font-body text-sm">{s}</Badge>
-                  ))}
+        {/* Score Bars */}
+        <Card>
+          <CardHeader><CardTitle className="font-display flex items-center gap-2"><TrendingUp className="w-5 h-5 text-primary" /> Stream Score Comparison</CardTitle></CardHeader>
+          <CardContent className="space-y-4">
+            {(["science", "commerce", "arts"] as const).map((stream) => (
+              <div key={stream}>
+                <div className="flex justify-between mb-1">
+                  <span className="font-display font-semibold text-sm text-foreground">{streamConfig[stream].label}</span>
+                  <span className="font-display font-bold text-sm text-foreground">{result.scores[stream]}%</span>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="h-3 bg-muted rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${result.scores[stream]}%` }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                    className={`h-full rounded-full ${streamConfig[stream].bar}`}
+                  />
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
 
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link to="/quiz" className="flex-1">
-                <Button className="w-full gradient-hero text-primary-foreground font-display font-bold">
-                  Quiz bhi do <ArrowRight className="w-4 h-4 ml-1" />
-                </Button>
-              </Link>
-              <Button
-                variant="outline"
-                onClick={() => { setResult(null); setMarks(""); setSelectedSubjects([]); setSelectedInterests([]); }}
-                className="flex-1 font-display font-semibold"
-              >
-                <span aria-hidden="true">🔄</span> Dobara try karo
-              </Button>
+        {/* Alternate */}
+        <Card>
+          <CardContent className="pt-4">
+            <p className="font-body text-muted-foreground">
+              💡 <span className="font-semibold text-foreground">Alternate option:</span> {streamConfig[result.alternate].label} bhi consider kar sakte ho!
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Next Steps */}
+        <Card>
+          <CardHeader><CardTitle className="font-display flex items-center gap-2"><BookOpen className="w-5 h-5 text-primary" /> Next Steps</CardTitle></CardHeader>
+          <CardContent>
+            <ul className="space-y-3">
+              {result.nextSteps.map((step, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                  <span className="font-body text-foreground">{step}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+
+        {/* Scholarships */}
+        <Card>
+          <CardHeader><CardTitle className="font-display">💰 Eligible Scholarships</CardTitle></CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              {result.scholarships.map((s, i) => (
+                <Badge key={i} variant="secondary" className="font-body text-sm">{s}</Badge>
+              ))}
             </div>
-          </motion.div>
+          </CardContent>
+        </Card>
+
+        {/* CTAs */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Link to="/quiz" className="flex-1">
+            <Button className="w-full gradient-hero text-primary-foreground font-display font-bold">
+              Quiz bhi do <ArrowRight className="w-4 h-4 ml-1" />
+            </Button>
+          </Link>
+          <Button
+            variant="outline"
+            onClick={() => { setResult(null); setMarks(""); setSelectedSubjects([]); setSelectedInterests([]); }}
+            className="flex-1 font-display font-semibold"
+          >
+            🔄 Dobara try karo
+          </Button>
+        </div>
+      </motion.div>
         )}
-      </div>
     </div>
+    </div >
   );
 }
+

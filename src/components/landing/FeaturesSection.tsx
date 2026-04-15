@@ -4,42 +4,50 @@ import { Compass, BookOpen, GraduationCap, TrendingUp, Clock, Download, Shield, 
 const features = [
   {
     icon: Clock,
-    title: "Sirf 5 Minute <span aria-hidden='true'>⏱️</span>",
+    title: "Sirf 5 Minute",
+    emoji: "⏱️",
     desc: "15 fun questions, aur aapka career path crystal clear!",
   },
   {
     icon: Compass,
-    title: "AI Smart Recommendation <span aria-hidden='true'>🧠</span>",
+    title: "AI Smart Recommendation",
+    emoji: "🧠",
     desc: "Science, Commerce, ya Arts — kya best hai aapke liye + match percentage",
   },
   {
     icon: BookOpen,
-    title: "15-Year Roadmap <span aria-hidden='true'>🗺️</span>",
+    title: "15-Year Roadmap",
+    emoji: "🗺️",
     desc: "2026 se 2040 tak ka complete plan — kya karna hai, kab karna hai",
   },
   {
     icon: GraduationCap,
-    title: "All India Colleges <span aria-hidden='true'>🎓</span>",
+    title: "All India Colleges",
+    emoji: "🎓",
     desc: "IIT, AIIMS, NLU se lekar state colleges tak — fees aur cutoffs ke saath",
   },
   {
     icon: Download,
-    title: "Parents PDF Report <span aria-hidden='true'>📥</span>",
+    title: "Parents PDF Report",
+    emoji: "📥",
     desc: "Download karein, parents ko dikhayein — unhe bhi samajh aayega",
   },
   {
     icon: TrendingUp,
-    title: "Career Paths + Salary <span aria-hidden='true'>💰</span>",
+    title: "Career Paths + Salary",
+    emoji: "💰",
     desc: "₹5 LPA se ₹50 LPA tak — kaunsa career kitna paisa dega",
   },
   {
     icon: Shield,
-    title: "FREE Government Courses <span aria-hidden='true'>🆓</span>",
+    title: "FREE Government Courses",
+    emoji: "🆓",
     desc: "SWAYAM, NPTEL, Google — ₹2 Lakh ki value ke courses bilkul free!",
   },
   {
     icon: Smartphone,
-    title: "WhatsApp Share <span aria-hidden='true'>📱</span>",
+    title: "WhatsApp Share",
+    emoji: "📱",
     desc: "Ek click mein friends ko share karein — sabko test karwayein!",
   },
 ];
@@ -68,10 +76,10 @@ const FeaturesSection = () => (
         className="text-center mb-14"
       >
         <span className="inline-block text-sm font-display font-semibold text-primary bg-primary/10 px-4 py-1.5 rounded-full mb-4 border border-primary/15">
-          <span aria-hidden="true">✨</span> Premium Features
+          ✨ Premium Features
         </span>
         <h2 className="font-display font-bold text-3xl md:text-5xl text-foreground mb-4">
-          Aapko Kya Milega? <span aria-hidden="true">🎁</span>
+          Aapko Kya Milega? 🎁
         </h2>
         <p className="text-muted-foreground text-lg max-w-xl mx-auto">
           ₹5,000+ ki value — bilkul <strong className="text-foreground">FREE!</strong> Koi hidden charges nahi!
@@ -97,7 +105,9 @@ const FeaturesSection = () => (
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
                 <f.icon className="w-5 h-5 text-primary" />
               </div>
-              <h3 className="font-display font-bold text-foreground mb-2 text-[15px]">{f.title}</h3>
+              <h3 className="font-display font-bold text-foreground mb-2 text-[15px]">
+                {f.title} {f.emoji}
+              </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
             </div>
           </motion.div>
@@ -108,3 +118,4 @@ const FeaturesSection = () => (
 );
 
 export default FeaturesSection;
+

@@ -3,23 +3,14 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Users,
-  BookOpen,
   BarChart3,
   Send,
-  MessageSquare,
   Search,
-  ChevronDown,
-  ChevronUp,
   Mail,
-  Eye,
-  ShieldCheck,
-  ShieldOff,
-  CalendarDays,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import DailyActivityChart from "./DailyActivityChart";
 import DashboardStats from "./admin/DashboardStats";
 import ActivityFeed from "./admin/ActivityFeed";
 import StudentRow from "./admin/StudentRow";
@@ -27,6 +18,7 @@ import MessageRow from "./admin/MessageRow";
 import AnalyticsView from "./admin/AnalyticsView";
 import FeedbackView from "./admin/FeedbackView";
 import SuggestionModal from "./admin/SuggestionModal";
+import { DashboardSkeleton } from "../ui/SkeletonLoader";
 
 interface StudentData {
   id: string;
@@ -118,8 +110,6 @@ interface UserRole {
 
 const CLASS_ORDER = ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "12th Pass"] as const;
 
-// ─── External Components used (Stats, ActivityFeed, StudentRow, MessageRow, Analytics, Feedback, Modal) ───
-
 function isCreatedToday(iso: string): boolean {
   const d = new Date(iso);
   const t = new Date();
@@ -165,19 +155,16 @@ const AdminDashboard = () => {
   const [adminSuggestions, setAdminSuggestions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Activity Feed
-  const [showActivityFeed, setShowActivityFeed] = useState(false);
-
   const activityFeed = useMemo(() => {
     const items: { type: 'student' | 'quiz' | 'message'; text: string; time: string; id: string }[] = [];
-    
+
     students.slice(0, 5).forEach(s => items.push({
       type: 'student',
       text: `${s.full_name || 'Unknown'} joined (${s.city || 'Unknown city'})`,
       time: s.created_at,
       id: s.id
     }));
-    
+
     quizResults.slice(0, 5).forEach(r => {
       const student = students.find(s => s.id === r.user_id);
       items.push({
@@ -187,14 +174,14 @@ const AdminDashboard = () => {
         id: r.id
       });
     });
-    
+
     contactMessages.slice(0, 5).forEach(m => items.push({
       type: 'message',
       text: `${m.name} ka message: "${m.message.slice(0, 40)}..."`,
       time: m.created_at,
       id: m.id
     }));
-    
+
     return items.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 10);
   }, [students, quizResults, contactMessages]);
 
@@ -219,39 +206,34 @@ const AdminDashboard = () => {
     fetchData();
   }, []);
 
-  // Real-time subscriptions
   useEffect(() => {
-    // New students
     const profilesSub = supabase
       .channel('profiles-changes')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'profiles' },
         (payload) => {
           setStudents(prev => [payload.new as StudentData, ...prev]);
-          toast.success(`<span aria-hidden='true'>🎉</span> Naya student join kiya: ${(payload.new as StudentData).full_name || 'Unknown'}`);
+          toast.success("🎉 Naya student join kiya!");
         }
       ).subscribe();
 
-    // New quiz results
     const quizSub = supabase
       .channel('quiz-changes')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'quiz_results' },
         (payload) => {
           setQuizResults(prev => [payload.new as QuizResultData, ...prev]);
-          toast.info(`<span aria-hidden='true'>📝</span> Naya quiz result aaya!`);
+          toast.info("📝 Naya quiz result aaya!");
         }
       ).subscribe();
 
-    // New contact messages
     const msgSub = supabase
       .channel('messages-changes')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'contact_messages' },
         (payload) => {
           setContactMessages(prev => [payload.new as ContactMessage, ...prev]);
-          toast.warning(`<span aria-hidden='true'>💬</span> Naya message aaya! Reply zaroor dena.`);
+          toast.warning("💬 Naya message aaya!");
         }
       ).subscribe();
 
-    // New suggestions
     const suggestionSub = supabase
       .channel('suggestions-changes')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'admin_suggestions' },
@@ -282,7 +264,7 @@ const AdminDashboard = () => {
       return;
     }
     setUserRoles((prev) => [...prev, { user_id: studentId, role: "admin" }]);
-    toast.success("Admin role de diya gaya! <span aria-hidden='true'>🛡️</span>");
+    toast.success("Admin role de diya gaya! 🛡️");
     setConfirmAdmin(null);
   };
 
@@ -292,7 +274,7 @@ const AdminDashboard = () => {
       toast.error("Admin role hatane mein dikkat aayi");
     } else {
       setUserRoles((prev) => prev.filter((r) => !(r.user_id === studentId && r.role === "admin")));
-      toast.success("Admin role hata diya gaya <span aria-hidden='true'>✅</span>");
+      toast.success("Admin role hata diya gaya ✅");
     }
   };
 
@@ -315,21 +297,20 @@ const AdminDashboard = () => {
       unrepliedCount: number;
       hasLowScore: boolean;
     }> = {};
-    
+
     students.forEach(s => {
       const results = quizResults.filter(r => r.user_id === s.id);
       const msgs = contactMessages.filter(m => m.email === s.email);
       const unrepliedMsgs = msgs.filter(m => m.status !== 'replied' && !m.admin_reply);
       const suggestions = adminSuggestions.filter(su => su.user_id === s.id);
-      
-      // Low score if any science/commerce/arts score is < 40
+
       const hasLowScore = results.some(r => {
         const sc = parseQuizScores(r.scores);
         return sc && (sc.science < 40 || sc.commerce < 40 || sc.arts < 40);
       });
-      
+
       map[s.id] = {
-        hasSuggestion: suggestions.length > 0, 
+        hasSuggestion: suggestions.length > 0,
         hasMessage: msgs.length > 0,
         lastActivity: results[0]?.created_at || s.created_at,
         pendingReply: unrepliedMsgs.length > 0,
@@ -337,7 +318,7 @@ const AdminDashboard = () => {
         hasLowScore: !!hasLowScore
       };
     });
-    
+
     return map;
   }, [students, quizResults, contactMessages, adminSuggestions]);
 
@@ -355,7 +336,7 @@ const AdminDashboard = () => {
     if (error) {
       toast.error("Suggestion bhej nahi paaye");
     } else {
-      toast.success("Suggestion bhej diya gaya! <span aria-hidden='true'>✅</span>");
+      toast.success("Suggestion bhej diya gaya! ✅");
       setSuggestionText("");
       setSendingTo(null);
     }
@@ -375,36 +356,28 @@ const AdminDashboard = () => {
         results.map(r => r.stream).join('; ') || 'No quiz'
       ];
     });
-    
+
     const csvContent = [headers, ...rows]
       .map(row => row.map(cell => `"${cell}"`).join(','))
       .join('\n');
-    
+
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = `pathfinder-students-${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
-    toast.success(`CSV download ho rahi hai! <span aria-hidden='true'>📁</span>`);
+    toast.success('CSV download ho rahi hai! 📁');
   };
 
-  // Analytics
   const totalStudents = students.filter((s) => s.id !== user?.id).length;
   const totalQuizzes = quizResults.length;
   const streamCounts: Record<string, number> = {};
-  const stateCounts: Record<string, number> = {};
   quizResults.forEach((r) => {
     streamCounts[r.stream] = (streamCounts[r.stream] || 0) + 1;
-  });
-  students.forEach((s) => {
-    if (s.city && s.id !== user?.id) {
-      stateCounts[s.city] = (stateCounts[s.city] || 0) + 1;
-    }
   });
 
   const analyticsExtra = useMemo(() => {
     const studentList = students.filter((s) => s.id !== user?.id);
-
     const cityAgg: Record<string, number> = {};
     studentList.forEach((s) => {
       if (s.city?.trim()) {
@@ -414,47 +387,14 @@ const AdminDashboard = () => {
     });
 
     const classCounts: Record<string, number> = {};
-    CLASS_ORDER.forEach((c) => {
-      classCounts[c] = 0;
-    });
-    let classOther = 0;
-    let classUnset = 0;
+    CLASS_ORDER.forEach((c) => { classCounts[c] = 0; });
     studentList.forEach((s) => {
       const c = s.class?.trim() || "";
-      if (!c) {
-        classUnset++;
-        return;
-      }
-      if (CLASS_ORDER.includes(c as (typeof CLASS_ORDER)[number])) {
-        classCounts[c]++;
-      } else {
-        classOther++;
-      }
+      if (CLASS_ORDER.includes(c as any)) classCounts[c]++;
     });
 
-    const interestCounts = {
-      tech: 0,
-      business: 0,
-      creative: 0,
-      sports: 0,
-      skills: 0,
-      undecided: 0,
-    };
-
+    const interestCounts = { tech: 0, business: 0, creative: 0, sports: 0, skills: 0, undecided: 0 };
     quizResults.forEach((r) => {
-      const sc = parseQuizScores(r.scores);
-      if (sc) {
-        const { science: S, commerce: C, arts: A } = sc;
-        const tot = S + C + A;
-        if (tot > 0) {
-          const mx = Math.max(S, C, A);
-          const mn = Math.min(S, C, A);
-          if ((mx - mn) / tot <= 0.15) {
-            interestCounts.undecided++;
-            return;
-          }
-        }
-      }
       const st = (r.stream || "").toLowerCase();
       if (st === "science") interestCounts.tech++;
       else if (st === "commerce") interestCounts.business++;
@@ -464,68 +404,54 @@ const AdminDashboard = () => {
       else interestCounts.undecided++;
     });
 
-    const newStudentsToday = studentList.filter((s) => isCreatedToday(s.created_at)).length;
-    const quizzesToday = quizResults.filter((r) => isCreatedToday(r.created_at)).length;
-    const messagesToday = contactMessages.filter((m) => isCreatedToday(m.created_at)).length;
-
-    const top5Cities = Object.entries(cityAgg)
-      .sort(([, a], [, b]) => b - a)
-      .slice(0, 5);
-    const topCityMax = top5Cities.length ? top5Cities[0][1] : 1;
-
-    const classTotal = studentList.length;
-
-    return {
-      classCounts,
-      classOther,
-      classUnset,
-      interestCounts,
-      newStudentsToday,
-      quizzesToday,
-      messagesToday,
-      top5Cities,
-      topCityMax,
-      classTotal,
-    };
-  }, [students, quizResults, contactMessages, user?.id]);
+      const counts = Object.values(cityAgg);
+      return {
+        classCounts,
+        interestCounts,
+        newStudentsToday: studentList.filter((s) => isCreatedToday(s.created_at)).length,
+        quizzesToday: quizResults.filter((r) => isCreatedToday(r.created_at)).length,
+        messagesToday: contactMessages.filter((m) => isCreatedToday(m.created_at)).length,
+        top5Cities: Object.entries(cityAgg).sort(([, a], [, b]) => b - a).slice(0, 5),
+        classTotal: studentList.length,
+        classUnset: studentList.filter(s => !s.class?.trim()).length,
+        classOther: 0, // Simplified for now
+        topCityMax: counts.length > 0 ? Math.max(...counts) : 0,
+      };
+    }, [students, quizResults, contactMessages, user?.id]);
 
   const statsWithTrend = useMemo(() => {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayStr = yesterday.toISOString().split('T')[0];
-    
-    const studentsYesterday = students.filter(s => s.created_at.startsWith(yesterdayStr)).length;
-    const quizzesYesterday = quizResults.filter(r => r.created_at.startsWith(yesterdayStr)).length;
-    
     return {
       newStudentsToday: analyticsExtra.newStudentsToday,
-      studentsYesterday,
+      studentsYesterday: students.filter(s => s.created_at.startsWith(yesterdayStr)).length,
       quizzesToday: analyticsExtra.quizzesToday,
-      quizzesYesterday,
+      quizzesYesterday: quizResults.filter(r => r.created_at.startsWith(yesterdayStr)).length,
     };
   }, [students, quizResults, analyticsExtra]);
 
   const senderTypeLabels: Record<string, string> = {
-    student: `<span aria-hidden='true'>👨‍🎓</span> Student`,
-    parent: `<span aria-hidden='true'>👨‍👩‍👦</span> Parent`,
-    school: `<span aria-hidden='true'>🏫</span> School`,
+    student: "👨‍🎓 Student",
+    parent: "👨‍👩‍👦 Parent",
+    school: "🏫 School",
     other: "Other",
   };
 
-  const issueBadgeLabel: Record<ContactIssueKind, string> = {
+  const issueBadgeClass: Record<string, string> = {
+    quiz: "bg-blue-500/15 text-blue-700 border-blue-500/30",
+    login: "bg-orange-500/15 text-orange-700 border-orange-500/30",
+    result: "bg-purple-500/15 text-purple-700 border-purple-500/30",
+    career: "bg-green-500/15 text-green-700 border-green-500/30",
+    other: "bg-gray-500/15 text-gray-700 border-gray-500/30",
+  };
+
+  const issueBadgeLabel: Record<string, string> = {
     quiz: "Quiz Issue",
     login: "Login Issue",
     result: "Result Issue",
     career: "Career Guidance",
     other: "Other",
-  };
-
-  const issueBadgeClass: Record<ContactIssueKind, string> = {
-    quiz: "bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/40",
-    login: "bg-red-500/15 text-red-700 dark:text-red-300 border-red-500/40",
-    career: "bg-green-500/15 text-green-700 dark:text-green-300 border-green-500/40",
-    result: "bg-amber-500/15 text-amber-800 dark:text-amber-200 border-amber-500/40",
-    other: "bg-muted text-muted-foreground border-border",
   };
 
   const filteredContactMessages = contactMessages.filter((msg) => {
@@ -535,16 +461,13 @@ const AdminDashboard = () => {
     return kind === messageIssueFilter;
   });
 
-  // Contact messages mein ek grouped view banao
-  const messageThreads = useMemo(() => {
-    const emailGroups: Record<string, ContactMessage[]> = {};
-    contactMessages.forEach(msg => {
-      const key = msg.email || msg.name;
-      if (!emailGroups[key]) emailGroups[key] = [];
-      emailGroups[key].push(msg);
-    });
-    return emailGroups;
-  }, [contactMessages]);
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background p-4 md:p-8 pt-24">
+        <DashboardSkeleton />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -553,7 +476,7 @@ const AdminDashboard = () => {
         <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
           <div className="space-y-2 min-w-0">
             <h1 className="font-display font-bold text-2xl md:text-3xl text-foreground">
-              <span aria-hidden='true'>🛡️</span> Admin Panel — PathFinder AI
+              🛡️ Admin Panel — PathFinder AI
             </h1>
             {user?.email && (
               <p className="text-muted-foreground font-body text-sm break-all">{user.email}</p>
@@ -577,7 +500,6 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Live Indicator */}
       <div className="flex items-center gap-2 mb-6">
         <span className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse" />
         <span className="text-xs font-display text-muted-foreground">
@@ -585,23 +507,21 @@ const AdminDashboard = () => {
         </span>
       </div>
 
-      {/* Quick Actions */}
       <div className="flex flex-wrap gap-2 p-4 bg-muted/30 rounded-2xl border border-border">
         <p className="w-full text-xs font-display font-semibold text-muted-foreground uppercase mb-1">
-          <span aria-hidden='true'>⚡</span> Quick Actions
+          ⚡ Quick Actions
         </p>
         <button
           onClick={() => setActiveTab('messages')}
-          className={`flex items-center gap-2 text-xs font-display font-semibold px-3 py-2 rounded-xl border-2 transition-all ${
-            unreadCount > 0 
-              ? 'gradient-hero text-primary-foreground border-transparent animate-pulse' 
+          className={`flex items-center gap-2 text-xs font-display font-semibold px-3 py-2 rounded-xl border-2 transition-all ${unreadCount > 0
+              ? 'gradient-hero text-primary-foreground border-transparent animate-pulse'
               : 'border-border bg-card hover:border-primary/40'
-          }`}
+            }`}
         >
           <Mail className="w-3.5 h-3.5" />
           {unreadCount > 0 ? `${unreadCount} Unread Messages` : 'Messages'}
         </button>
-        
+
         <button
           onClick={() => setActiveTab('analytics')}
           className="flex items-center gap-2 text-xs font-display font-semibold px-3 py-2 rounded-xl border-2 border-border bg-card hover:border-primary/40 transition-all"
@@ -609,23 +529,8 @@ const AdminDashboard = () => {
           <BarChart3 className="w-3.5 h-3.5" />
           Analytics
         </button>
-        
-        <button
-          onClick={() => {
-            const pending = contactMessages.filter(m => m.status !== 'replied' && !m.admin_reply);
-            if (pending.length > 0) {
-              setActiveTab('messages');
-              setMessagesUnreadOnly(true);
-            }
-          }}
-          className="flex items-center gap-2 text-xs font-display font-semibold px-3 py-2 rounded-xl border-2 border-amber-500/40 bg-amber-500/10 text-amber-700 hover:bg-amber-500/20 transition-all"
-        >
-          <Send className="w-3.5 h-3.5" />
-          Pending Replies ({contactMessages.filter(m => m.status !== 'replied' && !m.admin_reply).length})
-        </button>
       </div>
 
-      {/* Stats Overview */}
       <DashboardStats
         totalStudents={totalStudents}
         totalQuizzes={totalQuizzes}
@@ -635,26 +540,22 @@ const AdminDashboard = () => {
         analyticsExtra={analyticsExtra}
       />
 
-      {/* Live Activity Feed */}
       <ActivityFeed activityFeed={activityFeed} />
 
-      {/* Tabs */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none snap-x h-12 items-center">
         <button
           onClick={() => setActiveTab("students")}
-          className={`font-display font-semibold px-5 py-2 rounded-xl text-sm transition-all ${
-            activeTab === "students" ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"
-          }`}
+          className={`font-display font-semibold px-5 py-2 rounded-xl text-sm transition-all whitespace-nowrap ${activeTab === "students" ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"
+            }`}
         >
-          <Users className="w-4 h-4 inline mr-1" /> Students
+          Students
         </button>
         <button
           onClick={() => setActiveTab("messages")}
-          className={`font-display font-semibold px-5 py-2 rounded-xl text-sm transition-all relative ${
-            activeTab === "messages" ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"
-          }`}
+          className={`font-display font-semibold px-5 py-2 rounded-xl text-sm transition-all relative whitespace-nowrap ${activeTab === "messages" ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"
+            }`}
         >
-          <Mail className="w-4 h-4 inline mr-1" /> Messages
+          Messages
           {unreadCount > 0 && (
             <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center">
               {unreadCount}
@@ -663,21 +564,19 @@ const AdminDashboard = () => {
         </button>
         <button
           onClick={() => setActiveTab("analytics")}
-          className={`font-display font-semibold px-5 py-2 rounded-xl text-sm transition-all ${
-            activeTab === "analytics" ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"
-          }`}
+          className={`font-display font-semibold px-5 py-2 rounded-xl text-sm transition-all whitespace-nowrap ${activeTab === "analytics" ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"
+            }`}
         >
-          <BarChart3 className="w-4 h-4 inline mr-1" /> Analytics
+          Analytics
         </button>
         <button
           onClick={() => setActiveTab("feedback")}
-          className={`font-display font-semibold text-sm px-5 py-2.5 rounded-xl transition-all border-2 ${
-            activeTab === "feedback"
+          className={`font-display font-semibold text-sm px-5 py-2.5 rounded-xl transition-all border-2 whitespace-nowrap ${activeTab === "feedback"
               ? "gradient-hero text-primary-foreground border-transparent shadow-card"
               : "border-border text-muted-foreground hover:text-foreground bg-muted hover:border-primary/30"
-          }`}
+            }`}
         >
-          <span aria-hidden="true">⭐</span> Feedback
+          ⭐ Feedback
         </button>
       </div>
 
@@ -688,40 +587,21 @@ const AdminDashboard = () => {
               <Search className="absolute left-3.5 top-3 w-4 h-4 text-muted-foreground" />
               <input
                 type="text"
-                placeholder="Naam, email, ya city se search karein..."
+                placeholder="Search students..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-border bg-background font-body text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary transition-colors text-sm"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-border bg-background text-sm outline-none focus:border-primary transition-colors"
               />
             </div>
             <button
               onClick={exportStudentsCSV}
               className="flex items-center justify-center gap-2 text-sm font-display font-semibold px-4 py-2.5 rounded-xl border-2 border-border hover:border-primary/40 transition-all bg-card"
             >
-              <span aria-hidden="true">📥</span> Export CSV
+              📥 Export CSV
             </button>
           </div>
 
-          {loading ? (
-            <div className="space-y-3 animate-pulse mt-6">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="h-16 bg-muted/60 rounded-xl w-full border border-border" />
-              ))}
-            </div>
-          ) : filteredStudents.length === 0 && !search ? (
-            <div className="text-center py-16">
-              <div className="text-6xl mb-4"><span aria-hidden="true">🎓</span></div>
-              <h3 className="font-display font-bold text-xl text-foreground mb-2">
-                Abhi tak koi student nahi
-              </h3>
-              <p className="text-muted-foreground font-body text-sm max-w-xs mx-auto">
-                Jab students quiz complete karenge, woh yahan dikhenge.
-              </p>
-              <p className="text-xs text-primary font-display font-semibold mt-3">
-                <span aria-hidden="true">💡</span> Share karo: career-guider-six.vercel.app
-              </p>
-            </div>
-          ) : filteredStudents.length === 0 ? (
+          {!loading && filteredStudents.length === 0 ? (
             <p className="text-center text-muted-foreground font-body py-8">Koi student nahi mila</p>
           ) : (
             <div className="space-y-3">
@@ -748,32 +628,9 @@ const AdminDashboard = () => {
 
       {activeTab === "messages" && (
         <div className="bg-card border-2 border-border rounded-2xl p-6">
-          <h3 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
-            <Mail className="w-5 h-5 text-primary" /> Contact Messages <span aria-hidden="true">📨</span>
+          <h3 className="font-display font-bold text-lg text-foreground mb-4">
+            Contact Messages 📨
           </h3>
-
-          {/* Messages tab ke top pe add karo */}
-          <div className="grid grid-cols-3 gap-3 mb-5">
-            <div className="bg-amber-500/10 border border-amber-500/25 rounded-xl p-3 text-center">
-              <p className="text-2xl font-display font-bold text-amber-600">
-                {contactMessages.filter(m => m.status !== 'replied' && !m.admin_reply).length}
-              </p>
-              <p className="text-xs text-muted-foreground font-display">Pending Replies</p>
-            </div>
-            <div className="bg-green-500/10 border border-green-500/25 rounded-xl p-3 text-center">
-              <p className="text-2xl font-display font-bold text-green-600">
-                {contactMessages.filter(m => m.status === 'replied' || m.admin_reply).length}
-              </p>
-              <p className="text-xs text-muted-foreground font-display">Replied</p>
-            </div>
-            <div className="bg-primary/10 border border-primary/25 rounded-xl p-3 text-center">
-              <p className="text-2xl font-display font-bold text-primary">
-                {unreadCount}
-              </p>
-              <p className="text-xs text-muted-foreground font-display">Unread</p>
-            </div>
-          </div>
-
           {contactMessages.length === 0 ? (
             <p className="text-center text-muted-foreground font-body py-8">Abhi tak koi message nahi aaya</p>
           ) : (
@@ -792,11 +649,10 @@ const AdminDashboard = () => {
                       key={opt.id}
                       type="button"
                       onClick={() => setMessageIssueFilter(opt.id)}
-                      className={`font-display font-semibold px-3 py-2 rounded-xl text-xs sm:text-sm transition-all border-2 ${
-                        messageIssueFilter === opt.id
-                          ? "gradient-hero text-primary-foreground border-transparent"
-                          : "bg-muted/50 text-muted-foreground border-border hover:text-foreground hover:border-primary/30"
-                      }`}
+                      className={`font-display font-semibold px-3 py-2 rounded-xl text-xs sm:text-sm transition-all border-2 ${messageIssueFilter === opt.id
+                        ? "gradient-hero text-primary-foreground border-transparent"
+                        : "bg-muted/50 text-muted-foreground border-border hover:text-foreground hover:border-primary/30"
+                        }`}
                     >
                       {opt.label}
                     </button>
@@ -806,45 +662,38 @@ const AdminDashboard = () => {
                   type="button"
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setMessagesUnreadOnly((v) => !v)}
-                  className={`self-start font-display font-semibold px-3 py-2 rounded-xl text-xs sm:text-sm border-2 transition-colors ${
-                    messagesUnreadOnly
-                      ? "border-primary bg-primary/10 text-foreground"
-                      : "border-border bg-card text-muted-foreground hover:border-primary/40"
-                  }`}
+                  className={`self-start font-display font-semibold px-3 py-2 rounded-xl text-xs sm:text-sm border-2 transition-colors ${messagesUnreadOnly
+                    ? "border-primary bg-primary/10 text-foreground"
+                    : "border-border bg-card text-muted-foreground hover:border-primary/40"
+                    }`}
                 >
-                  Unread only {messagesUnreadOnly ? '<span aria-hidden="true">✓</span>' : ""}
+                  Unread only {messagesUnreadOnly ? "✓" : ""}
                 </motion.button>
               </div>
 
-              {filteredContactMessages.length === 0 ? (
-                <p className="text-center text-muted-foreground font-body py-8">
-                  Is filter ke liye koi message nahi mila
-                </p>
-              ) : (
-                <div className="space-y-3">
-                  {filteredContactMessages.map((msg) => (
-                    <MessageRow
-                      key={msg.id}
-                      msg={msg}
-                      issueKind={resolveIssueKind(msg)}
-                      body={displayMessageBody(msg, resolveIssueKind(msg))}
-                      senderTypeLabels={senderTypeLabels}
-                      issueBadgeClass={issueBadgeClass}
-                      issueBadgeLabel={issueBadgeLabel}
-                      onMarkRead={markMessageRead}
-                      onReplySent={(id, reply) => {
-                        setContactMessages((prev) =>
-                          prev.map((m) =>
-                            m.id === id
-                              ? { ...m, admin_reply: reply, status: 'replied', replied_at: new Date().toISOString() }
-                              : m
-                          )
-                        );
-                      }}
-                    />
-                  ))}
-                </div>
-              )}
+              <div className="space-y-3">
+                {filteredContactMessages.map((msg) => (
+                  <MessageRow
+                    key={msg.id}
+                    msg={msg}
+                    issueKind={resolveIssueKind(msg)}
+                    body={displayMessageBody(msg, resolveIssueKind(msg))}
+                    senderTypeLabels={senderTypeLabels}
+                    issueBadgeClass={issueBadgeClass}
+                    issueBadgeLabel={issueBadgeLabel}
+                    onMarkRead={markMessageRead}
+                    onReplySent={(id, reply) => {
+                      setContactMessages((prev) =>
+                        prev.map((m) =>
+                          m.id === id
+                            ? { ...m, admin_reply: reply, status: 'replied', replied_at: new Date().toISOString() }
+                            : m
+                        )
+                      );
+                    }}
+                  />
+                ))}
+              </div>
             </>
           )}
         </div>
@@ -865,7 +714,6 @@ const AdminDashboard = () => {
         <FeedbackView feedbacks={feedbacks} />
       )}
 
-      {/* Suggestion Modal */}
       <SuggestionModal
         sendingTo={sendingTo}
         setSendingTo={setSendingTo}

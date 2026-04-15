@@ -24,6 +24,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import ExamCountdown from "@/components/dashboard/ExamCountdown";
 import CareerReadinessScore from "@/components/dashboard/CareerReadinessScore";
+import { DashboardSkeleton } from "../ui/SkeletonLoader";
 
 interface CareerAnalysis {
   id: string;
@@ -46,6 +47,7 @@ interface Suggestion {
 }
 
 interface Profile {
+  id?: string;
   full_name: string;
   email: string;
   phone: string;
@@ -110,22 +112,15 @@ function normalizeStream(s: string | null | undefined): StreamKey {
   return "science";
 }
 
-/** Flat array in localStorage: { id: "science:ncert", checked: boolean }[] */
 const CHECKLIST_PREFIX = (s: StreamKey) => `${s}:` as const;
 
 function readChecklistArray(): ChecklistItem[] {
   try {
     const raw = localStorage.getItem("pathfinder_checklist");
     if (!raw) return [];
-    const parsed = JSON.parse(raw) as unknown;
+    const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
-    return parsed.filter(
-      (x): x is ChecklistItem =>
-        x &&
-        typeof x === "object" &&
-        typeof (x as ChecklistItem).id === "string" &&
-        typeof (x as ChecklistItem).checked === "boolean",
-    );
+    return parsed;
   } catch {
     return [];
   }
@@ -156,7 +151,6 @@ function writeChecklistStream(stream: StreamKey, items: ChecklistItem[]) {
   localStorage.setItem("pathfinder_checklist", JSON.stringify([...all, ...next]));
 }
 
-// ─── Admin Replies Section ────────────────────────────────────────────────
 interface AdminReply {
   id: string;
   name: string;
@@ -212,7 +206,7 @@ const AdminRepliesSection = ({ userEmail }: { userEmail: string | undefined }) =
   return (
     <div className="bg-card border-2 border-green-500/30 rounded-2xl p-5 mt-4">
       <h3 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
-        <span aria-hidden='true'>💬</span> Admin ke Replies
+        💬 Admin ke Replies
       </h3>
       <div className="space-y-3">
         {replies.map((reply) => (
@@ -224,15 +218,15 @@ const AdminRepliesSection = ({ userEmail }: { userEmail: string | undefined }) =
               Aapka message: "{reply.message?.slice(0, 60)}{reply.message?.length > 60 ? "..." : ""}"
             </p>
             <p className="text-sm font-body text-foreground font-medium">
-              <span aria-hidden='true'>🧑‍💼</span> Admin: {reply.admin_reply}
+              🧑‍💼 Admin: {reply.admin_reply}
             </p>
             <p className="text-xs text-muted-foreground mt-2">
               {reply.replied_at
                 ? new Date(reply.replied_at).toLocaleDateString("en-IN", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })
                 : ""}
             </p>
           </div>
@@ -242,7 +236,6 @@ const AdminRepliesSection = ({ userEmail }: { userEmail: string | undefined }) =
   );
 };
 
-// ─── Help & Support Section ────────────────────────────────────────────────
 const HelpSupportSection = ({ user, profile }: { user: any; profile: Profile | null }) => {
   const [message, setMessage] = useState("");
   const [issueType, setIssueType] = useState("Quiz Issue");
@@ -287,10 +280,10 @@ const HelpSupportSection = ({ user, profile }: { user: any; profile: Profile | n
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim() || !user || !profile) return;
-    
+
     setIsSubmitting(true);
     const prefix = `[${issueType.toUpperCase()}] `;
-    
+
     const { error } = await supabase.from("contact_messages").insert({
       name: profile.full_name || "Student",
       email: user.email,
@@ -300,13 +293,13 @@ const HelpSupportSection = ({ user, profile }: { user: any; profile: Profile | n
       issue_type: issueType,
       is_read: false,
     });
-    
+
     setIsSubmitting(false);
-    
+
     if (error) {
       toast.error("Message bhejne mein problem aayi.");
     } else {
-      toast.success("Message bhej diya! Admin jald reply karenge <span aria-hidden='true'>🙏</span>");
+      toast.success("Message bhej diya! Admin jald reply karenge 🙏");
       setMessage("");
     }
   };
@@ -314,9 +307,9 @@ const HelpSupportSection = ({ user, profile }: { user: any; profile: Profile | n
   return (
     <div className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 mt-6 shadow-card">
       <h3 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
-        <span aria-hidden='true'>🛠️</span> Help & Support
+        🛠️ Help & Support
       </h3>
-      
+
       <form onSubmit={handleSubmit} className="space-y-4 mb-6">
         <div>
           <label className="text-xs font-display font-semibold text-muted-foreground block mb-1">Issue Type</label>
@@ -347,7 +340,7 @@ const HelpSupportSection = ({ user, profile }: { user: any; profile: Profile | n
           disabled={isSubmitting || !message.trim()}
           className="gradient-hero text-primary-foreground font-display font-semibold px-4 py-2 rounded-xl hover:opacity-90 transition-opacity text-sm disabled:opacity-50 flex items-center gap-2"
         >
-          {isSubmitting ? "Bhej rahe hain..." : "Message Bhejo <span aria-hidden='true'>📨</span>"}
+          {isSubmitting ? "Bhej rahe hain..." : "Message Bhejo 📨"}
         </button>
       </form>
 
@@ -361,9 +354,8 @@ const HelpSupportSection = ({ user, profile }: { user: any; profile: Profile | n
                   {msg.message}
                 </p>
                 <div className="shrink-0 flex items-center gap-2">
-                  <span className={`text-xs px-2 py-1 rounded-full font-semibold border ${
-                    msg.admin_reply ? "bg-green-500/10 text-green-600 border-green-500/20" : "bg-orange-500/10 text-orange-600 border-orange-500/20"
-                  }`}>
+                  <span className={`text-xs px-2 py-1 rounded-full font-semibold border ${msg.admin_reply ? "bg-green-500/10 text-green-600 border-green-500/20" : "bg-orange-500/10 text-orange-600 border-orange-500/20"
+                    }`}>
                     {msg.admin_reply ? "Replied" : "Pending"}
                   </span>
                 </div>
@@ -383,17 +375,10 @@ function computeVisitStreak(): number {
   const prevStreak = prevRaw ? parseInt(prevRaw, 10) : 0;
   const safePrev = Number.isFinite(prevStreak) ? prevStreak : 0;
 
-  if (last === today) {
-    return safePrev;
-  }
+  if (last === today) return safePrev;
 
   const yesterday = formatLocalDate(addDays(new Date(), -1));
-  let next: number;
-  if (last === yesterday) {
-    next = safePrev + 1;
-  } else {
-    next = 1;
-  }
+  let next = (last === yesterday) ? (safePrev + 1) : 1;
 
   localStorage.setItem("pathfinder_last_visit", today);
   localStorage.setItem("pathfinder_streak", String(next));
@@ -420,7 +405,6 @@ const StudentDashboard = () => {
 
   useEffect(() => {
     if (!user) return;
-
     const fetchData = async () => {
       const [resResults, resSugg, resProfile, resAnalyses] = await Promise.all([
         supabase.from("quiz_results").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
@@ -430,12 +414,11 @@ const StudentDashboard = () => {
       ]);
       setResults(resResults.data || []);
       setSuggestions(resSugg.data || []);
-      setCareerAnalyses((resAnalyses.data as unknown as CareerAnalysis[]) || []);
+      setCareerAnalyses((resAnalyses.data as any) || []);
       if (resProfile.data) {
-        const p = resProfile.data as unknown as Profile;
-        setProfile(p);
-        setEditForm(p);
-        setCareerGoalDraft(p.career_goal || "");
+        setProfile(resProfile.data as any);
+        setEditForm(resProfile.data as any);
+        setCareerGoalDraft(resProfile.data.career_goal || "");
       }
     };
     fetchData();
@@ -444,28 +427,19 @@ const StudentDashboard = () => {
   useEffect(() => {
     try {
       const raw = localStorage.getItem("pathfinder_quiz_profile");
-      setProfileStreamFromStorage(raw ? (JSON.parse(raw).stream as string) : null);
-    } catch {
-      setProfileStreamFromStorage(null);
-    }
+      setProfileStreamFromStorage(raw ? JSON.parse(raw).stream : null);
+    } catch { setProfileStreamFromStorage(null); }
   }, [user, results]);
 
   const latestStream = results.length > 0 ? results[0].stream : null;
-
-  const effectiveStream = useMemo(
-    () => normalizeStream(latestStream || profileStreamFromStorage),
-    [latestStream, profileStreamFromStorage],
-  );
-
+  const effectiveStream = useMemo(() => normalizeStream(latestStream || profileStreamFromStorage), [latestStream, profileStreamFromStorage]);
   const checklistPercent = useMemo(() => {
     const n = checklistItems.length;
-    if (n === 0) return 0;
-    return checklistItems.filter((i) => i.checked).length / n;
+    return n === 0 ? 0 : checklistItems.filter((i) => i.checked).length / n;
   }, [checklistItems]);
 
   useEffect(() => {
-    if (!user) return;
-    setStreakCount(computeVisitStreak());
+    if (user) setStreakCount(computeVisitStreak());
   }, [user]);
 
   useEffect(() => {
@@ -491,11 +465,10 @@ const StudentDashboard = () => {
       parent_phone: editForm.parent_phone || "",
       updated_at: new Date().toISOString(),
     }).eq("id", user.id);
-
     if (error) {
       toast.error("Profile update nahi ho paaya");
     } else {
-      toast.success("Profile update ho gaya! <span aria-hidden='true'>✅</span>");
+      toast.success("Profile update ho gaya! ✅");
       setProfile({ ...profile, ...editForm } as Profile);
       setEditMode(false);
     }
@@ -509,14 +482,11 @@ const StudentDashboard = () => {
       career_goal: careerGoalDraft.trim() || null,
       updated_at: new Date().toISOString(),
     }).eq("id", user.id);
-
     if (error) {
       toast.error("Career goal save nahi ho paaya");
     } else {
-      toast.success("Career goal save ho gaya! <span aria-hidden='true'>✅</span>");
-      setProfile((prev) =>
-        prev ? { ...prev, career_goal: careerGoalDraft.trim() || null } : prev,
-      );
+      toast.success("Career goal save ho gaya! ✅");
+      setProfile((prev) => prev ? { ...prev, career_goal: careerGoalDraft.trim() || null } : prev);
       setGoalEditing(false);
     }
     setSavingGoal(false);
@@ -531,578 +501,208 @@ const StudentDashboard = () => {
   };
 
   const unreadCount = suggestions.filter((s) => !s.is_read).length;
-
   const stageQuizDone = results.length > 0;
   const stageGoalSet = Boolean(profile?.career_goal?.trim());
   const stageChecklistStarted = checklistItems.some((i) => i.checked);
   const stageExpert = suggestions.length > 0;
-  const journeyStagesComplete = [stageQuizDone, stageGoalSet, stageChecklistStarted, stageExpert].filter(Boolean).length;
-  const journeyPercent = Math.round((journeyStagesComplete / 4) * 100);
+  const journeyPercent = Math.round(([stageQuizDone, stageGoalSet, stageChecklistStarted, stageExpert].filter(Boolean).length / 4) * 100);
 
-  type NextActionConfig = {
-    title: string;
-    ctaLabel: string;
-    ctaHref: string | null;
-    scrollToId: string | null;
-    switchTab: "overview" | "results" | "suggestions" | "profile" | null;
-  };
-
-  const nextAction: NextActionConfig = useMemo(() => {
-    if (!stageQuizDone) {
-      return {
-        title: "Quiz dijiye — apna stream discover karo <span aria-hidden='true'>🎯</span>",
-        ctaLabel: "Quiz shuru karein",
-        ctaHref: "/quiz",
-        scrollToId: null,
-        switchTab: null,
-      };
-    }
-    if (!stageGoalSet) {
-      return {
-        title: "Career goal set karo — dashboard tab mein <span aria-hidden='true'>🎯</span>",
-        ctaLabel: "Goal set karein",
-        ctaHref: null,
-        scrollToId: "student-dashboard-career-goal",
-        switchTab: null,
-      };
-    }
-    if (!stageChecklistStarted) {
-      return {
-        title: "Preparation checklist start karo <span aria-hidden='true'>✅</span>",
-        ctaLabel: "Checklist kholo",
-        ctaHref: null,
-        scrollToId: "student-dashboard-checklist",
-        switchTab: null,
-      };
-    }
-    if (!stageExpert) {
-      return {
-        title: "Kal bhi aao — streak banaye rakho <span aria-hidden='true'>🔥</span>",
-        ctaLabel: "Checklist continue karein",
-        ctaHref: null,
-        scrollToId: "student-dashboard-checklist",
-        switchTab: null,
-      };
-    }
-    return {
-      title: "Bahut badhiya! Expert suggestion ka wait karo <span aria-hidden='true'>💬</span>",
-      ctaLabel: "Suggestions dekhein",
-      ctaHref: null,
-      scrollToId: null,
-      switchTab: "suggestions",
-    };
+  const nextAction = useMemo(() => {
+    if (!stageQuizDone) return { title: "Quiz dijiye — apna stream discover karo 🎯", ctaLabel: "Quiz shuru karein", ctaHref: "/quiz", scrollToId: null, switchTab: null };
+    if (!stageGoalSet) return { title: "Career goal set karo — dashboard tab mein 🎯", ctaLabel: "Goal set karein", ctaHref: null, scrollToId: "student-dashboard-career-goal", switchTab: null };
+    if (!stageChecklistStarted) return { title: "Preparation checklist start karo ✅", ctaLabel: "Checklist kholo", ctaHref: null, scrollToId: "student-dashboard-checklist", switchTab: null };
+    if (!stageExpert) return { title: "Kal bhi aao — streak banaye rakho 🔥", ctaLabel: "Checklist continue karein", ctaHref: null, scrollToId: "student-dashboard-checklist", switchTab: null };
+    return { title: "Bahut badhiya! Expert suggestion ka wait karo 💬", ctaLabel: "Suggestions dekhein", ctaHref: null, scrollToId: null, switchTab: "suggestions" };
   }, [stageQuizDone, stageGoalSet, stageChecklistStarted, stageExpert]);
 
-  type StoryItem = { id: string; at: string; title: string; detail: string };
-
   const storyItems = useMemo(() => {
-    const items: StoryItem[] = [];
-    if (profile?.created_at) {
-      items.push({
-        id: "join",
-        at: profile.created_at,
-        title: "PathFinder join kiya",
-        detail: "Account bana — yahi se aapki journey shuru!",
-      });
-    }
-    const quizzesChrono = [...results].sort(
-      (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
-    );
-    quizzesChrono.forEach((r, idx) => {
-      items.push({
-        id: `quiz-${r.id}`,
-        at: r.created_at,
-        title: `Quiz diya (${idx + 1})`,
-        detail: `${r.stream.charAt(0).toUpperCase() + r.stream.slice(1)} stream suggest hua`,
-      });
-    });
-    if (profile?.career_goal?.trim() && profile.updated_at) {
-      items.push({
-        id: "goal",
-        at: profile.updated_at,
-        title: "Career goal set kiya",
-        detail: profile.career_goal.trim(),
-      });
-    }
-    [...suggestions]
-      .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
-      .forEach((s, idx) => {
-        items.push({
-          id: `sugg-${s.id}`,
-          at: s.created_at,
-          title: `Expert suggestion (${idx + 1})`,
-          detail: s.message.length > 100 ? `${s.message.slice(0, 100)}…` : s.message,
-        });
-      });
+    const items: any[] = [];
+    if (profile?.created_at) items.push({ id: "join", at: profile.created_at, title: "PathFinder join kiya", detail: "Account bana — yahi se aapki journey shuru!" });
+    results.forEach((r, idx) => items.push({ id: `quiz-${r.id}`, at: r.created_at, title: `Quiz diya (${idx + 1})`, detail: `${r.stream} stream suggest hua` }));
+    if (profile?.career_goal?.trim() && profile.updated_at) items.push({ id: "goal", at: profile.updated_at, title: "Career goal set kiya", detail: profile.career_goal.trim() });
+    suggestions.forEach((s, idx) => items.push({ id: `sugg-${s.id}`, at: s.created_at, title: `Expert suggestion (${idx + 1})`, detail: s.message.slice(0, 100) }));
     return items.sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime());
   }, [profile, results, suggestions]);
 
-  const displayedStoryItems = timelineExpanded ? storyItems : storyItems.slice(-5);
-  const canExpandStory = storyItems.length > 5;
-
-  const runNextActionCta = () => {
-    if (nextAction.switchTab) setActiveTab(nextAction.switchTab);
-    if (nextAction.scrollToId) {
-      window.requestAnimationFrame(() => {
-        document.getElementById(nextAction.scrollToId as string)?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-    }
-  };
-
-  const journeyStageMeta = [
-    { key: "quiz", label: "Quiz Diya", done: stageQuizDone },
-    { key: "goal", label: "Goal Set Kiya", done: stageGoalSet },
-    { key: "check", label: "Checklist Shuru", done: stageChecklistStarted },
-    { key: "exp", label: "Expert Se Baat", done: stageExpert },
-  ] as const;
-
-  const tabs = [
-    { id: "overview" as const, label: "Overview", icon: TrendingUp },
-    { id: "results" as const, label: "Quiz Results", icon: BookOpen, count: results.length },
-    { id: "suggestions" as const, label: "Suggestions", icon: MessageSquare, count: unreadCount },
-    { id: "profile" as const, label: "Profile", icon: User },
-  ];
+  if (!profile && results.length === 0) {
+    return (
+      <div className="min-h-screen bg-background p-4 md:p-8 pt-24">
+        <DashboardSkeleton />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="font-display font-bold text-2xl md:text-3xl text-foreground">
-            Namaste, {profile?.full_name || "Student"} ji <span aria-hidden='true'>👋</span>
+            Namaste, {profile?.full_name || "Student"} ji 👋
           </h1>
           <p className="text-muted-foreground font-body text-sm">{user?.email}</p>
         </div>
         <div className="flex gap-3">
-          <Link
-            to="/quiz"
-            className="flex items-center gap-2 gradient-hero text-primary-foreground font-display font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-opacity text-sm"
-          >
+          <Link to="/quiz" className="flex items-center gap-2 gradient-hero text-primary-foreground font-display font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 text-sm">
             <BookOpen className="w-4 h-4" /> Quiz Dijiye
           </Link>
-          <button
-            onClick={signOut}
-            className="flex items-center gap-2 border-2 border-border text-foreground font-display font-semibold px-5 py-2.5 rounded-xl hover:bg-muted transition-colors text-sm"
-          >
+          <button onClick={signOut} className="border-2 border-border text-foreground font-display font-semibold px-5 py-2.5 rounded-xl hover:bg-muted text-sm transition-colors">
             Logout
           </button>
         </div>
       </div>
 
-      {/* Tabs */}
       <div className="flex gap-2 overflow-x-auto pb-1">
-        {tabs.map((tab) => (
+        {[
+          { id: "overview", label: "Overview", icon: TrendingUp },
+          { id: "results", label: "Quiz Results", icon: BookOpen, count: results.length },
+          { id: "suggestions", label: "Suggestions", icon: MessageSquare, count: unreadCount },
+          { id: "profile", label: "Profile", icon: User },
+        ].map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-1.5 font-display font-semibold px-4 py-2 rounded-xl text-sm transition-all whitespace-nowrap ${
-              activeTab === tab.id ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"
-            }`}
+            onClick={() => setActiveTab(tab.id as any)}
+            className={`flex items-center gap-1.5 font-display font-semibold px-4 py-2 rounded-xl text-sm transition-all whitespace-nowrap ${activeTab === tab.id ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"}`}
           >
             <tab.icon className="w-4 h-4" />
             {tab.label}
-            {tab.count !== undefined && tab.count > 0 && (
-              <span className={`text-xs px-1.5 py-0.5 rounded-full ${activeTab === tab.id ? "bg-white/20" : "bg-primary/10 text-primary"}`}>
-                {tab.count}
-              </span>
-            )}
+            {tab.count !== undefined && tab.count > 0 && <span className="ml-1 text-xs px-1.5 py-0.5 rounded-full bg-white/20">{tab.count}</span>}
           </button>
         ))}
       </div>
 
-      {/* Overview Tab */}
       {activeTab === "overview" && (
-        <>
-          <CareerReadinessScore
-            quizCount={results.length}
-            hasGoal={Boolean(profile?.career_goal)}
-            checklistPercent={checklistPercent}
-            streakDays={streakCount}
-          />
-
-          {/* SECTION 1 — Journey */}
-          <motion.section
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 shadow-card"
-          >
-            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-4">
-              <h2 className="font-display font-bold text-lg md:text-xl text-foreground">Aapka Journey <span aria-hidden='true'>🗺️</span></h2>
+        <div className="space-y-6">
+          <CareerReadinessScore quizCount={results.length} hasGoal={Boolean(profile?.career_goal)} checklistPercent={checklistPercent} streakDays={streakCount} />
+          <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 shadow-card">
+            <div className="flex justify-between items-end mb-4">
+              <h2 className="font-display font-bold text-lg text-foreground">Aapka Journey 🗺️</h2>
               <p className="text-sm font-display font-semibold text-primary">{journeyPercent}% complete</p>
             </div>
             <div className="h-3 rounded-full bg-muted overflow-hidden mb-5">
-              <motion.div
-                className="h-full gradient-hero rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: `${journeyPercent}%` }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-              />
+              <motion.div className="h-full gradient-hero rounded-full" initial={{ width: 0 }} animate={{ width: `${journeyPercent}%` }} />
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-              {journeyStageMeta.map((st) => (
-                <div
-                  key={st.key}
-                  className={`rounded-xl border-2 p-3 text-center transition-colors ${
-                    st.done ? "border-primary/50 bg-primary/5 shadow-card" : "border-border bg-muted/20"
-                  }`}
-                >
+              {[
+                { label: "Quiz Diya", done: stageQuizDone },
+                { label: "Goal Set Kiya", done: stageGoalSet },
+                { label: "Checklist Shuru", done: stageChecklistStarted },
+                { label: "Expert Se Baat", done: stageExpert },
+              ].map((st) => (
+                <div key={st.label} className={`rounded-xl border-2 p-3 text-center ${st.done ? "border-primary/50 bg-primary/5" : "border-border bg-muted/20"}`}>
                   <p className="font-display font-bold text-sm text-foreground mb-1">
-                    {st.done ? "<span aria-hidden='true'>✅</span>" : "<span aria-hidden='true'>⭕</span>"} {st.label}
+                    {st.done ? "✅" : "⭕"} {st.label}
                   </p>
-                  <div className={`h-1.5 rounded-full overflow-hidden ${st.done ? "bg-muted" : "bg-muted/60"}`}>
-                    {st.done && <div className="h-full w-full gradient-hero rounded-full" />}
-                  </div>
                 </div>
               ))}
             </div>
           </motion.section>
 
-          {/* SECTION 2 — Next Action */}
-          <motion.section
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 }}
-            className="rounded-2xl p-5 md:p-6 gradient-hero text-primary-foreground shadow-card"
-          >
-            <p className="text-xs font-display font-semibold uppercase tracking-wide opacity-90 mb-2">Next Action</p>
-            <h3 className="font-display font-bold text-lg md:text-xl mb-4 leading-snug">{nextAction.title}</h3>
+          <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl p-5 md:p-6 gradient-hero text-primary-foreground shadow-card">
+            <p className="text-xs font-display font-semibold uppercase opacity-90 mb-2">Next Action</p>
+            <h3 className="font-display font-bold text-lg mb-4">{nextAction.title}</h3>
             {nextAction.ctaHref ? (
-              <Link
-                to={nextAction.ctaHref}
-                className="inline-flex items-center justify-center gap-2 bg-primary-foreground/15 hover:bg-primary-foreground/25 font-display font-bold px-5 py-3 rounded-xl text-sm transition-colors border border-primary-foreground/30"
-              >
-                {nextAction.ctaLabel}
-                <ArrowRight className="w-4 h-4" />
+              <Link to={nextAction.ctaHref} className="inline-flex items-center gap-2 bg-primary-foreground/15 hover:bg-primary-foreground/25 font-display font-bold px-5 py-3 rounded-xl text-sm transition-colors border border-primary-foreground/30">
+                {nextAction.ctaLabel} <ArrowRight className="w-4 h-4" />
               </Link>
             ) : (
-              <button
-                type="button"
-                onClick={runNextActionCta}
-                className="inline-flex items-center justify-center gap-2 bg-primary-foreground/15 hover:bg-primary-foreground/25 font-display font-bold px-5 py-3 rounded-xl text-sm transition-colors border border-primary-foreground/30"
-              >
-                {nextAction.ctaLabel}
-                <ArrowRight className="w-4 h-4" />
+              <button onClick={() => { if (nextAction.switchTab) setActiveTab(nextAction.switchTab as any); if (nextAction.scrollToId) document.getElementById(nextAction.scrollToId)?.scrollIntoView({ behavior: 'smooth' }); }} className="inline-flex items-center gap-2 bg-primary-foreground/15 hover:bg-primary-foreground/25 font-display font-bold px-5 py-3 rounded-xl text-sm transition-colors border border-primary-foreground/30">
+                {nextAction.ctaLabel} <ArrowRight className="w-4 h-4" />
               </button>
             )}
           </motion.section>
 
-          {/* SECTION 3 — Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.08 }}
-              className="bg-card border-2 border-border rounded-2xl p-5 shadow-card"
-            >
+            <div className="bg-card border-2 border-border rounded-2xl p-5 shadow-card">
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl gradient-hero flex items-center justify-center">
-                  <BookOpen className="w-5 h-5 text-primary-foreground" />
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-border">
+                  <BookOpen className="w-5 h-5 text-primary" />
                 </div>
-                <span className="font-display font-bold text-2xl text-foreground">{results.length}</span>
+                <span className="font-display font-bold text-2xl">{results.length}</span>
               </div>
-              <p className="text-foreground text-sm font-display font-semibold">
-                {results.length === 1 ? "1 quiz diya" : `${results.length} quiz diye`}
-              </p>
-              <p className="text-muted-foreground text-xs font-body mt-1 capitalize">
-                Stream: {latestStream || "—"}
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="bg-card border-2 border-border rounded-2xl p-5 shadow-card"
-            >
+              <p className="text-foreground text-sm font-semibold">Quiz History</p>
+            </div>
+            <div className="bg-card border-2 border-border rounded-2xl p-5 shadow-card">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-10 h-10 rounded-xl bg-orange-500/15 flex items-center justify-center border border-border">
-                  <Flame className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                  <Flame className="w-5 h-5 text-orange-500" />
                 </div>
-                <span className="font-display font-bold text-2xl text-foreground">
-                  <span aria-hidden="true">🔥</span> {streakCount}
-                </span>
+                <span className="font-display font-bold text-2xl">🔥 {streakCount}</span>
               </div>
-              <p className="text-foreground text-sm font-display font-semibold">day streak</p>
-              <p className="text-muted-foreground text-xs font-body mt-1">Roz aao, streak badhao</p>
-            </motion.div>
-
-            <motion.button
-              type="button"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.12 }}
-              onClick={() => setActiveTab("suggestions")}
-              className="text-left bg-card border-2 border-border rounded-2xl p-5 shadow-card hover:border-primary/40 transition-colors w-full"
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-border">
-                  <MessageSquare className="w-5 h-5 text-primary" />
-                </div>
-                <span className="font-display font-bold text-2xl text-foreground">{unreadCount}</span>
-              </div>
-              <p className="text-foreground text-sm font-display font-semibold">naye suggestions</p>
-              <p className="text-muted-foreground text-xs font-body mt-1">Unread count</p>
-            </motion.button>
-
-            <motion.button
-              type="button"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.14 }}
-              onClick={() =>
-                document.getElementById("student-dashboard-career-goal")?.scrollIntoView({
-                  behavior: "smooth",
-                  block: "start",
-                })
-              }
-              className="text-left bg-card border-2 border-border rounded-2xl p-5 shadow-card hover:border-primary/40 transition-colors w-full"
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-border">
-                  <Target className="w-5 h-5 text-primary" />
-                </div>
-              </div>
-              <p className="text-foreground text-sm font-display font-semibold line-clamp-2 min-h-[2.5rem]">
-                {profile?.career_goal?.trim()
-                  ? profile.career_goal.trim().length > 30
-                    ? `${profile.career_goal.trim().slice(0, 30)}…`
-                    : profile.career_goal.trim()
-                  : "Goal set karein"}
-              </p>
-              <p className="text-muted-foreground text-xs font-body mt-1">Career goal</p>
-            </motion.button>
+              <p className="text-foreground text-sm font-semibold">Day Streak</p>
+            </div>
           </div>
 
           <ExamCountdown stream={effectiveStream} />
 
-          {/* SECTION 4 — Aapki Story */}
-          <motion.section
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 shadow-card"
-          >
+          <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 shadow-card">
             <h2 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
               <Clock className="w-5 h-5 text-primary" /> Aapki Story
             </h2>
-            {storyItems.length === 0 ? (
-              <p className="text-muted-foreground font-body text-sm">Abhi story ban rahi hai — quiz dekar shuru karein!</p>
-            ) : (
-              <>
-                <ul className="relative space-y-0 pl-2 before:absolute before:left-[7px] before:top-2 before:bottom-2 before:w-0.5 before:bg-border">
-                  {displayedStoryItems.map((item) => (
-                    <li key={item.id} className="relative pl-6 pb-6 last:pb-0">
-                      <span className="absolute left-0 top-1.5 w-3.5 h-3.5 rounded-full border-2 border-primary bg-card shadow-sm" />
-                      <p className="font-display font-semibold text-sm text-foreground">{item.title}</p>
-                      <p className="text-xs text-muted-foreground font-body mb-1">
-                        {new Date(item.at).toLocaleString("en-IN", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                      </p>
-                      <p className="text-sm text-muted-foreground font-body leading-relaxed">{item.detail}</p>
-                    </li>
-                  ))}
-                </ul>
-                {canExpandStory && (
-                  <button
-                    type="button"
-                    onClick={() => setTimelineExpanded((e) => !e)}
-                    className="mt-2 flex items-center gap-1 text-sm font-display font-semibold text-primary hover:underline"
-                  >
-                    {timelineExpanded ? (
-                      <>
-                        <ChevronUp className="w-4 h-4" /> Kam dikhao
-                      </>
-                    ) : (
-                      <>
-                        <ChevronDown className="w-4 h-4" /> Aur dekhein
-                      </>
-                    )}
-                  </button>
-                )}
-              </>
-            )}
+            <ul className="relative space-y-0 pl-2 before:absolute before:left-[7px] before:top-2 before:bottom-2 before:w-0.5 before:bg-border">
+              {storyItems.slice(-5).map((item) => (
+                <li key={item.id} className="relative pl-6 pb-6 last:pb-0">
+                  <span className="absolute left-0 top-1.5 w-3.5 h-3.5 rounded-full border-2 border-primary bg-card" />
+                  <p className="font-display font-semibold text-sm">{item.title}</p>
+                  <p className="text-xs text-muted-foreground">{new Date(item.at).toLocaleDateString()}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{item.detail}</p>
+                </li>
+              ))}
+            </ul>
           </motion.section>
 
-          {/* Career goal + checklist (detail) */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-4"
-          >
-            <h2 className="font-display font-bold text-xl text-foreground flex items-center gap-2">
-              <ListChecks className="w-6 h-6 text-primary" /> My Progress
-            </h2>
-
-            {/* 1. Career goal */}
-            <div id="student-dashboard-career-goal" className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 scroll-mt-24 shadow-card">
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <div className="flex items-center gap-2">
-                  <Target className="w-5 h-5 text-primary shrink-0" />
-                  <h3 className="font-display font-bold text-lg text-foreground">Career Goal</h3>
-                </div>
-                {!goalEditing && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCareerGoalDraft(profile?.career_goal || "");
-                      setGoalEditing(true);
-                    }}
-                    className="flex items-center gap-1 text-sm text-primary font-display font-semibold hover:underline shrink-0"
-                  >
-                    <Edit3 className="w-4 h-4" /> Edit
-                  </button>
-                )}
-              </div>
-              <p className="text-xs text-muted-foreground font-body mb-3">Apna career goal set karo</p>
-              {goalEditing ? (
-                <div className="space-y-3">
-                  <input
-                    type="text"
-                    value={careerGoalDraft}
-                    onChange={(e) => setCareerGoalDraft(e.target.value)}
-                    placeholder="Jaise: AI Engineer, Doctor, CA..."
-                    className="w-full px-4 py-3 rounded-xl border-2 border-border bg-background text-foreground font-body text-sm focus:border-primary focus:outline-none"
-                    maxLength={200}
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setGoalEditing(false);
-                        setCareerGoalDraft(profile?.career_goal || "");
-                      }}
-                      className="px-4 py-2 rounded-xl border-2 border-border font-display font-semibold text-sm hover:bg-muted"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      onClick={saveCareerGoal}
-                      disabled={savingGoal}
-                      className="px-4 py-2 rounded-xl gradient-hero text-primary-foreground font-display font-semibold text-sm hover:opacity-90 disabled:opacity-50"
-                    >
-                      {savingGoal ? "Saving..." : "Save"}
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <p className="text-foreground font-body text-sm min-h-[1.5rem]">
-                  {profile?.career_goal?.trim() ? profile.career_goal : "— Abhi tak goal set nahi hai. Edit dabakar likho!"}
-                </p>
-              )}
+          <div id="student-dashboard-career-goal" className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 shadow-card">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="font-display font-bold text-lg">Career Goal</h3>
+              <button onClick={() => setGoalEditing(!goalEditing)} className="text-sm text-primary font-display font-semibold hover:underline">Edit</button>
             </div>
-
-            {/* 2. Preparation checklist */}
-            <div id="student-dashboard-checklist" className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 scroll-mt-24 shadow-card">
-              <h3 className="font-display font-bold text-lg text-foreground mb-1 flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-primary" />
-                Preparation Checklist
-              </h3>
-              <p className="text-xs text-muted-foreground font-body mb-4 capitalize">
-                Stream: {effectiveStream} (quiz ke hisaab se)
-              </p>
-              <ul className="space-y-2">
-                {checklistItems.map((item) => {
-                  const label =
-                    CHECKLIST_TEMPLATES[effectiveStream].find((t) => t.id === item.id)?.label || item.id;
-                  return (
-                    <li key={item.id}>
-                      <button
-                        type="button"
-                        onClick={() => toggleChecklistItem(item.id)}
-                        className={`w-full text-left flex items-start gap-3 p-3 rounded-xl border-2 transition-colors font-body text-sm ${
-                          item.checked
-                            ? "border-primary/40 bg-primary/5 text-foreground"
-                            : "border-border bg-muted/30 hover:border-primary/30"
-                        }`}
-                      >
-                        <span
-                          className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 ${
-                            item.checked ? "border-primary bg-primary text-primary-foreground" : "border-muted-foreground/40"
-                          }`}
-                          aria-hidden
-                        >
-                          {item.checked && <CheckCircle className="w-3.5 h-3.5" />}
-                        </span>
-                        <span className={item.checked ? "line-through opacity-80" : ""}>{label}</span>
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          </motion.div>
-
-          {/* SECTION 5 — Career Analyses */}
-          {careerAnalyses.length > 0 && (
-            <motion.section
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 shadow-card"
-            >
-              <h2 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-primary" /> My AI Career Reports
-              </h2>
+            {goalEditing ? (
               <div className="space-y-3">
-                {careerAnalyses.map((report) => (
-                  <div key={report.id} className="flex items-center justify-between p-4 rounded-xl border border-border bg-muted/20">
-                    <div>
-                      <p className="font-display font-semibold text-sm">Career Report</p>
-                      <p className="text-xs text-muted-foreground font-body">
-                        Generated on {new Date(report.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
-                      </p>
-                    </div>
-                    <Link 
-                      to="/deep-analysis" 
-                      state={{ savedAnalysis: report.analysis }}
-                      className="text-xs bg-primary/10 text-primary px-3 py-1.5 rounded-lg font-display font-bold hover:bg-primary hover:text-white transition-all"
-                    >
-                      View Report
-                    </Link>
-                  </div>
-                ))}
+                <input value={careerGoalDraft} onChange={e => setCareerGoalDraft(e.target.value)} className="w-full px-4 py-3 rounded-xl border-2 border-border bg-background" />
+                <button onClick={saveCareerGoal} className="px-4 py-2 rounded-xl gradient-hero text-white text-sm">Save Goal</button>
               </div>
-            </motion.section>
-          )}
-        </>
+            ) : (
+              <p className="text-sm text-muted-foreground">{profile?.career_goal || "— Goal set nahi hai."}</p>
+            )}
+          </div>
+
+          <div id="student-dashboard-checklist" className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 shadow-card">
+            <h3 className="font-display font-bold text-lg mb-4">Preparation Checklist</h3>
+            <ul className="space-y-2">
+              {checklistItems.map(item => (
+                <li key={item.id}>
+                  <button onClick={() => toggleChecklistItem(item.id)} className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-colors ${item.checked ? "bg-primary/5 border-primary/40" : "bg-muted/30 border-border"}`}>
+                    <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${item.checked ? "bg-primary border-primary text-white" : "border-muted"}`}>
+                      {item.checked && <CheckCircle className="w-3" />}
+                    </div>
+                    <span className={`text-sm ${item.checked ? "line-through opacity-70" : ""}`}>{CHECKLIST_TEMPLATES[effectiveStream].find(t => t.id === item.id)?.label || item.id}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       )}
 
-      {/* Results Tab */}
       {activeTab === "results" && (
         <div className="bg-card border-2 border-border rounded-2xl p-6">
-          <h2 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-primary" /> Aapki Poori Quiz History
-          </h2>
+          <h2 className="font-display font-bold text-lg text-foreground mb-4">Aapki Quiz History</h2>
           {results.length === 0 ? (
             <div className="text-center py-8">
-              <div className="text-4xl mb-3"><span aria-hidden="true">📝</span></div>
-              <p className="text-muted-foreground font-body mb-3">Abhi tak koi quiz nahi diya</p>
-              <Link to="/quiz" className="gradient-hero text-primary-foreground font-display font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 inline-block">
-                Pehla Quiz Dijiye →
-              </Link>
+              <div className="text-4xl mb-3">📝</div>
+              <p className="text-muted-foreground">Abhi tak koi quiz nahi diya</p>
             </div>
           ) : (
             <div className="space-y-3">
               {results.map((r, i) => (
-                <Link
-                  key={r.id}
-                  to={`/results/${r.stream}`}
-                  className="flex items-center justify-between p-4 rounded-xl border border-border hover:border-primary/40 transition-colors group"
-                >
+                <Link key={r.id} to={`/results/${r.stream}`} className="flex items-center justify-between p-4 rounded-xl border border-border hover:border-primary/40 transition-colors">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full gradient-hero flex items-center justify-center text-primary-foreground font-display font-bold text-sm">
-                      {i + 1}
-                    </div>
+                    <div className="w-10 h-10 rounded-full gradient-hero flex items-center justify-center text-white font-bold">{i + 1}</div>
                     <div>
-                      <p className="font-display font-semibold text-foreground capitalize">{r.stream} Stream</p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(r.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
-                      </p>
+                      <p className="font-display font-semibold capitalize">{r.stream} Stream</p>
+                      <p className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString()}</p>
                     </div>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <ArrowRight className="w-4 h-4 text-muted" />
                 </Link>
               ))}
             </div>
@@ -1110,111 +710,58 @@ const StudentDashboard = () => {
         </div>
       )}
 
-      {/* Suggestions Tab */}
       {activeTab === "suggestions" && (
-        <div className="bg-card border-2 border-border rounded-2xl p-6">
-          <h2 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
-            <MessageSquare className="w-5 h-5 text-accent" /> Expert Suggestions
-          </h2>
-          {suggestions.length === 0 ? (
-            <div className="text-center py-8">
-              <div className="text-4xl mb-3"><span aria-hidden="true">💬</span></div>
-              <p className="text-muted-foreground font-body">Koi suggestion abhi tak nahi aaya</p>
-              <p className="text-xs text-muted-foreground mt-1">Jab experts aapko koi salah denge, woh yahan dikhegi</p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {suggestions.map((s) => (
-                <div
-                  key={s.id}
-                  className={`p-4 rounded-xl border transition-colors ${
-                    s.is_read ? "border-border bg-card" : "border-primary/30 bg-primary/5"
-                  }`}
-                >
-                  <p className="font-body text-foreground text-sm">{s.message}</p>
-                  <div className="flex justify-between items-center mt-3">
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(s.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
-                    </span>
-                    {!s.is_read && (
-                      <button onClick={() => markRead(s.id)} className="text-xs text-primary font-display font-semibold flex items-center gap-1 hover:underline">
-                        <CheckCircle className="w-3 h-3" /> Padh Liya
-                      </button>
-                    )}
+        <div className="space-y-6">
+          <div className="bg-card border-2 border-border rounded-2xl p-6">
+            <h2 className="font-display font-bold text-lg mb-4">Expert Suggestions</h2>
+            {suggestions.length === 0 ? (
+              <p className="text-center py-8 text-muted-foreground">No suggestions yet.</p>
+            ) : (
+              <div className="space-y-3">
+                {suggestions.map(s => (
+                  <div key={s.id} className={`p-4 rounded-xl border ${s.is_read ? "border-border" : "border-primary/30 bg-primary/5"}`}>
+                    <p className="text-sm">{s.message}</p>
+                    <div className="flex justify-between items-center mt-3 text-xs text-muted-foreground">
+                      <span>{new Date(s.created_at).toLocaleDateString()}</span>
+                      {!s.is_read && <button onClick={() => markRead(s.id)} className="text-primary font-bold">Mark as Read</button>}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
           <AdminRepliesSection userEmail={user?.email} />
           <HelpSupportSection user={user} profile={profile} />
         </div>
       )}
 
-      {/* Profile Tab */}
       {activeTab === "profile" && (
         <div className="bg-card border-2 border-border rounded-2xl p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="font-display font-bold text-lg text-foreground flex items-center gap-2">
-              <User className="w-5 h-5 text-primary" /> Aapki Profile
-            </h2>
-            {!editMode ? (
-              <button onClick={() => setEditMode(true)} className="flex items-center gap-1.5 text-sm text-primary font-display font-semibold hover:underline">
-                <Edit3 className="w-4 h-4" /> Edit Karein
-              </button>
-            ) : (
-              <div className="flex gap-2">
-                <button onClick={() => { setEditMode(false); setEditForm(profile || {}); }} className="flex items-center gap-1 text-sm text-muted-foreground font-display font-semibold hover:text-foreground">
-                  <X className="w-4 h-4" /> Cancel
-                </button>
-                <button onClick={saveProfile} disabled={saving} className="flex items-center gap-1 text-sm text-primary font-display font-semibold hover:underline disabled:opacity-50">
-                  <Save className="w-4 h-4" /> {saving ? "Saving..." : "Save Karein"}
-                </button>
-              </div>
-            )}
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="font-display font-bold text-lg">Aapki Profile</h2>
+            <button onClick={() => setEditMode(!editMode)} className="text-sm text-primary font-bold">{editMode ? "Cancel" : "Edit Profile"}</button>
           </div>
-
           <div className="grid md:grid-cols-2 gap-4">
             {[
-              { label: "Naam", key: "full_name" as keyof Profile, placeholder: "Aapka naam" },
-              { label: "Phone", key: "phone" as keyof Profile, placeholder: "Phone number" },
-              { label: "City / District", key: "city" as keyof Profile, placeholder: "Aapka city" },
-              { label: "Class", key: "class" as keyof Profile, placeholder: "Aapki class" },
-              { label: "School ka Naam", key: "school_name" as keyof Profile, placeholder: "School ka naam" },
-              { label: "Parent ka Naam", key: "parent_name" as keyof Profile, placeholder: "Parent ka naam" },
-              { label: "Parent ka Phone", key: "parent_phone" as keyof Profile, placeholder: "Parent ka phone" },
-            ].map((field) => (
-              <div key={field.key}>
-                <label className="text-xs font-display font-semibold text-muted-foreground block mb-1">{field.label}</label>
+              { label: "Naam", key: "full_name" },
+              { label: "Phone", key: "phone" },
+              { label: "City", key: "city" },
+              { label: "Class", key: "class" },
+            ].map(f => (
+              <div key={f.key}>
+                <label className="text-xs font-bold text-muted-foreground block mb-1">{f.label}</label>
                 {editMode ? (
-                  <input
-                    value={(editForm[field.key] as string) || ""}
-                    onChange={(e) => setEditForm({ ...editForm, [field.key]: e.target.value })}
-                    placeholder={field.placeholder}
-                    className="w-full px-3 py-2 rounded-xl border-2 border-border bg-background text-foreground text-sm font-body focus:border-primary focus:outline-none"
-                  />
+                  <input value={(editForm as any)[f.key] || ""} onChange={e => setEditForm({ ...editForm, [f.key]: e.target.value })} className="w-full px-3 py-2 rounded-xl border-2 border-border bg-background text-sm" />
                 ) : (
-                  <p className="text-foreground font-body text-sm py-2">{(profile?.[field.key] as string) || "—"}</p>
+                  <p className="text-sm py-2">{(profile as any)?.[f.key] || "—"}</p>
                 )}
               </div>
             ))}
-            <div className="md:col-span-2">
-              <label className="text-xs font-display font-semibold text-muted-foreground block mb-1">Bio</label>
-              {editMode ? (
-                <textarea
-                  value={(editForm.bio as string) || ""}
-                  onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
-                  placeholder="Apne baare mein kuch likhein..."
-                  rows={3}
-                  className="w-full px-3 py-2 rounded-xl border-2 border-border bg-background text-foreground text-sm font-body focus:border-primary focus:outline-none resize-none"
-                />
-              ) : (
-                <p className="text-foreground font-body text-sm py-2">{profile?.bio || "—"}</p>
-              )}
-            </div>
           </div>
+          {editMode && <button onClick={saveProfile} className="mt-6 w-full py-3 gradient-hero text-white rounded-xl font-bold">Save Changes</button>}
         </div>
       )}
+
     </div>
   );
 };

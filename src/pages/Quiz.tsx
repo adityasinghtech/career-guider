@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, CheckCircle, SkipForward, Mic, MicOff, Volume2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle, SkipForward, Volume2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { quizQuestions, buildQuizProfile } from "@/data/quizData";
 import StudentRegistrationForm from "@/components/quiz/StudentRegistrationForm";
@@ -9,8 +9,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useAccessibility } from "@/hooks/useAccessibility";
 import { useTextToSpeech } from "@/hooks/useTextToSpeech";
 import { useVoiceControl } from "@/hooks/useVoiceControl";
+import { ScreenReaderOnly, Emoji } from "@/components/a11y/A11yUtils";
 
 const MENTOR_LINES = [
   "Aram se socho — galat jawab nahi hota, bas pattern dikh raha hai.",
@@ -30,22 +32,47 @@ const Quiz = () => {
   );
   const [skipped, setSkipped] = useState<boolean[]>(() => quizQuestions.map(() => false));
   const [questionNotes, setQuestionNotes] = useState<string[]>(() => quizQuestions.map(() => ""));
-  const [statusMessage, setStatusMessage] = useState('');
 
-  const { speak, stop, isSpeaking, supported: ttsSupported } = useTextToSpeech();
+  const { autoSpeak, voiceOn } = useAccessibility();
+  const { speak, stop: stopSpeaking, initVoice, supported: ttsSupported, voiceCount, testSound } = useTextToSpeech();
+  const [voiceInitialized, setVoiceInitialized] = useState(false);
 
   const question = quizQuestions[current];
+
+  // Voice commands logic
+  const commands = [
+    { pattern: ["next", "aage", "chalo"], action: () => goNext(), description: "Agle sawaal pe jayein" },
+    { pattern: ["back", "piche"], action: () => goBack(), description: "Pichle sawaal pe jayein" },
+    { pattern: ["skip"], action: () => skipQuestion(), description: "Sawaal skip karein" },
+  ];
+
+  useVoiceControl(voiceOn ? commands : []);
+
+  // autoSpeak: Speak question when it changes
+  useEffect(() => {
+    console.log(`🧐 Quiz Effect: showForm=${showForm}, autoSpeak=${autoSpeak}, voiceInitialized=${voiceInitialized}`);
+    if (!showForm && ttsSupported && autoSpeak && question && voiceInitialized) {
+      const textToRead = `${question.question}. Options are: ${question.options.map(o => o.text).join(", ")}`;
+      
+      // ✅ Reduced delay now that engine is stable
+      const timer = setTimeout(() => {
+        speak(textToRead);
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [current, showForm, autoSpeak, ttsSupported, speak, question, voiceInitialized]);
+
+  const handleStartVoice = () => {
+    console.log("👆 'Start Voice Guide' clicked and unlocking audio...");
+    const firstQuestionText = `Sawaal number ek: ${question.question}. Options are: ${question.options.map(o => o.text).join(", ")}`;
+    initVoice(firstQuestionText);
+    setVoiceInitialized(true);
+  };
+
   const progress = showForm ? 100 : ((current + 1) / quizQuestions.length) * 100;
   const hasAnswer = answers[current].length > 0 || skipped[current];
   const mentorLine = MENTOR_LINES[current % MENTOR_LINES.length];
-
-  // Auto-speak question when it changes
-  useEffect(() => {
-    if (!showForm && ttsSupported) {
-      speak(`Sawaal ${current + 1}: ${question.question}`);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [current, showForm]);
 
   const selectOption = (optionIndex: number) => {
     setSkipped((prev) => {
@@ -58,11 +85,12 @@ const Quiz = () => {
       updated[current] = [optionIndex];
       return updated;
     });
-    const optionText = question.options[optionIndex]?.text ?? '';
-    // Screen reader live region
-    setStatusMessage(`Option ${optionIndex + 1} select hua: ${optionText}`);
-    // TTS announce
-    if (ttsSupported && optionText) speak(`Select kiya: ${optionText}`);
+    
+    // ✅ Fix: Voice feedback for selection
+    const optionText = quizQuestions[current].options[optionIndex].text;
+    if (ttsSupported && optionText && autoSpeak) {
+      speak(`Select kiya: ${optionText}`);
+    }
   };
 
   const skipQuestion = () => {
@@ -76,7 +104,6 @@ const Quiz = () => {
       next[current] = [];
       return next;
     });
-    setStatusMessage(`Sawaal ${current + 1} skip kiya. Agle sawaal pe ja rahe hain.`);
     // Auto advance to next question or form
     goNext();
   };
@@ -92,89 +119,18 @@ const Quiz = () => {
   const goNext = () => {
     if (current < quizQuestions.length - 1) {
       setCurrent(current + 1);
-      setStatusMessage(`Sawaal ${current + 2} pe aa gaye. ${quizQuestions.length - current - 1} sawaal baaki hain.`);
     } else {
       setShowForm(true);
-      setStatusMessage('Quiz khatam! Apni details bhariye.');
     }
   };
 
   const goBack = () => {
     if (showForm) {
       setShowForm(false);
-      setStatusMessage('Quiz pe wapis aa gaye.');
     } else if (current > 0) {
       setCurrent(current - 1);
-      setStatusMessage(`Sawaal ${current} pe wapis aa gaye.`);
     }
   };
-
-  // Global keyboard shortcuts for Quiz
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      // Ignore if typing in an input/textarea
-      if (e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement) return;
-
-      if (!showForm) {
-        if (e.key === '1') selectOption(0);
-        if (e.key === '2') selectOption(1);
-        if (e.key === '3') selectOption(2);
-        if (e.key === '4') selectOption(3);
-        if (e.key === 'Enter' || e.key === ' ') {
-          if (hasAnswer) goNext();
-        }
-        if (e.key.toLowerCase() === 's') skipQuestion();
-        if (e.key.toLowerCase() === 'r') speak(`Sawaal ${current + 1}: ${question.question}`);
-      }
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [current, showForm, hasAnswer]);
-
-  // Voice commands
-  const { isListening, startListening, stopListening, supported: voiceSupported } = useVoiceControl([
-    {
-      pattern: ['option ek', 'pehla', 'number one', 'ek'],
-      action: () => selectOption(0),
-      description: 'Pehla option select karo',
-    },
-    {
-      pattern: ['option do', 'doosra', 'number two', 'do'],
-      action: () => selectOption(1),
-      description: 'Doosra option select karo',
-    },
-    {
-      pattern: ['option teen', 'teesra', 'number three', 'teen'],
-      action: () => selectOption(2),
-      description: 'Teesra option select karo',
-    },
-    {
-      pattern: ['option chaar', 'chautha', 'number four', 'chaar'],
-      action: () => selectOption(3),
-      description: 'Chautha option select karo',
-    },
-    {
-      pattern: ['agle', 'next', 'aage', 'agla'],
-      action: () => goNext(),
-      description: 'Agle sawaal pe jao',
-    },
-    {
-      pattern: ['wapis', 'peeche', 'back'],
-      action: () => goBack(),
-      description: 'Pichle sawaal pe jao',
-    },
-    {
-      pattern: ['dobara suno', 'repeat', 'phir suno', 'sawaal sunao'],
-      action: () => speak(`Sawaal ${current + 1}: ${question.question}`),
-      description: 'Sawaal dobara suno',
-    },
-    {
-      pattern: ['skip', 'chodo', 'agla'],
-      action: () => skipQuestion(),
-      description: 'Sawaal skip karo',
-    },
-  ]);
 
   const handleFormSubmit = async () => {
     const profile = buildQuizProfile(answers);
@@ -228,17 +184,60 @@ const Quiz = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Visually hidden live region — screen readers announce every action */}
-      <div
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-        className="sr-only"
-      >
-        {statusMessage}
-      </div>
-
       <Navbar />
+
+      {/* ✅ Voice Status Indicator */}
+      <AnimatePresence>
+        {autoSpeak && voiceInitialized && (
+          <motion.button 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            type="button"
+            className={`fixed top-24 left-1/2 -translate-x-1/2 z-[110] px-6 py-3 rounded-full flex items-center gap-3 backdrop-blur-md shadow-xl border-2 transition-all hover:scale-105 active:scale-95 ${
+              voiceCount > 0 
+                ? "bg-green-500/20 border-green-500/50 cursor-pointer shadow-green-500/20" 
+                : "bg-red-500/20 border-red-500/50 font-bold"
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              console.log("👆 Force testing sound...");
+              speak("System test successful. Voice is active.");
+            }}
+          >
+            <Volume2 className={`w-5 h-5 ${voiceCount > 0 ? "text-green-600 animate-pulse" : "text-red-600"}`} />
+            <span className={`text-sm font-display font-black uppercase tracking-widest ${
+              voiceCount > 0 ? "text-green-700" : "text-red-700"
+            }`}>
+              {voiceCount > 0 ? "Tap to Test Sound" : "Voices Blocked"}
+            </span>
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* ✅ Voice Initialization Overlay for Blind Mode */}
+      <AnimatePresence>
+        {autoSpeak && !voiceInitialized && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center p-6 text-center"
+          >
+            <div className="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center mb-6 animate-pulse">
+              <Volume2 className="w-12 h-12 text-primary" />
+            </div>
+            <h2 className="font-display font-bold text-2xl mb-4 text-foreground">Aapne Blind Mode select kiya hai</h2>
+            <p className="text-muted-foreground mb-8 max-w-sm font-body">Mentor ki awaz sunne aur quiz shuru karne ke liye, neeche ke button par click karein.</p>
+            <button
+              onClick={handleStartVoice}
+              className="w-full max-w-xs py-6 rounded-2xl min-h-[80px] gradient-hero text-white font-display font-extrabold text-xl shadow-elevated transition-transform active:scale-95 flex items-center justify-center gap-3"
+              aria-label="Awaz shuru karein"
+            >
+              Start Voice Guide <ArrowRight className="w-6 h-6" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className="pt-24 pb-12 px-4 max-w-2xl mx-auto">
         {/* Progress Bar */}
         <div className="mb-8">
@@ -250,14 +249,7 @@ const Quiz = () => {
               {Math.round(progress)}%
             </span>
           </div>
-          <div
-            role="progressbar"
-            aria-valuenow={showForm ? quizQuestions.length : current + 1}
-            aria-valuemin={1}
-            aria-valuemax={quizQuestions.length}
-            aria-label={`Quiz progress: Sawaal ${showForm ? quizQuestions.length : current + 1} of ${quizQuestions.length}`}
-            className="h-3 bg-muted rounded-full overflow-hidden"
-          >
+          <div className="h-3 bg-muted rounded-full overflow-hidden">
             <motion.div
               className="h-full gradient-hero rounded-full"
               initial={{ width: 0 }}
@@ -282,90 +274,46 @@ const Quiz = () => {
               exit={{ opacity: 0, x: -30 }}
               transition={{ duration: 0.3 }}
             >
-              {/* Voice & TTS Controls */}
-              {(voiceSupported || ttsSupported) && (
-                <div className="flex items-center gap-2 mb-4">
-                  {ttsSupported && (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        isSpeaking
-                          ? stop()
-                          : speak(`Sawaal ${current + 1}: ${question.question}`)
-                      }
-                      aria-label={isSpeaking ? 'Bolna band karo' : 'Sawaal bol ke sunao'}
-                      title={isSpeaking ? 'Bolna band karo' : 'Sawaal bol ke sunao'}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-display font-semibold border transition-all ${
-                        isSpeaking
-                          ? 'border-primary bg-primary/10 text-primary'
-                          : 'border-border bg-card text-muted-foreground hover:border-primary/50'
-                      }`}
-                    >
-                      <Volume2 className="w-3.5 h-3.5" />
-                      {isSpeaking ? 'Bol raha hai...' : 'Sawaal Suno'}
-                    </button>
-                  )}
-                  {voiceSupported && (
-                    <button
-                      type="button"
-                      onClick={isListening ? stopListening : startListening}
-                      aria-label={isListening ? 'Voice control band karo' : 'Voice se jawab do'}
-                      title={isListening ? 'Voice control band karo' : 'Voice se jawab do'}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-display font-semibold border transition-all ${
-                        isListening
-                          ? 'border-red-500 bg-red-500/10 text-red-500 animate-pulse'
-                          : 'border-border bg-card text-muted-foreground hover:border-primary/50'
-                      }`}
-                    >
-                      {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
-                      {isListening ? 'Sun raha hai...' : 'Voice'}
-                    </button>
-                  )}
-                </div>
-              )}
-
               <p className="font-body text-sm text-muted-foreground mb-4 italic border-l-2 border-primary/50 pl-3">
                 {mentorLine}
               </p>
 
-              <h2
-                className="font-display font-bold text-2xl md:text-3xl text-foreground mb-8"
-                aria-live="polite"
-                aria-label={`Sawaal ${current + 1}: ${question.question}`}
-              >
-                {question.question}
-              </h2>
+              <div className="flex items-start gap-3 mb-8">
+                <h2 className="font-display font-bold text-2xl md:text-3xl text-foreground flex-1" role="timer" aria-live="polite">
+                  <ScreenReaderOnly>Sawaal Number {current + 1}: </ScreenReaderOnly>
+                  {question.question}
+                </h2>
+                {autoSpeak && (
+                  <button
+                    onClick={() => speak(`${question.question}. Options are: ${question.options.map(o => o.text).join(", ")}`)}
+                    className="p-3 bg-primary/10 hover:bg-primary/20 text-primary rounded-full transition-all active:scale-95 flex-shrink-0"
+                    title="Dubaara Sunein"
+                  >
+                    <Volume2 className="w-6 h-6" />
+                  </button>
+                )}
+              </div>
 
-              <div
-                role="radiogroup"
-                aria-label={`Sawaal ${current + 1} ke options`}
-                className="space-y-3"
-              >
+              <div className="space-y-3">
                 {question.options.map((option, idx) => {
                   const isSelected = answers[current].includes(idx);
-                  const optionLabels = ['Pehla', 'Doosra', 'Teesra', 'Chautha'];
                   return (
                     <motion.button
                       key={idx}
-                      role="radio"
-                      aria-checked={isSelected}
-                      aria-pressed={isSelected}
-                      aria-label={`Option ${idx + 1}: ${option.text}${
-                        isSelected ? ' — selected' : ''
-                      }. Bolne ke liye kahein: "${optionLabels[idx] ?? `option ${idx + 1}`}"`}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => selectOption(idx)}
-                      className={`w-full text-left p-4 rounded-xl border-2 transition-all font-body ${
-                        isSelected
+                      className={`w-full text-left p-4 rounded-xl border-2 transition-all font-body ${isSelected
                           ? "border-primary bg-primary/10 shadow-card"
                           : "border-border bg-card hover:border-primary/40"
-                      }`}
+                        }`}
+                      role="radio"
+                      aria-checked={isSelected}
+                      aria-label={`Option ${idx + 1}: ${option.text}`}
                     >
                       <div className="flex items-center gap-3">
                         <div
-                          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                            isSelected ? "border-primary bg-primary" : "border-muted-foreground/30"
-                          }`}
+                          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${isSelected ? "border-primary bg-primary" : "border-muted-foreground/30"
+                            }`}
                         >
                           {isSelected && <CheckCircle className="w-4 h-4 text-primary-foreground" />}
                         </div>
@@ -401,7 +349,6 @@ const Quiz = () => {
                   type="button"
                   onClick={goBack}
                   disabled={current === 0}
-                  aria-label="Pichle sawaal pe jao"
                   className="flex items-center gap-2 text-muted-foreground hover:text-foreground disabled:opacity-30 font-display font-semibold transition-colors"
                 >
                   <ArrowLeft className="w-4 h-4" /> Peeche
@@ -410,7 +357,6 @@ const Quiz = () => {
                   <button
                     type="button"
                     onClick={skipQuestion}
-                    aria-label="Yeh sawaal skip karo, score nahi milega"
                     className="flex items-center justify-center gap-2 font-display font-semibold px-5 py-3 rounded-xl border-2 border-border bg-card text-foreground hover:bg-muted/60 transition-colors"
                   >
                     <SkipForward className="w-4 h-4" /> Skip — score nahi
@@ -419,19 +365,14 @@ const Quiz = () => {
                     type="button"
                     onClick={goNext}
                     disabled={!hasAnswer}
-                    aria-label={current === quizQuestions.length - 1 ? 'Quiz submit karo' : 'Agle sawaal pe jao'}
-                    className={`flex items-center justify-center gap-2 font-display font-bold px-6 py-3 rounded-xl transition-all ${
-                      hasAnswer
+                    className={`flex items-center justify-center gap-2 font-display font-bold px-6 py-3 rounded-xl transition-all ${hasAnswer
                         ? "gradient-hero text-primary-foreground hover:opacity-90"
                         : "bg-muted text-muted-foreground cursor-not-allowed"
-                    }`}
+                      }`}
                   >
-                    {current === quizQuestions.length - 1 ? (
-                      <>Lagbhag Ho Gaya! <span aria-hidden="true">✨</span></>
-                    ) : (
-                      "Aage"
-                    )}
-                    <ArrowRight className="w-4 h-4" />
+                    {current === quizQuestions.length - 1 ? "Lagbhag Ho Gaya! ✨" : "Aage"}
+                    <Emoji symbol="🚀" label="forward arrow" />
+                    <ArrowRight className="w-4 h-4" aria-hidden="true" />
                   </button>
                 </div>
               </div>
@@ -444,3 +385,4 @@ const Quiz = () => {
 };
 
 export default Quiz;
+

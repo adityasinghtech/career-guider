@@ -1,5 +1,8 @@
 import { useParams, Link } from "react-router-dom";
-import { useRef, useMemo, useEffect, useState } from "react";
+import { useRef, useMemo, useEffect } from "react";
+import { useAccessibility } from "@/hooks/useAccessibility";
+import { useTextToSpeech } from "@/hooks/useTextToSpeech";
+import { useVoiceControl } from "@/hooks/useVoiceControl";
 import { generateGuidance, profileFromLocalStorage } from "@/utils/guidanceEngine";
 import { motion } from "framer-motion";
 import { Download, RotateCcw, Share2 } from "lucide-react";
@@ -7,6 +10,7 @@ import { toast } from "sonner";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import Navbar from "@/components/Navbar";
+import { Emoji, ScreenReaderOnly } from "@/components/a11y/A11yUtils";
 import { streamResults } from "@/data/quizData";
 import type { QuizProfile } from "@/data/quizData";
 import ResultHeroCard from "@/components/results/ResultHeroCard";
@@ -21,8 +25,6 @@ import ResultScholarships from "@/components/results/ResultScholarships";
 import ResultYouTube from "@/components/results/ResultYouTube";
 import ResultFreeCourses from "@/components/results/ResultFreeCourses";
 import CareerPathGraph from "@/components/results/CareerPathGraph";
-import { useTextToSpeech } from "@/hooks/useTextToSpeech";
-import { useVoiceControl } from "@/hooks/useVoiceControl";
 
 const EXPLORE_INTERESTS = [
   {
@@ -62,82 +64,48 @@ const Results = () => {
   const { stream } = useParams<{ stream: string }>();
   const result = streamResults[stream || "science"];
   const reportRef = useRef<HTMLDivElement>(null);
-  const resultHeadingRef = useRef<HTMLHeadingElement>(null);
-  const [statusMessage, setStatusMessage] = useState('');
 
-  const { speak, stop, isSpeaking, supported: ttsSupported } = useTextToSpeech();
-
-  // Focus result heading on mount
-  useEffect(() => {
-    resultHeadingRef.current?.focus();
-  }, []);
-
-  // Auto announcement on result load
-  useEffect(() => {
-    if (result && ttsSupported) {
-      const streamName = result.stream || 'Science';
-      const percentages = quizProfile?.scores || { science: 0, commerce: 0, arts: 0 };
-      const pct = (percentages as any)[streamName.toLowerCase()] || 85; // Fallback for demo
-
-      const announcement = `
-        Badhai ho! Aapka career guidance result aa gaya hai.
-        Aapke liye best stream hai: ${streamName}.
-        Match percentage: ${pct} percent.
-        Ab main aapko career options, colleges, aur roadmap ke baare mein bataunga.
-        Sunne ke liye Alt+V dabao aur kaho "career sunao", "colleges batao", ya "roadmap sunao".
-      `;
-
-      setStatusMessage(announcement);
-      const timer = setTimeout(() => speak(announcement), 1000);
-      return () => clearTimeout(timer);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [result, ttsSupported]);
+  const { speak, supported: ttsSupported } = useTextToSpeech();
+  const { autoSpeak, voiceOn } = useAccessibility();
 
   // Voice commands for results page
-  const { isListening, startListening, stopListening, supported: voiceSupported } = useVoiceControl([
-    {
-      pattern: ['career sunao', 'options', 'kaam', 'career'],
-      action: () => speak(`Career options: ${result?.careers?.join(', ')}`),
-      description: 'Career options sunao',
-    },
-    {
-      pattern: ['colleges batao', 'college', 'kahan padhu'],
-      action: () => speak(`Colleges: ${result?.colleges?.join(', ')}`),
-      description: 'Colleges sunao',
-    },
-    {
-      pattern: ['roadmap sunao', 'rastra', 'map'],
-      action: () => speak(`Roadmap: ${result?.roadmap?.join('. ')}`),
-      description: 'Roadmap sunao',
-    },
-    {
-      pattern: ['scholarships batao', 'scholarship', 'paisa'],
-      action: () => speak(`Scholarships available: ${result?.scholarships?.join(', ')}`),
-      description: 'Scholarships sunao',
-    },
-    {
-      pattern: ['exams', 'pariksha', 'entrence'],
-      action: () => speak(`Main exams: ${result?.examsToPrepare?.join(', ')}`),
-      description: 'Exams sunao',
-    },
-    {
-      pattern: ['PDF download karo', 'download', 'pdf'],
-      action: () => {
-        speak('PDF download ho raha hai.');
-        downloadPDF();
-      },
-      description: 'PDF download karo',
-    },
-    {
-      pattern: ['share karo', 'whatsapp', 'bhejo'],
-      action: () => {
-        speak('Whatsapp share khul raha hai.');
-        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`🎯 PathFinder Career Report\n\nMera result: ${result?.stream} Stream\nAap bhi apna career path discover karein!\n${window.location.origin}/quiz`)}`, '_blank');
-      },
-      description: 'Share karo',
-    },
-  ]);
+  const commands = [
+    { pattern: ["home", "wapas", "phir se"], action: () => window.location.href = "/", description: "Go back to home" },
+    { pattern: ["download", "pdf download"], action: () => downloadPDF(), description: "Download report as PDF" },
+    { pattern: ["share"], action: () => window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`🎯 PathFinder Career Report\n\nMera result: ${result?.stream} Stream\nAap bhi apna career path discover karein!\n${window.location.origin}/quiz`)}`, '_blank'), description: "Share on WhatsApp" },
+  ];
+
+  useVoiceControl(voiceOn ? commands : []);
+
+  const quizProfile = useMemo<QuizProfile | null>(() => {
+    try {
+      const raw = localStorage.getItem("pathfinder_quiz_profile");
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }, []);
+
+  const allScores = quizProfile?.scores || {
+    science: stream === "science" ? 38 : stream === "commerce" ? 10 : 8,
+    commerce: stream === "science" ? 12 : stream === "commerce" ? 36 : 14,
+    arts: stream === "science" ? 8 : stream === "commerce" ? 12 : 35,
+  };
+
+  // autoSpeak: Speak result summary on load
+  useEffect(() => {
+    if (result && ttsSupported && autoSpeak) {
+      const topScores = allScores 
+        ? Object.entries(allScores)
+            .sort(([, a], [, b]) => (b as number) - (a as number))
+            .map(([key, val]) => `${key} field mein ${val}%`)
+            .join(", ")
+        : "";
+      
+      const summary = `Aapka result aa gaya hai! Aapke liye best stream hai: ${result.stream}. ${result.tagline}. ${topScores ? `Aapke scores hain: ${topScores}.` : ""} Scroll karein aur apni detailed career report dekhein.`;
+      speak(summary);
+    }
+  }, [result, ttsSupported, autoSpeak, speak, allScores]);
 
   const guidanceUrgency = useMemo(() => {
     try {
@@ -149,15 +117,6 @@ const Results = () => {
       return "medium" as const;
     }
   }, [stream]);
-
-  const quizProfile = useMemo<QuizProfile | null>(() => {
-    try {
-      const raw = localStorage.getItem("pathfinder_quiz_profile");
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
-    }
-  }, []);
 
   const selectedClass = quizProfile?.selectedClass;
 
@@ -173,7 +132,7 @@ const Results = () => {
             className="gradient-hero rounded-2xl p-8 md:p-10 text-primary-foreground text-center shadow-lg mb-10"
           >
             <h1 className="font-display font-bold text-3xl md:text-4xl mb-3">
-              Abhi Explore Karo! <span aria-hidden="true">🚀</span>
+              Abhi Explore Karo! <Emoji symbol="🚀" label="rocket icon" />
             </h1>
             <p className="font-body text-lg md:text-xl text-primary-foreground/95 max-w-2xl mx-auto leading-relaxed">
               Tum abhi {selectedClass} mein ho — yeh time hai naye fields discover karne ka!
@@ -234,17 +193,11 @@ const Results = () => {
     );
   }
 
-  const allScores = quizProfile?.scores || {
-    science: stream === "science" ? 38 : stream === "commerce" ? 10 : 8,
-    commerce: stream === "science" ? 12 : stream === "commerce" ? 36 : 14,
-    arts: stream === "science" ? 8 : stream === "commerce" ? 12 : 35,
-  };
-
   if (!result) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <p className="text-xl text-muted-foreground">Maaf kijiye! Stream nahi mila <span aria-hidden="true">😅</span></p>
+          <p className="text-xl text-muted-foreground">Maaf kijiye! Stream nahi mila 😅</p>
           <Link to="/quiz" className="text-primary underline mt-2 inline-block">
             Quiz dubara dijiye
           </Link>
@@ -288,24 +241,16 @@ const Results = () => {
   };
 
   const show12thPassBanner = selectedClass === "12th Pass";
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Visually hidden live region */}
-      <div
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-        className="sr-only"
-      >
-        {statusMessage}
-      </div>
       <Navbar />
 
       <div className="pt-24 pb-16 px-4 max-w-4xl mx-auto">
         {/* Action buttons */}
         <div className="flex gap-3 mb-6 justify-end flex-wrap">
           <a
-            href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`🎯 PathFinder Career Report\n\nMera result: ${result.stream} Stream\nAap bhi apna career path discover karein!\n${window.location.origin}/quiz`)}`}
+            href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`🎯 PathFinder Career Report\n\nMera result: ${result.stream} Stream ${result.emoji}\n${result.tagline}\n\nAap bhi apna career path discover karein!\n${window.location.origin}/quiz`)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 bg-[hsl(142,70%,45%)] text-primary-foreground font-display font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-opacity"
@@ -327,11 +272,12 @@ const Results = () => {
         </div>
 
         {/* Report content */}
-        <div ref={reportRef} className="space-y-6" data-guidance-urgency={guidanceUrgency}>
+        <ScreenReaderOnly as="h2">Aapki detailed career report yahan se shuru hoti hai</ScreenReaderOnly>
+        <div ref={reportRef} className="space-y-6" data-guidance-urgency={guidanceUrgency} role="main" aria-label="Career Report Content">
           {show12thPassBanner && (
             <div className="rounded-2xl bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 p-6 md:p-8 text-white shadow-lg border border-amber-300/40">
               <h2 className="font-display font-bold text-xl md:text-2xl text-center mb-6 drop-shadow-sm">
-                <span aria-hidden="true">🎯</span> 12th Pass — Career Decide Karne Ka Time!
+                🎯 12th Pass — Career Decide Karne Ka Time!
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                 {TWELFTH_PASS_ACTIONS.map((action) => (
@@ -353,7 +299,6 @@ const Results = () => {
           )}
 
           <ResultHeroCard result={result} allScores={allScores} />
-          <h2 ref={resultHeadingRef} tabIndex={-1} className="sr-only">Career Result: {result.stream}</h2>
           <ResultDescription result={result} />
           <ResultNextSteps fallbackStream={stream || "science"} />
           <ResultEarningPaths />
@@ -377,3 +322,4 @@ const Results = () => {
 };
 
 export default Results;
+

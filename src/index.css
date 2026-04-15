@@ -1,8 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700;800&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
@@ -121,11 +121,17 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
     font-family: var(--font-body);
+    scroll-behavior: smooth;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-display);
   }
 }
@@ -134,33 +140,43 @@
   .font-display {
     font-family: var(--font-display);
   }
+
   .font-body {
     font-family: var(--font-body);
   }
+
   .gradient-hero {
     background: var(--gradient-hero);
   }
+
   .gradient-hero-subtle {
     background: var(--gradient-hero-subtle);
   }
+
   .gradient-card {
     background: var(--gradient-card);
   }
+
   .gradient-accent {
     background: var(--gradient-accent);
   }
+
   .gradient-glass {
     background: var(--gradient-glass);
   }
+
   .shadow-card {
     box-shadow: var(--shadow-card);
   }
+
   .shadow-elevated {
     box-shadow: var(--shadow-elevated);
   }
+
   .shadow-glow {
     box-shadow: var(--shadow-glow);
   }
+
   .text-gradient-hero {
     background: var(--gradient-hero);
     -webkit-background-clip: text;
@@ -176,11 +192,13 @@
     animation: orb-float 8s ease-in-out infinite;
     pointer-events: none;
   }
+
   .orb-1 {
     width: 400px;
     height: 400px;
     background: rgba(var(--primary-rgb), 0.15);
   }
+
   .orb-2 {
     width: 300px;
     height: 300px;
@@ -190,25 +208,57 @@
 }
 
 @keyframes orb-float {
+
   0%,
   100% {
     transform: translate(0, 0) scale(1);
   }
+
   33% {
     transform: translate(30px, -50px) scale(1.05);
   }
+
   66% {
     transform: translate(-20px, 20px) scale(0.95);
   }
 }
 
+/* Custom Premium Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 10px;
+  border: 2px solid hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.5);
+}
+
+/* Utilities */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* Accessibility Reset: Ensure aria-hidden spans do not disturb the layout */
 span[aria-hidden='true'] {
-  display: inline !important;
+  display: inline-block !important;
   font-family: inherit !important;
   line-height: inherit !important;
   margin: 0 !important;
   padding: 0 !important;
   border: none !important;
   text-decoration: none !important;
-}
+}

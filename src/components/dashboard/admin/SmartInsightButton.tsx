@@ -30,7 +30,7 @@ export const SmartInsightButton = ({ studentId }: SmartInsightButtonProps) => {
 
       if (functionError) throw functionError;
       setInsight(data);
-      toast.success("AI Insight taiyar hai! <span aria-hidden='true'>✨</span>");
+      toast.success("AI Insight taiyar hai! ✨");
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Insight generate karne mein dikkat aayi");
@@ -55,9 +55,9 @@ export const SmartInsightButton = ({ studentId }: SmartInsightButtonProps) => {
           )}
           {loading ? "Analyzing..." : "Get AI Smart Insight"}
         </button>
-        
+
         {insight && (
-          <button 
+          <button
             onClick={() => setInsight(null)}
             className="text-xs text-muted-foreground hover:text-foreground transition-colors font-display"
           >
@@ -76,7 +76,7 @@ export const SmartInsightButton = ({ studentId }: SmartInsightButtonProps) => {
           >
             {/* Ambient Background Glow */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-2xl rounded-full -mr-16 -mt-16 pointer-events-none" />
-            
+
             <div className="space-y-4 relative z-10">
               <div className="flex items-start gap-3">
                 <div className="mt-1 p-1.5 rounded-lg bg-primary/10">
@@ -92,14 +92,14 @@ export const SmartInsightButton = ({ studentId }: SmartInsightButtonProps) => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="p-3 rounded-xl bg-amber-500/5 border border-amber-500/20">
-                  <h4 className="text-[10px] font-display font-bold text-amber-600 uppercase tracking-wider mb-1"><span aria-hidden='true'>⚠️</span> Top Concern</h4>
+                  <h4 className="text-[10px] font-display font-bold text-amber-600 uppercase tracking-wider mb-1">⚠️ Top Concern</h4>
                   <p className="text-sm font-body text-amber-700 dark:text-amber-400">
                     {insight.concern}
                   </p>
                 </div>
 
                 <div className="p-3 rounded-xl bg-violet-500/5 border border-violet-500/20">
-                  <h4 className="text-[10px] font-display font-bold text-violet-600 uppercase tracking-wider mb-1"><span aria-hidden="true">🎯</span> Suggested Path</h4>
+                  <h4 className="text-[10px] font-display font-bold text-violet-600 uppercase tracking-wider mb-1">🎯 Suggested Path</h4>
                   <p className="text-sm font-body text-violet-700 dark:text-violet-400">
                     {insight.suggestedPath}
                   </p>
@@ -108,7 +108,7 @@ export const SmartInsightButton = ({ studentId }: SmartInsightButtonProps) => {
 
               <div className="p-4 rounded-xl bg-green-500/5 border border-green-500/20 flex items-center justify-between gap-4">
                 <div>
-                  <h4 className="text-[10px] font-display font-bold text-green-600 uppercase tracking-wider mb-1"><span aria-hidden="true">🚀</span> Recommended next action</h4>
+                  <h4 className="text-[10px] font-display font-bold text-green-600 uppercase tracking-wider mb-1">🚀 Recommended next action</h4>
                   <p className="text-sm font-body text-green-700 dark:text-green-400">
                     {insight.action}
                   </p>
@@ -132,3 +132,4 @@ export const SmartInsightButton = ({ studentId }: SmartInsightButtonProps) => {
     </div>
   );
 };
+

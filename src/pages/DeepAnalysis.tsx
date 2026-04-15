@@ -46,8 +46,8 @@ const tabs: { key: TabKey; label: string; icon: React.ReactNode }[] = [
 
 const demandColor = (d: string) =>
   d?.toLowerCase().includes("high") ? "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300"
-  : d?.toLowerCase().includes("low") ? "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"
-  : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300";
+    : d?.toLowerCase().includes("low") ? "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"
+      : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300";
 
 export default function DeepAnalysis() {
   const location = useLocation();
@@ -95,7 +95,7 @@ export default function DeepAnalysis() {
         budget: (p.budget as Budget) || "medium",
         location: (p.locationType as LocationType) || "tier2",
       }));
-    } catch {/* ignore */}
+    } catch {/* ignore */ }
   }, []);
 
   const toggleInterest = (i: string) =>
@@ -134,7 +134,7 @@ export default function DeepAnalysis() {
             user_id: session.user.id,
             analysis: fnData.analysis,
           });
-        
+
         if (saveError) {
           console.error("Save Error:", saveError);
           toast.error("Analysis save nahi ho saki, lekin report taiyar hai!");
@@ -157,13 +157,13 @@ export default function DeepAnalysis() {
     try {
       const element = document.getElementById("career-report-pdf");
       if (!element) throw new Error("Report element not found");
-      
+
       const canvas = await html2canvas(element, { scale: 2 });
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      
+
       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
       pdf.save(`PathFinder_Career_Report_${dbProfile?.full_name || 'Student'}.pdf`);
       toast.success("PDF Downloaded!");
@@ -187,9 +187,9 @@ export default function DeepAnalysis() {
       <div className="pt-24 pb-16 px-4 max-w-3xl mx-auto">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
-          <div className="text-6xl mb-3"><span aria-hidden="true">🔬</span></div>
+          <div className="text-6xl mb-3">🔬</div>
           <h1 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-2">Deep Career Analysis</h1>
-          <p className="text-muted-foreground font-body">AI aapka poora career plan banayega — free mein! <span aria-hidden="true">🚀</span></p>
+          <p className="text-muted-foreground font-body">AI aapka poora career plan banayega — free mein! 🚀</p>
         </motion.div>
 
         <AnimatePresence mode="wait">
@@ -197,7 +197,7 @@ export default function DeepAnalysis() {
             <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-5">
               {/* Marks */}
               <Card>
-                <CardHeader><CardTitle className="font-display"><span aria-hidden="true">📊</span> Marks (optional)</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="font-display">📊 Marks (optional)</CardTitle></CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
@@ -224,7 +224,7 @@ export default function DeepAnalysis() {
 
               {/* Stream */}
               <Card>
-                <CardHeader><CardTitle className="font-display"><span aria-hidden="true">🎓</span> Stream</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="font-display">🎓 Stream</CardTitle></CardHeader>
                 <CardContent>
                   <div className="flex gap-2">
                     {["Science", "Commerce", "Arts"].map((s) => (
@@ -235,7 +235,7 @@ export default function DeepAnalysis() {
                           profile.stream === s.toLowerCase() ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
                         }`}
                       >
-                        {s === "Science" ? "<span aria-hidden='true'>🔬</span>" : s === "Commerce" ? "<span aria-hidden='true'>📈</span>" : "<span aria-hidden='true'>🎨</span>"} {s}
+                        {s === "Science" ? "🔬" : s === "Commerce" ? "📈" : "🎨"} {s}
                       </button>
                     ))}
                   </div>
@@ -244,7 +244,7 @@ export default function DeepAnalysis() {
 
               {/* Interests */}
               <Card>
-                <CardHeader><CardTitle className="font-display"><span aria-hidden="true">❤️</span> Interests (multiple select)</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="font-display">❤️ Interests (multiple select)</CardTitle></CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
                     {INTERESTS_LIST.map((i) => (
@@ -265,7 +265,7 @@ export default function DeepAnalysis() {
               {/* Personality + Budget + Location */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <Card>
-                  <CardHeader><CardTitle className="font-display text-sm"><span aria-hidden="true">🧠</span> Personality</CardTitle></CardHeader>
+                  <CardHeader><CardTitle className="font-display text-sm">🧠 Personality</CardTitle></CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-2 gap-1.5">
                       {(["analytical", "creative", "practical", "balanced"] as Personality[]).map((p) => (
@@ -276,7 +276,7 @@ export default function DeepAnalysis() {
                             profile.personality === p ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
                           }`}
                         >
-                          {p === "analytical" ? "<span aria-hidden='true'>🔍</span>" : p === "creative" ? "<span aria-hidden='true'>🎨</span>" : p === "practical" ? "<span aria-hidden='true'>🔧</span>" : "<span aria-hidden='true'>⚖️</span>"} {p}
+                          {p === "analytical" ? "🔍" : p === "creative" ? "🎨" : p === "practical" ? "🔧" : "⚖️"} {p}
                         </button>
                       ))}
                     </div>
@@ -284,7 +284,7 @@ export default function DeepAnalysis() {
                 </Card>
 
                 <Card>
-                  <CardHeader><CardTitle className="font-display text-sm"><span aria-hidden="true">💰</span> Budget</CardTitle></CardHeader>
+                  <CardHeader><CardTitle className="font-display text-sm">💰 Budget</CardTitle></CardHeader>
                   <CardContent>
                     <div className="flex flex-col gap-1.5">
                       {(["low", "medium", "high"] as Budget[]).map((b) => (
@@ -295,248 +295,248 @@ export default function DeepAnalysis() {
                             profile.budget === b ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
                           }`}
                         >
-                          {b === "low" ? "<span aria-hidden='true'>🏛️</span> Sarkari prefer" : b === "medium" ? "<span aria-hidden='true'>📚</span> Thoda invest" : "<span aria-hidden='true'>💎</span> Premium"} 
+                          {b === "low" ? "🏛️ Sarkari prefer" : b === "medium" ? "📚 Thoda invest" : "💎 Premium"} 
                         </button>
                       ))}
                     </div>
-                  </CardContent>
-                </Card>
+                  </CardContent >
+                </Card >
 
-                <Card>
-                  <CardHeader><CardTitle className="font-display text-sm"><span aria-hidden="true">📍</span> Location</CardTitle></CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 gap-1.5">
-                      {(["metro", "tier2", "tier3", "rural"] as LocationType[]).map((l) => (
-                        <button
-                          key={l}
-                          onClick={() => setProfile((prev) => ({ ...prev, location: l }))}
-                          className={`py-1.5 rounded-lg font-display font-semibold text-xs transition-all ${
-                            profile.location === l ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
-                          }`}
-                        >
-                          {l === "metro" ? "<span aria-hidden='true'>🏙️</span> Metro" : l === "tier2" ? "<span aria-hidden='true'>🌆</span> Tier 2" : l === "tier3" ? "<span aria-hidden='true'>🏘️</span> Tier 3" : "<span aria-hidden='true'>🌾</span> Rural"}
-                        </button>
+    <Card>
+      <CardHeader><CardTitle className="font-display text-sm">📍 Location</CardTitle></CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-2 gap-1.5">
+          {(["metro", "tier2", "tier3", "rural"] as LocationType[]).map((l) => (
+            <button
+              key={l}
+              onClick={() => setProfile((prev) => ({ ...prev, location: l }))}
+              className={`py-1.5 rounded-lg font-display font-semibold text-xs transition-all ${profile.location === l ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
+                }`}
+            >
+              {l === "metro" ? "🏙️ Metro" : l === "tier2" ? "🌆 Tier 2" : l === "tier3" ? "🏘️ Tier 3" : "🌾 Rural"}
+            </button>
                       ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {error && <p className="text-destructive text-sm font-body text-center">{error}</p>}
-
-              <Button
-                onClick={runAnalysis}
-                disabled={loading}
-                className="w-full gradient-hero text-primary-foreground font-display font-bold text-lg py-6 rounded-xl hover:opacity-90 transition-all disabled:opacity-60"
-              >
-                {loading ? (
-                  <span className="flex items-center gap-2"><Loader2 className="w-5 h-5 animate-spin" /> AI analysis kar raha hai... thoda wait karo <span aria-hidden='true'>⏳</span></span>
-                ) : "Deep Analysis Karo <span aria-hidden='true'>🚀</span>"}
-              </Button>
-            </motion.div>
-          ) : (
-            <motion.div key="results" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-5">
-              {/* Export Actions */}
-              <div className="flex gap-2 mb-4">
-                <Button 
-                  onClick={handleDownloadPDF} 
-                  disabled={exporting}
-                  className="flex-1 bg-primary text-white font-display font-semibold gap-2 py-6 rounded-xl shadow-lg hover:shadow-primary/20 transition-all"
-                >
-                  {exporting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
-                  Download PDF Report
-                </Button>
-                <Button 
-                  onClick={handleShareWhatsApp}
-                  variant="outline"
-                  className="flex-1 border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 font-display font-semibold gap-2 py-6 rounded-xl"
-                >
-                  <Share2 className="w-5 h-5" />
-                  Share on WhatsApp
-                </Button>
-              </div>
-
-              {/* Tabs */}
-              <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.key}
-                    onClick={() => setActiveTab(tab.key)}
-                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl font-display font-semibold text-sm whitespace-nowrap transition-all shrink-0 ${
-                      activeTab === tab.key ? "gradient-hero text-primary-foreground shadow-sm" : "bg-muted text-muted-foreground border border-border hover:bg-muted/80"
-                    }`}
-                  >
-                    {tab.icon}{tab.label}
-                  </button>
-                ))}
-              </div>
-
-              <AnimatePresence mode="wait">
-                <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-                  {/* Aptitude Tab */}
-                  {activeTab === "aptitude" && (
-                    <div className="space-y-4">
-                      <Card>
-                        <CardHeader><CardTitle className="font-display"><span aria-hidden="true">💪</span> Strengths</CardTitle></CardHeader>
-                        <CardContent>
-                          <div className="flex flex-wrap gap-2">
-                            {analysis.psychological_aptitude.strengths.map((s, i) => (
-                              <Badge key={i} className="bg-primary/10 text-primary font-body">{s}</Badge>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-                      <Card>
-                        <CardHeader><CardTitle className="font-display"><span aria-hidden="true">📖</span> Learning Style</CardTitle></CardHeader>
-                        <CardContent><p className="font-body text-foreground">{analysis.psychological_aptitude.learning_style}</p></CardContent>
-                      </Card>
-                      <Card>
-                        <CardHeader><CardTitle className="font-display"><span aria-hidden="true">🏢</span> Career Personality</CardTitle></CardHeader>
-                        <CardContent><p className="font-body text-foreground">{analysis.psychological_aptitude.career_personality}</p></CardContent>
-                      </Card>
-                    </div>
-                  )}
-
-                  {/* Finance Tab */}
-                  {activeTab === "finance" && (
-                    <div className="space-y-4">
-                      <Card>
-                        <CardHeader><CardTitle className="font-display"><span aria-hidden="true">💸</span> Estimated 4-Year Cost</CardTitle></CardHeader>
-                        <CardContent><p className="font-display font-bold text-2xl text-primary">{analysis.financial_feasibility.estimated_4year_cost}</p></CardContent>
-                      </Card>
-                      <Card>
-                        <CardHeader><CardTitle className="font-display"><span aria-hidden="true">🎓</span> Scholarship Potential</CardTitle></CardHeader>
-                        <CardContent><p className="font-body text-foreground">{analysis.financial_feasibility.scholarship_potential}</p></CardContent>
-                      </Card>
-                      <Card>
-                        <CardHeader><CardTitle className="font-display"><span aria-hidden="true">⏱️</span> ROI Timeline</CardTitle></CardHeader>
-                        <CardContent><p className="font-body text-foreground">{analysis.financial_feasibility.roi_timeline}</p></CardContent>
-                      </Card>
-                    </div>
-                  )}
-
-                  {/* Careers Tab */}
-                  {activeTab === "careers" && (
-                    <div className="space-y-3">
-                      {analysis.top_careers.map((c, i) => (
-                        <Card key={i} className="border-2 hover:border-primary/30 transition-colors">
-                          <CardContent className="pt-4 space-y-2">
-                            <div className="flex items-start justify-between gap-2">
-                              <h3 className="font-display font-bold text-foreground">{c.title}</h3>
-                              <div className="flex gap-2 shrink-0">
-                                <Badge className="bg-primary/10 text-primary font-body text-xs">{c.salary}</Badge>
-                                <Badge className={`font-body text-xs ${demandColor(c.demand)}`}>{c.demand}</Badge>
-                              </div>
-                            </div>
-                            <p className="font-body text-sm text-muted-foreground">{c.path}</p>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Colleges Tab */}
-                  {activeTab === "colleges" && (
-                    <div className="space-y-3">
-                      {analysis.target_colleges.map((c, i) => (
-                        <Card key={i} className="border-2 hover:border-primary/30 transition-colors">
-                          <CardContent className="pt-4">
-                            <h3 className="font-display font-bold text-foreground mb-1">{c.name}</h3>
-                            <div className="flex flex-wrap gap-2 text-xs font-body">
-                              <span className="flex items-center gap-1 text-muted-foreground"><MapPin className="w-3 h-3" />{c.location}</span>
-                              <Badge variant="secondary">{c.fees}</Badge>
-                              <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300">{c.exam}</Badge>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Roadmap Tab */}
-                  {activeTab === "roadmap" && (
-                    <div className="space-y-4">
-                      {[
-                        { key: "now", label: "<span aria-hidden='true'>🔥</span> Abhi Karo", color: "emerald" },
-                        { key: "year1", label: "<span aria-hidden='true'>📅</span> Year 1", color: "blue" },
-                        { key: "year2", label: "<span aria-hidden='true'>🎯</span> Year 2", color: "purple" },
-                        { key: "longterm", label: "<span aria-hidden='true'>🌟</span> Long Term (5 years)", color: "orange" },
-                      ].map(({ key, label, color }) => (
-                        <Card key={key} className={`border-2 border-${color}-300 dark:border-${color}-800 bg-${color}-50 dark:bg-${color}-950/20`}>
-                          <CardHeader className="pb-2"><CardTitle className="font-display text-base">{label}</CardTitle></CardHeader>
-                          <CardContent>
-                            <ul className="space-y-2">
-                              {((analysis.structured_roadmap as any)[key] as string[]).map((item, i) => (
-                                <li key={i} className="flex items-start gap-2 font-body text-sm text-foreground">
-                                  <span className="text-primary font-bold shrink-0">•</span>{item}
-                                </li>
-                              ))}
-                            </ul>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Tips Tab */}
-                  {activeTab === "tips" && (
-                    <div className="space-y-4">
-                      <Card>
-                        <CardHeader><CardTitle className="font-display"><span aria-hidden="true">📊</span> Competition Level</CardTitle></CardHeader>
-                        <CardContent><p className="font-body text-foreground">{analysis.competition_level}</p></CardContent>
-                      </Card>
-                      <Card>
-                        <CardHeader><CardTitle className="font-display"><span aria-hidden="true">✅</span> Success Tips</CardTitle></CardHeader>
-                        <CardContent>
-                          <ul className="space-y-3">
-                            {analysis.success_tips.map((tip, i) => (
-                              <li key={i} className="flex items-start gap-2 font-body text-sm text-foreground">
-                                <span className="w-5 h-5 rounded-full bg-primary/10 text-primary font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
-                                {tip}
-                              </li>
-                            ))}
-                          </ul>
-                        </CardContent>
-                      </Card>
-                      <Card>
-                        <CardHeader><CardTitle className="font-display"><span aria-hidden="true">🔄</span> Backup Paths</CardTitle></CardHeader>
-                        <CardContent className="space-y-3">
-                          {analysis.backup_paths.map((bp, i) => (
-                            <div key={i} className="bg-muted/60 rounded-xl p-3">
-                              <p className="font-display font-semibold text-foreground text-sm">{bp.title}</p>
-                              <p className="font-body text-xs text-muted-foreground mt-1">{bp.description}</p>
-                            </div>
-                          ))}
-                        </CardContent>
-                      </Card>
-                    </div>
-                  )}
-                </motion.div>
-              </AnimatePresence>
-
-              <Button
-                onClick={() => setAnalysis(null)}
-                variant="outline"
-                className="w-full font-display font-semibold"
-              >
-                <span aria-hidden="true">🔄</span> Naya Analysis Karo
-              </Button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Hidden component for PDF generation */}
-        <div style={{ position: 'absolute', left: '-9999px', top: '0' }}>
-          {analysis && (
-            <CareerReportPDF 
-              analysis={analysis} 
-              studentName={dbProfile?.full_name || 'Student'} 
-              studentClass={dbProfile?.class || 'N/A'}
-              studentStream={dbProfile?.stream || profile.stream}
-            />
-          )}
-        </div>
-      </div>
     </div>
+                  </CardContent >
+                </Card >
+              </div >
+
+    { error && <p className="text-destructive text-sm font-body text-center">{error}</p>
+}
+
+<Button
+  onClick={runAnalysis}
+  disabled={loading}
+  className="w-full gradient-hero text-primary-foreground font-display font-bold text-lg py-6 rounded-xl hover:opacity-90 transition-all disabled:opacity-60"
+>
+  {loading ? (
+    <span className="flex items-center gap-2"><Loader2 className="w-5 h-5 animate-spin" /> AI analysis kar raha hai... thoda wait karo ⏳</span>
+  ) : "Deep Analysis Karo 🚀"}
+              </Button >
+            </motion.div >
+          ) : (
+  <motion.div key="results" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-5">
+    {/* Export Actions */}
+    <div className="flex gap-2 mb-4">
+      <Button
+        onClick={handleDownloadPDF}
+        disabled={exporting}
+        className="flex-1 bg-primary text-white font-display font-semibold gap-2 py-6 rounded-xl shadow-lg hover:shadow-primary/20 transition-all"
+      >
+        {exporting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
+        Download PDF Report
+      </Button>
+      <Button
+        onClick={handleShareWhatsApp}
+        variant="outline"
+        className="flex-1 border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 font-display font-semibold gap-2 py-6 rounded-xl"
+      >
+        <Share2 className="w-5 h-5" />
+        Share on WhatsApp
+      </Button>
+    </div>
+
+    {/* Tabs */}
+    <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
+      {tabs.map((tab) => (
+        <button
+          key={tab.key}
+          onClick={() => setActiveTab(tab.key)}
+          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl font-display font-semibold text-sm whitespace-nowrap transition-all shrink-0 ${activeTab === tab.key ? "gradient-hero text-primary-foreground shadow-sm" : "bg-muted text-muted-foreground border border-border hover:bg-muted/80"
+            }`}
+        >
+          {tab.icon}{tab.label}
+        </button>
+      ))}
+    </div>
+
+    <AnimatePresence mode="wait">
+      <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+        {/* Aptitude Tab */}
+        {activeTab === "aptitude" && (
+          <div className="space-y-4">
+            <Card>
+              <CardHeader><CardTitle className="font-display">💪 Strengths</CardTitle></CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {analysis.psychological_aptitude.strengths.map((s, i) => (
+                    <Badge key={i} className="bg-primary/10 text-primary font-body">{s}</Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle className="font-display">📖 Learning Style</CardTitle></CardHeader>
+              <CardContent><p className="font-body text-foreground">{analysis.psychological_aptitude.learning_style}</p></CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle className="font-display">🏢 Career Personality</CardTitle></CardHeader>
+              <CardContent><p className="font-body text-foreground">{analysis.psychological_aptitude.career_personality}</p></CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Finance Tab */}
+        {activeTab === "finance" && (
+          <div className="space-y-4">
+            <Card>
+              <CardHeader><CardTitle className="font-display">💸 Estimated 4-Year Cost</CardTitle></CardHeader>
+              <CardContent><p className="font-display font-bold text-2xl text-primary">{analysis.financial_feasibility.estimated_4year_cost}</p></CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle className="font-display">🎓 Scholarship Potential</CardTitle></CardHeader>
+              <CardContent><p className="font-body text-foreground">{analysis.financial_feasibility.scholarship_potential}</p></CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle className="font-display">⏱️ ROI Timeline</CardTitle></CardHeader>
+              <CardContent><p className="font-body text-foreground">{analysis.financial_feasibility.roi_timeline}</p></CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Careers Tab */}
+        {activeTab === "careers" && (
+          <div className="space-y-3">
+            {analysis.top_careers.map((c, i) => (
+              <Card key={i} className="border-2 hover:border-primary/30 transition-colors">
+                <CardContent className="pt-4 space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="font-display font-bold text-foreground">{c.title}</h3>
+                    <div className="flex gap-2 shrink-0">
+                      <Badge className="bg-primary/10 text-primary font-body text-xs">{c.salary}</Badge>
+                      <Badge className={`font-body text-xs ${demandColor(c.demand)}`}>{c.demand}</Badge>
+                    </div>
+                  </div>
+                  <p className="font-body text-sm text-muted-foreground">{c.path}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {/* Colleges Tab */}
+        {activeTab === "colleges" && (
+          <div className="space-y-3">
+            {analysis.target_colleges.map((c, i) => (
+              <Card key={i} className="border-2 hover:border-primary/30 transition-colors">
+                <CardContent className="pt-4">
+                  <h3 className="font-display font-bold text-foreground mb-1">{c.name}</h3>
+                  <div className="flex flex-wrap gap-2 text-xs font-body">
+                    <span className="flex items-center gap-1 text-muted-foreground"><MapPin className="w-3 h-3" />{c.location}</span>
+                    <Badge variant="secondary">{c.fees}</Badge>
+                    <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300">{c.exam}</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {/* Roadmap Tab */}
+        {activeTab === "roadmap" && (
+          <div className="space-y-4">
+            {[
+              { key: "now", label: "🔥 Abhi Karo", color: "emerald" },
+              { key: "year1", label: "📅 Year 1", color: "blue" },
+              { key: "year2", label: "🎯 Year 2", color: "purple" },
+              { key: "longterm", label: "🌟 Long Term (5 years)", color: "orange" },
+            ].map(({ key, label, color }) => (
+              <Card key={key} className={`border-2 border-${color}-300 dark:border-${color}-800 bg-${color}-50 dark:bg-${color}-950/20`}>
+                <CardHeader className="pb-2"><CardTitle className="font-display text-base">{label}</CardTitle></CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    {((analysis.structured_roadmap as any)[key] as string[]).map((item, i) => (
+                      <li key={i} className="flex items-start gap-2 font-body text-sm text-foreground">
+                        <span className="text-primary font-bold shrink-0">•</span>{item}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {/* Tips Tab */}
+        {activeTab === "tips" && (
+          <div className="space-y-4">
+            <Card>
+              <CardHeader><CardTitle className="font-display">📊 Competition Level</CardTitle></CardHeader>
+              <CardContent><p className="font-body text-foreground">{analysis.competition_level}</p></CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle className="font-display">✅ Success Tips</CardTitle></CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  {analysis.success_tips.map((tip, i) => (
+                    <li key={i} className="flex items-start gap-2 font-body text-sm text-foreground">
+                      <span className="w-5 h-5 rounded-full bg-primary/10 text-primary font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
+                      {tip}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle className="font-display">🔄 Backup Paths</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                {analysis.backup_paths.map((bp, i) => (
+                  <div key={i} className="bg-muted/60 rounded-xl p-3">
+                    <p className="font-display font-semibold text-foreground text-sm">{bp.title}</p>
+                    <p className="font-body text-xs text-muted-foreground mt-1">{bp.description}</p>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </motion.div>
+    </AnimatePresence>
+
+    <Button
+      onClick={() => setAnalysis(null)}
+      variant="outline"
+      className="w-full font-display font-semibold"
+    >
+      🔄 Naya Analysis Karo
+    </Button>
+  </motion.div>
+)}
+        </AnimatePresence >
+
+  {/* Hidden component for PDF generation */ }
+  < div style = {{ position: 'absolute', left: '-9999px', top: '0' }}>
+    { analysis && (
+      <CareerReportPDF
+        analysis={analysis}
+        studentName={dbProfile?.full_name || 'Student'}
+        studentClass={dbProfile?.class || 'N/A'}
+        studentStream={dbProfile?.stream || profile.stream}
+      />
+    )}
+        </div >
+      </div >
+    </div >
   );
 }
+

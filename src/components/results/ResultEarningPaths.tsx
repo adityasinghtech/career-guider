@@ -70,7 +70,7 @@ const ResultEarningPaths = () => {
           </div>
           <div>
             <span className="font-display font-bold text-foreground block">
-              Padhai ke Saath Earning Dekhein <span aria-hidden="true">💰</span>
+              Padhai ke Saath Earning Dekhein 💰
             </span>
             <span className="text-xs text-muted-foreground font-body">
               Study ke saath earning — expand karke dekho
@@ -96,7 +96,7 @@ const ResultEarningPaths = () => {
             <div className="p-4 md:p-6 pt-2 md:pt-4 space-y-6">
               <div>
                 <h2 className="font-display font-bold text-lg md:text-xl text-foreground">
-                  Padhai ke Saath Kamaai <span aria-hidden="true">💰</span>
+                  Padhai ke Saath Kamaai 💰
                 </h2>
                 <p className="text-sm text-muted-foreground font-body mt-1">
                   Agar financial support chahiye — ye realistic options hain
@@ -143,3 +143,4 @@ const ResultEarningPaths = () => {
 };
 
 export default ResultEarningPaths;
+

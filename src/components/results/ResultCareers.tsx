@@ -17,7 +17,7 @@ const ResultCareers = ({ result }: { result: StreamResult }) => {
     >
       <div>
         <h2 className="font-display font-bold text-xl text-foreground mb-4 flex items-center gap-2">
-          <Briefcase className="w-5 h-5 text-primary" /> Career Options <span aria-hidden="true">💼</span>
+          <Briefcase className="w-5 h-5 text-primary" /> Career Options 💼
         </h2>
         <div className="grid md:grid-cols-2 gap-3">
           {result.careers.map((career) => {
@@ -53,7 +53,7 @@ const ResultCareers = ({ result }: { result: StreamResult }) => {
             className="font-display font-bold text-lg md:text-xl text-amber-950 dark:text-amber-100 mb-4 flex items-center gap-2"
           >
             <Flame className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
-            Modern & Trending Careers <span aria-hidden="true">🔥</span>
+            Modern & Trending Careers 🔥
           </h3>
           <div className="grid md:grid-cols-2 gap-3">
             {result.modernCareers.map((c) => {
@@ -97,7 +97,7 @@ const ResultCareers = ({ result }: { result: StreamResult }) => {
             onClick={() => setPassionOpen((o) => !o)}
             className="w-full flex items-center justify-between gap-3 text-left font-display font-bold text-lg text-foreground hover:text-primary transition-colors"
           >
-            <span>Passion-Based Careers <span aria-hidden="true">🎭</span></span>
+            <span>Passion-Based Careers 🎭</span>
             {passionOpen ? (
               <ChevronUp className="w-5 h-5 shrink-0 text-muted-foreground" />
             ) : (
@@ -133,3 +133,4 @@ const ResultCareers = ({ result }: { result: StreamResult }) => {
 };
 
 export default ResultCareers;
+

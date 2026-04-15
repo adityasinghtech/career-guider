@@ -54,7 +54,7 @@ const AnalyticsView = ({
       <DailyActivityChart quizResults={quizResults} students={students} />
 
       <div className="bg-card border-2 border-border rounded-2xl p-6">
-        <h3 className="font-display font-bold text-lg text-foreground mb-4"><span aria-hidden="true">📊</span> Stream-wise Breakdown</h3>
+        <h3 className="font-display font-bold text-lg text-foreground mb-4">📊 Stream-wise Breakdown</h3>
         {Object.keys(streamCounts).length === 0 ? (
           <p className="text-muted-foreground text-sm">Abhi tak koi data nahi hai</p>
         ) : (
@@ -87,7 +87,7 @@ const AnalyticsView = ({
 
       {/* Class-wise */}
       <div className="bg-card border-2 border-border rounded-2xl p-6">
-        <h3 className="font-display font-bold text-lg text-foreground mb-4"><span aria-hidden="true">📚</span> Class-wise Students</h3>
+        <h3 className="font-display font-bold text-lg text-foreground mb-4">📚 Class-wise Students</h3>
         {analyticsExtra.classTotal === 0 ? (
           <p className="text-muted-foreground text-sm">Abhi tak koi student data nahi hai</p>
         ) : (
@@ -159,19 +159,19 @@ const AnalyticsView = ({
 
       {/* Interest distribution */}
       <div className="bg-card border-2 border-border rounded-2xl p-6">
-        <h3 className="font-display font-bold text-lg text-foreground mb-2"><span aria-hidden='true'>🎯</span> Interest Distribution</h3>
+        <h3 className="font-display font-bold text-lg text-foreground mb-2">🎯 Interest Distribution</h3>
         <p className="text-xs text-muted-foreground font-body mb-4">
           Har quiz ke liye: scores close ho to &quot;Undecided&quot;, warna stream → category mein count hota hai.
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {(
             [
-              { key: "tech", label: "<span aria-hidden='true'>💻</span> Tech", v: analyticsExtra.interestCounts.tech },
-              { key: "business", label: "<span aria-hidden='true'>💼</span> Business", v: analyticsExtra.interestCounts.business },
-              { key: "creative", label: "<span aria-hidden='true'>🎨</span> Creative", v: analyticsExtra.interestCounts.creative },
-              { key: "sports", label: "<span aria-hidden='true'>🏆</span> Sports", v: analyticsExtra.interestCounts.sports },
-              { key: "skills", label: "<span aria-hidden='true'>🛠️</span> Skills", v: analyticsExtra.interestCounts.skills },
-              { key: "undecided", label: "<span aria-hidden='true'>🤷</span> Undecided", v: analyticsExtra.interestCounts.undecided },
+              { key: "tech", label: "💻 Tech", v: analyticsExtra.interestCounts.tech },
+              { key: "business", label: "💼 Business", v: analyticsExtra.interestCounts.business },
+              { key: "creative", label: "🎨 Creative", v: analyticsExtra.interestCounts.creative },
+              { key: "sports", label: "🏆 Sports", v: analyticsExtra.interestCounts.sports },
+              { key: "skills", label: "🛠️ Skills", v: analyticsExtra.interestCounts.skills },
+              { key: "undecided", label: "🤷 Undecided", v: analyticsExtra.interestCounts.undecided },
             ] as const
           ).map((row) => (
             <div
@@ -187,7 +187,7 @@ const AnalyticsView = ({
 
       {/* Top 5 cities */}
       <div className="bg-card border-2 border-border rounded-2xl p-6">
-        <h3 className="font-display font-bold text-lg text-foreground mb-4"><span aria-hidden='true'>🏙️</span> Top 5 Cities</h3>
+        <h3 className="font-display font-bold text-lg text-foreground mb-4">🏙️ Top 5 Cities</h3>
         {analyticsExtra.top5Cities.length === 0 ? (
           <p className="text-muted-foreground text-sm">City data abhi tak nahi hai</p>
         ) : (
@@ -220,3 +220,4 @@ const AnalyticsView = ({
 };
 
 export default AnalyticsView;
+

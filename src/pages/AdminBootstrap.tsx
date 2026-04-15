@@ -57,7 +57,7 @@ const AdminBootstrap = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="text-4xl mb-3 animate-bounce"><span aria-hidden="true">⏳</span></div>
+          <div className="text-4xl mb-3 animate-bounce">⏳</div>
           <p className="text-muted-foreground font-display">Loading...</p>
         </div>
       </div>
@@ -140,3 +140,4 @@ const AdminBootstrap = () => {
 };
 
 export default AdminBootstrap;
+

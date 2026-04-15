@@ -44,7 +44,7 @@ export default function PracticeQuiz() {
       if (p.stream && ["science", "commerce", "arts"].includes(p.stream)) {
         setStream(p.stream as StreamKey);
       }
-    } catch {/* ignore */}
+    } catch {/* ignore */ }
   }, []);
 
   useEffect(() => {
@@ -98,7 +98,7 @@ export default function PracticeQuiz() {
       <div className="pt-24 pb-16 px-4 max-w-2xl mx-auto">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
-          <div className="text-6xl mb-3"><span aria-hidden="true">🧠</span></div>
+          <div className="text-6xl mb-3">🧠</div>
           <h1 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-2">AI Practice Quiz</h1>
           <p className="text-muted-foreground font-body">AI se personalized practice questions generate karo!</p>
         </motion.div>
@@ -108,7 +108,7 @@ export default function PracticeQuiz() {
           {questions.length === 0 && (
             <motion.div key="setup" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-5">
               <Card>
-                <CardHeader><CardTitle className="font-display">1<span aria-hidden='true'>️</span>⃣ Stream chuno</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="font-display">1️⃣ Stream chuno</CardTitle></CardHeader>
                 <CardContent>
                   <div className="flex gap-2">
                     {(["science", "commerce", "arts"] as StreamKey[]).map((s) => (
@@ -119,7 +119,14 @@ export default function PracticeQuiz() {
                           stream === s ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
                         }`}
                       >
-                        {s === "science" ? "<span aria-hidden='true'>🔬</span>" : s === "commerce" ? "<span aria-hidden='true'>📈</span>" : "<span aria-hidden='true'>🎨</span>"} {s.charAt(0).toUpperCase() + s.slice(1)}
+                        {s === "science" ? (
+                          "🔬"
+                        ) : s === "commerce" ? (
+                          "📈"
+                        ) : (
+                          "🎨"
+                        )}{" "}
+                        {s.charAt(0).toUpperCase() + s.slice(1)}
                       </button>
                     ))}
                   </div>
@@ -127,7 +134,7 @@ export default function PracticeQuiz() {
               </Card>
 
               <Card>
-                <CardHeader><CardTitle className="font-display">2<span aria-hidden='true'>️</span>⃣ Subject chuno</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="font-display">2️⃣ Subject chuno</CardTitle></CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
                     {subjectMap[stream].map((s) => (
@@ -146,7 +153,7 @@ export default function PracticeQuiz() {
               </Card>
 
               <Card>
-                <CardHeader><CardTitle className="font-display">3<span aria-hidden='true'>️</span>⃣ Topic likho</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="font-display">3️⃣ Topic likho</CardTitle></CardHeader>
                 <CardContent>
                   <input
                     type="text"
@@ -165,7 +172,7 @@ export default function PracticeQuiz() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Card>
-                  <CardHeader><CardTitle className="font-display text-base">4<span aria-hidden='true'>️</span>⃣ Difficulty</CardTitle></CardHeader>
+                  <CardHeader><CardTitle className="font-display text-base">4️⃣ Difficulty</CardTitle></CardHeader>
                   <CardContent>
                     <div className="flex gap-2">
                       {(["easy", "medium", "hard"] as Difficulty[]).map((d) => (
@@ -176,7 +183,14 @@ export default function PracticeQuiz() {
                             difficulty === d ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
                           }`}
                         >
-                          {d === "easy" ? "<span aria-hidden='true'>😊</span>" : d === "medium" ? "<span aria-hidden='true'>🤔</span>" : "<span aria-hidden='true'>🔥</span>"} {d}
+                          {d === "easy" ? (
+                            "😊"
+                          ) : d === "medium" ? (
+                            "🤔"
+                          ) : (
+                            "🔥"
+                          )}{" "}
+                          {d}
                         </button>
                       ))}
                     </div>
@@ -184,7 +198,7 @@ export default function PracticeQuiz() {
                 </Card>
 
                 <Card>
-                  <CardHeader><CardTitle className="font-display text-base">5<span aria-hidden='true'>️</span>⃣ Questions</CardTitle></CardHeader>
+                  <CardHeader><CardTitle className="font-display text-base">5️⃣ Questions</CardTitle></CardHeader>
                   <CardContent>
                     <div className="flex gap-2">
                       {[3, 5, 10].map((n) => (
@@ -201,81 +215,86 @@ export default function PracticeQuiz() {
                     </div>
                   </CardContent>
                 </Card>
-              </div>
+              </div >
 
-              <Button
-                onClick={generateQuestions}
-                disabled={loading || !topic.trim()}
-                className="w-full gradient-hero text-primary-foreground font-display font-bold text-lg py-6 rounded-xl hover:opacity-90 transition-all disabled:opacity-60"
-              >
-                {loading ? (
-                  <span className="flex items-center gap-2"><Loader2 className="w-5 h-5 animate-spin" /> Questions generate ho rahe hain...</span>
-                ) : "Questions Generate Karo <span aria-hidden='true'>✨</span>"}
-              </Button>
-            </motion.div>
+    <Button
+      onClick={generateQuestions}
+      disabled={loading || !topic.trim()}
+      className="w-full gradient-hero text-primary-foreground font-display font-bold text-lg py-6 rounded-xl hover:opacity-90 transition-all disabled:opacity-60"
+    >
+      {loading ? (
+        <span className="flex items-center gap-2"><Loader2 className="w-5 h-5 animate-spin" /> Questions generate ho rahe hain...</span>
+      ) : (
+        <>
+          Questions Generate Karo ✨
+        </>
+      )}
+              </Button >
+            </motion.div >
+          )
+}
+
+{/* Quiz Screen */ }
+{
+  questions.length > 0 && !quizDone && currentQ && (
+    <motion.div key="quiz" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-5">
+      {/* Progress */}
+      <div>
+        <div className="flex justify-between text-sm font-display text-muted-foreground mb-1.5">
+          <span>Question {currentIdx + 1} of {questions.length}</span>
+          <span>{Object.keys(userAnswers).length} answered</span>
+        </div>
+        <div className="h-2 bg-muted rounded-full overflow-hidden">
+          <motion.div
+            className="h-full gradient-hero rounded-full"
+            style={{ width: `${((currentIdx + 1) / questions.length) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      <Card className="border-2">
+        <CardContent className="pt-5 space-y-5">
+          <Badge variant="secondary" className="font-body text-xs">{currentQ.conceptBridge}</Badge>
+          <p className="font-display font-bold text-lg text-foreground leading-snug">{currentQ.question}</p>
+
+          <div className="space-y-2">
+            {currentQ.options.map((opt, i) => {
+              const isSelected = currentAnswer === opt;
+              const isCorrect = opt === currentQ.correct;
+              const showResult = showExplanation;
+              return (
+                <button
+                  key={i}
+                  onClick={() => {
+                    if (!currentAnswer) {
+                      setUserAnswers((prev) => ({ ...prev, [currentIdx]: opt }));
+                    }
+                  }}
+                  disabled={!!currentAnswer}
+                  className={`w-full text-left px-4 py-3 rounded-xl border-2 font-body text-sm transition-all ${!currentAnswer
+                      ? "border-border bg-card text-foreground hover:border-primary/40 hover:bg-primary/5"
+                      : showResult && isCorrect
+                        ? "border-green-400 bg-green-50 dark:bg-green-950/30 text-green-900 dark:text-green-200"
+                        : showResult && isSelected && !isCorrect
+                          ? "border-red-400 bg-red-50 dark:bg-red-950/30 text-red-900 dark:text-red-200"
+                          : isSelected
+                            ? "border-primary bg-primary/10 text-foreground"
+                            : "border-border bg-card text-muted-foreground"
+                    }`}
+                >
+                  <span className="font-semibold mr-2">{String.fromCharCode(65 + i)}.</span>{opt}
+                </button>
+              );
+            })}
+          </div>
+
+          {currentAnswer && !showExplanation && (
+            <Button onClick={() => setShowExplanation(true)} variant="outline" className="w-full font-display">
+              💡 Explanation dekho
+            </Button>
           )}
 
-          {/* Quiz Screen */}
-          {questions.length > 0 && !quizDone && currentQ && (
-            <motion.div key="quiz" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-5">
-              {/* Progress */}
-              <div>
-                <div className="flex justify-between text-sm font-display text-muted-foreground mb-1.5">
-                  <span>Question {currentIdx + 1} of {questions.length}</span>
-                  <span>{Object.keys(userAnswers).length} answered</span>
-                </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
-                  <motion.div
-                    className="h-full gradient-hero rounded-full"
-                    style={{ width: `${((currentIdx + 1) / questions.length) * 100}%` }}
-                  />
-                </div>
-              </div>
-
-              <Card className="border-2">
-                <CardContent className="pt-5 space-y-5">
-                  <Badge variant="secondary" className="font-body text-xs">{currentQ.conceptBridge}</Badge>
-                  <p className="font-display font-bold text-lg text-foreground leading-snug">{currentQ.question}</p>
-
-                  <div className="space-y-2">
-                    {currentQ.options.map((opt, i) => {
-                      const isSelected = currentAnswer === opt;
-                      const isCorrect = opt === currentQ.correct;
-                      const showResult = showExplanation;
-                      return (
-                        <button
-                          key={i}
-                          onClick={() => {
-                            if (!currentAnswer) {
-                              setUserAnswers((prev) => ({ ...prev, [currentIdx]: opt }));
-                            }
-                          }}
-                          disabled={!!currentAnswer}
-                          className={`w-full text-left px-4 py-3 rounded-xl border-2 font-body text-sm transition-all ${
-                            !currentAnswer
-                              ? "border-border bg-card text-foreground hover:border-primary/40 hover:bg-primary/5"
-                              : showResult && isCorrect
-                              ? "border-green-400 bg-green-50 dark:bg-green-950/30 text-green-900 dark:text-green-200"
-                              : showResult && isSelected && !isCorrect
-                              ? "border-red-400 bg-red-50 dark:bg-red-950/30 text-red-900 dark:text-red-200"
-                              : isSelected
-                              ? "border-primary bg-primary/10 text-foreground"
-                              : "border-border bg-card text-muted-foreground"
-                          }`}
-                        >
-                          <span className="font-semibold mr-2">{String.fromCharCode(65 + i)}.</span>{opt}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {currentAnswer && !showExplanation && (
-                    <Button onClick={() => setShowExplanation(true)} variant="outline" className="w-full font-display">
-                      <span aria-hidden="true">💡</span> Explanation dekho
-                    </Button>
-                  )}
-
-                  {showExplanation && (
+          {showExplanation && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
@@ -286,50 +305,58 @@ export default function PracticeQuiz() {
                           ? <CheckCircle className="w-5 h-5 text-green-600" />
                           : <XCircle className="w-5 h-5 text-red-600" />}
                         <span className="font-display font-bold text-sm">
-                          {currentAnswer === currentQ.correct ? "Sahi jawab! <span aria-hidden='true'>🎉</span>" : `Galat — Sahi hai: ${currentQ.correct}`}
+                          {currentAnswer === currentQ.correct ? (
+                            <>
+                              Sahi jawab! 🎉
+                            </>
+                          ) : (
+                            `Galat — Sahi hai: ${currentQ.correct}`
+                          )}
                         </span>
                       </div>
                       <p className="font-body text-sm text-foreground">{currentQ.explanation}</p>
                     </motion.div>
                   )}
-                </CardContent>
-              </Card>
+      </CardContent>
+    </Card>
 
-              {/* Navigation */}
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="outline"
-                  onClick={() => { setCurrentIdx((p) => Math.max(0, p - 1)); setShowExplanation(false); }}
-                  disabled={currentIdx === 0}
-                  className="font-display"
-                >
-                  ← Peeche
-                </Button>
-                <span className="flex-1 text-center font-display text-sm text-muted-foreground">
-                  {currentIdx + 1} / {questions.length}
-                </span>
-                {currentIdx < questions.length - 1 ? (
-                  <Button
-                    onClick={() => { setCurrentIdx((p) => p + 1); setShowExplanation(false); }}
-                    className="gradient-hero text-primary-foreground font-display"
-                  >
-                    Aage →
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => setQuizDone(true)}
-                    className="gradient-hero text-primary-foreground font-display"
-                    disabled={Object.keys(userAnswers).length < questions.length}
-                  >
-                    Submit <span aria-hidden='true'>🏁</span>
-                  </Button>
-                )}
-              </div>
-            </motion.div>
-          )}
+              {/* Navigation */ }
+  <div className="flex items-center gap-3">
+    <Button
+      variant="outline"
+      onClick={() => { setCurrentIdx((p) => Math.max(0, p - 1)); setShowExplanation(false); }}
+      disabled={currentIdx === 0}
+      className="font-display"
+    >
+      ← Peeche
+    </Button>
+    <span className="flex-1 text-center font-display text-sm text-muted-foreground">
+      {currentIdx + 1} / {questions.length}
+    </span>
+    {currentIdx < questions.length - 1 ? (
+      <Button
+        onClick={() => { setCurrentIdx((p) => p + 1); setShowExplanation(false); }}
+        className="gradient-hero text-primary-foreground font-display"
+      >
+        Aage →
+      </Button>
+    ) : (
+      <Button
+        onClick={() => setQuizDone(true)}
+        className="gradient-hero text-primary-foreground font-display"
+        disabled={Object.keys(userAnswers).length < questions.length}
+      >
+        Submit 🏁
+      </Button>
+    )}
+  </div>
+            </motion.div >
+          )
+}
 
-          {/* Results Screen */}
-          {quizDone && (
+{/* Results Screen */ }
+{
+  quizDone && (
             <motion.div key="results" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="space-y-5">
               <Card className="text-center border-2 border-primary/30">
                 <CardContent className="pt-8 pb-6">
@@ -337,7 +364,19 @@ export default function PracticeQuiz() {
                     <span className="font-display font-bold text-3xl text-primary-foreground">{score}/{questions.length}</span>
                   </div>
                   <h2 className="font-display font-bold text-2xl text-foreground mb-1">
-                    {score === questions.length ? "Perfect! <span aria-hidden='true'>🎉</span>" : score >= questions.length * 0.7 ? "Bahut accha! <span aria-hidden='true'>👍</span>" : "Practice karo! <span aria-hidden='true'>💪</span>"}
+                    {score === questions.length ? (
+                      <>
+                        Perfect! 🎉
+                      </>
+                    ) : score >= questions.length * 0.7 ? (
+                      <>
+                        Bahut accha! 👍
+                      </>
+                    ) : (
+                      <>
+                        Practice karo! 💪
+                      </>
+                    )}
                   </h2>
                   <p className="text-muted-foreground font-body">
                     {score} sahi jawab out of {questions.length}
@@ -354,7 +393,7 @@ export default function PracticeQuiz() {
                     <div>
                       <p className="font-body text-sm text-foreground font-semibold">{q.question.slice(0, 80)}...</p>
                       {userAnswers[i] !== q.correct && (
-                        <p className="font-body text-xs text-green-700 dark:text-green-400 mt-0.5"><span aria-hidden="true">✓</span> Sahi: {q.correct}</p>
+                        <p className="font-body text-xs text-green-700 dark:text-green-400 mt-0.5">✓ Sahi: {q.correct}</p>
                       )}
                     </div>
                   </div>
@@ -372,10 +411,12 @@ export default function PracticeQuiz() {
                   <Brain className="w-4 h-4 mr-1" /> Dobara khelo
                 </Button>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </div>
+            </motion.div >
+          )
+}
+        </AnimatePresence >
+      </div >
+    </div >
   );
 }
+

@@ -70,12 +70,12 @@ const ResultDescription = ({ result }: { result: StreamResult }) => {
           className="mb-4 rounded-xl border border-red-500/50 bg-red-500/10 px-4 py-3 text-center text-sm font-display font-semibold text-red-800 dark:text-red-200 animate-pulse"
           role="status"
         >
-          <span aria-hidden="true">⚡</span> Time-sensitive: Abhi action lena zaroori hai!
+          ⚡ Time-sensitive: Abhi action lena zaroori hai!
         </div>
       )}
 
       <h2 className="font-display font-bold text-xl text-foreground mb-3">
-        Mentor jaisi baat — tumhari profile ke hisaab se <span aria-hidden="true">💬</span>
+        Mentor jaisi baat — tumhari profile ke hisaab se 💬
       </h2>
 
       <div className="mb-4 rounded-xl bg-muted/30 border border-border/60 p-4">
@@ -83,7 +83,7 @@ const ResultDescription = ({ result }: { result: StreamResult }) => {
       </div>
 
       <h3 className="font-display font-bold text-lg text-foreground mb-2">
-        Aapke Liye Ye Kyun Fit Lagta Hai? <span aria-hidden="true">🎯</span>
+        Aapke Liye Ye Kyun Fit Lagta Hai? 🎯
       </h3>
 
       <div className="mb-4 rounded-xl bg-background/80 border border-border/60 p-4">
@@ -101,7 +101,7 @@ const ResultDescription = ({ result }: { result: StreamResult }) => {
       {alternatePathMessage?.trim() && (
         <div className="mb-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950/20 p-4 rounded-r-xl">
           <h3 className="font-display font-bold text-sm text-blue-950 dark:text-blue-100 mb-2">
-            Alternate Path Available <span aria-hidden="true">🛤️</span>
+            Alternate Path Available 🛤️
           </h3>
           <p className="font-body text-sm leading-relaxed whitespace-pre-line text-blue-950 dark:text-blue-100">
             {alternatePathMessage.trim()}
@@ -112,7 +112,7 @@ const ResultDescription = ({ result }: { result: StreamResult }) => {
       {studyEarningMessage?.trim() && (
         <div className="mb-4 border-l-4 border-green-500 bg-green-50 dark:bg-green-950/20 p-4 rounded-r-xl">
           <h3 className="font-display font-bold text-sm text-green-950 dark:text-green-100 mb-2">
-            Padhai ke Saath Kamaai <span aria-hidden="true">💰</span>
+            Padhai ke Saath Kamaai 💰
           </h3>
           <p className="font-body text-sm leading-relaxed whitespace-pre-line text-green-950 dark:text-green-100">
             {studyEarningMessage.trim()}
@@ -136,3 +136,4 @@ const ResultDescription = ({ result }: { result: StreamResult }) => {
 };
 
 export default ResultDescription;
+

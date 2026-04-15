@@ -33,7 +33,7 @@ const AdminReplySection = ({ message, onReplySent }: AdminReplySectionProps) => 
     if (error) {
       toast.error("Reply save nahi ho payi");
     } else {
-      toast.success("Reply saved! <span aria-hidden='true'>✅</span>");
+      toast.success("Reply saved! ✅");
       onReplySent(message.id, replyText.trim());
       setShowReply(false);
     }
@@ -44,7 +44,7 @@ const AdminReplySection = ({ message, onReplySent }: AdminReplySectionProps) => 
     return (
       <div className="mt-3 p-3 rounded-lg bg-green-500/5 border border-green-500/20">
         <p className="text-xs font-display font-semibold text-green-700 dark:text-green-400 mb-1">
-          <span aria-hidden='true'>✅</span> Admin Reply bhej di gayi:
+          ✅ Admin Reply bhej di gayi:
         </p>
         <p className="text-sm text-foreground/80 font-body">{message.admin_reply}</p>
         <p className="text-xs text-muted-foreground mt-1">
@@ -54,7 +54,7 @@ const AdminReplySection = ({ message, onReplySent }: AdminReplySectionProps) => 
           onClick={() => { setReplyText(message.admin_reply || ""); setShowReply(true); }}
           className="text-xs text-primary font-display font-semibold mt-2 hover:underline"
         >
-          <span aria-hidden='true'>✏️</span> Edit Reply
+          ✏️ Edit Reply
         </button>
       </div>
     );
@@ -85,7 +85,7 @@ const AdminReplySection = ({ message, onReplySent }: AdminReplySectionProps) => 
               disabled={sending || !replyText.trim()}
               className="text-xs font-display font-semibold px-4 py-2 rounded-lg gradient-hero text-primary-foreground hover:opacity-90 disabled:opacity-50 flex items-center gap-1"
             >
-              {sending ? "Bhej rahe hain..." : "<span aria-hidden='true'>✈️</span> Reply Save Karo"}
+              {sending ? "Bhej rahe hain..." : "✈️ Reply Save Karo"}
             </button>
             <button
               onClick={() => setShowReply(false)}
@@ -96,9 +96,11 @@ const AdminReplySection = ({ message, onReplySent }: AdminReplySectionProps) => 
           </div>
           <p className="text-xs text-muted-foreground">{replyText.length}/500</p>
         </div>
-      )}
-    </div>
+  )
+}
+    </div >
   );
 };
 
 export default AdminReplySection;
+

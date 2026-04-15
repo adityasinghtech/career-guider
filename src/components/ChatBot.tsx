@@ -21,12 +21,12 @@ function getQuizProfile() {
 }
 
 function getStreamEmoji(stream: string) {
-  if (!stream) return "<span aria-hidden='true'>🎯</span>";
+  if (!stream) return "🎯";
   const s = stream.toLowerCase();
-  if (s === "science") return "<span aria-hidden='true'>🔬</span>";
-  if (s === "commerce") return "<span aria-hidden='true'>📈</span>";
-  if (s === "arts") return "<span aria-hidden='true'>🎨</span>";
-  return "<span aria-hidden='true'>🎯</span>";
+  if (s === "science") return "🔬";
+  if (s === "commerce") return "📈";
+  if (s === "arts") return "🎨";
+  return "🎯";
 }
 
 // ─────────────────────────────────────────────
@@ -37,7 +37,7 @@ function buildInitialMessage(profile: any): Message {
     return {
       role: "assistant",
       content:
-        "Namaste! <span aria-hidden='true'>👋</span> Main **PathFinder AI** hoon — aapka career guidance assistant!\n\nStream, colleges, scholarships, exams — kuch bhi poochhein! <span aria-hidden='true'>🎯</span>\n\n<span aria-hidden='true'>💡</span> *Tip: Pehle quiz dein toh main aapko personalized advice de sakta hoon!*",
+        "Namaste! 👋 Main **PathFinder AI** hoon — aapka career guidance assistant!\n\nStream, colleges, scholarships, exams — kuch bhi poochhein! 🎯\n\n💡 *Tip: Pehle quiz dein toh main aapko personalized advice de sakta hoon!*",
     };
   }
 
@@ -49,11 +49,11 @@ function buildInitialMessage(profile: any): Message {
 
   let confidenceMsg = "";
   if (confidence > 70) {
-    confidenceMsg = `Aapka **${stream} stream** bilkul clear hai — ${confidence}% match! <span aria-hidden='true'>💪</span>`;
+    confidenceMsg = `Aapka **${stream} stream** bilkul clear hai — ${confidence}% match! 💪`;
   } else if (confidence > 50) {
     confidenceMsg = `**${stream} stream** aapke liye best fit hai — ${confidence}% match! Thoda aur explore karein.`;
   } else {
-    confidenceMsg = `Quiz se pata chala ki aap ek **${personality}** hain — multiple streams explore karo! <span aria-hidden='true'>🌟</span>`;
+    confidenceMsg = `Quiz se pata chala ki aap ek **${personality}** hain — multiple streams explore karo! 🌟`;
   }
 
   if (profile.marksPercent) {
@@ -64,12 +64,12 @@ function buildInitialMessage(profile: any): Message {
   }
 
   if (profile.budget === "low") {
-    confidenceMsg += "\n<span aria-hidden='true'>💡</span> Budget constraint note kiya — government colleges aur scholarships pe focus karunga.";
+    confidenceMsg += "\n💡 Budget constraint note kiya — government colleges aur scholarships pe focus karunga.";
   }
 
   return {
     role: "assistant",
-    content: `Namaste! <span aria-hidden='true'>👋</span> Maine aapka quiz result dekh liya! ${emoji}\n\n${confidenceMsg}\n\nAb seedha poochhein:\n- <span aria-hidden='true'>🎓</span> Kaunse colleges best hain?\n- <span aria-hidden='true'>📝</span> Kaunse exams dene chahiye?\n- <span aria-hidden='true'>💰</span> Scholarships kaise milegi?\n- <span aria-hidden='true'>🗺️</span> Career roadmap kya hoga?\n\nKuch bhi poochhein — main aapke **${stream} stream** ke hisaab se specifically bataunga! <span aria-hidden='true'>🚀</span>`,
+    content: `Namaste! 👋 Maine aapka quiz result dekh liya! ${emoji}\n\n${confidenceMsg}\n\nAb seedha poochhein:\n- 🎓 Kaunse colleges best hain?\n- 📝 Kaunse exams dene chahiye?\n- 💰 Scholarships kaise milegi?\n- 🗺️ Career roadmap kya hoga?\n\nKuch bhi poochhein — main aapke **${stream} stream** ke hisaab se specifically bataunga! 🚀`,
   };
 }
 
@@ -138,21 +138,21 @@ function loadChatHistory(profile: any): Message[] {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) return parsed;
     }
-  } catch {}
+  } catch { }
   return [buildInitialMessage(profile)];
 }
 
 function saveChatHistory(messages: Message[]) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-50)));
-  } catch {}
+  } catch { }
 }
 
 // ─────────────────────────────────────────────
 // CHATBOT COMPONENT
 // ─────────────────────────────────────────────
 const ChatBot = () => {
-  // <span aria-hidden="true">✅</span> FIX: Har baar fresh read — stale cache nahi chalega
+  // ✅ FIX: Har baar fresh read — stale cache nahi chalega
   const [isOpen, setIsOpen] = useState(false);
   const [quizProfile, setQuizProfile] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -161,7 +161,7 @@ const ChatBot = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // <span aria-hidden="true">✅</span> FIX: Chatbot khulte waqt fresh profile read karo
+  // ✅ FIX: Chatbot khulte waqt fresh profile read karo
   // Agar stream badal gaya toh chat history bhi reset karo
   useEffect(() => {
     if (!isOpen) return;
@@ -238,7 +238,7 @@ const ChatBot = () => {
         ...prev,
         {
           role: "assistant",
-          content: `Maaf kijiye, kuch gadbad ho gayi <span aria-hidden="true">😔</span>\n\n**${err.message || "Kripya dubara koshish karein."}**`,
+          content: `Maaf kijiye, kuch gadbad ho gayi 😔\n\n**${err.message || "Kripya dubara koshish karein."}**`,
         },
       ]);
     } finally {
@@ -317,9 +317,8 @@ const ChatBot = () => {
               {messages.map((msg, i) => (
                 <div key={i} className={`flex gap-2 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
                   <div
-                    className={`w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center ${
-                      msg.role === "user" ? "bg-primary" : "gradient-hero"
-                    }`}
+                    className={`w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center ${msg.role === "user" ? "bg-primary" : "gradient-hero"
+                      }`}
                   >
                     {msg.role === "user" ? (
                       <User className="w-3 h-3 text-primary-foreground" />
@@ -328,11 +327,10 @@ const ChatBot = () => {
                     )}
                   </div>
                   <div
-                    className={`max-w-[80%] rounded-xl px-3 py-2 text-sm ${
-                      msg.role === "user"
+                    className={`max-w-[80%] rounded-xl px-3 py-2 text-sm ${msg.role === "user"
                         ? "bg-primary text-primary-foreground rounded-tr-sm"
                         : "bg-muted text-foreground rounded-tl-sm"
-                    }`}
+                      }`}
                   >
                     <div className="prose prose-sm dark:prose-invert max-w-none [&>p]:mb-1 [&>ul]:mb-1 [&>ol]:mb-1 [&>h1]:text-sm [&>h2]:text-sm [&>h3]:text-xs">
                       <ReactMarkdown>{msg.content}</ReactMarkdown>
@@ -411,3 +409,4 @@ const ChatBot = () => {
 };
 
 export default ChatBot;
+

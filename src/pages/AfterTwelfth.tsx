@@ -11,7 +11,7 @@ type StreamKey = "science" | "commerce" | "arts";
 const paths = [
   {
     id: "higher-edu",
-    emoji: "<span aria-hidden='true'>🎓</span>",
+    emoji: "🎓",
     title: "Higher Education",
     subtitle: "College / University admission",
     color: "blue",
@@ -39,7 +39,7 @@ const paths = [
   },
   {
     id: "direct-job",
-    emoji: "<span aria-hidden='true'>💼</span>",
+    emoji: "💼",
     title: "Direct Job / Skill Course",
     subtitle: "Earn karo jaldi, experience lo",
     color: "green",
@@ -55,7 +55,7 @@ const paths = [
   },
   {
     id: "gap-year",
-    emoji: "<span aria-hidden='true'>📅</span>",
+    emoji: "📅",
     title: "Gap Year / Coaching",
     subtitle: "Prepare karo, target achieve karo",
     color: "purple",
@@ -85,7 +85,7 @@ export default function AfterTwelfth() {
       if (p.stream && ["science", "commerce", "arts"].includes(p.stream)) {
         setSelectedStream(p.stream as StreamKey);
       }
-    } catch {/* ignore */}
+    } catch {/* ignore */ }
   }, []);
 
   const selectedPathData = paths.find((p) => p.id === selectedPath);
@@ -96,9 +96,9 @@ export default function AfterTwelfth() {
       <div className="pt-24 pb-16 px-4 max-w-5xl mx-auto">
         {/* Hero */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
-          <div className="text-6xl mb-4"><span aria-hidden='true'>🚀</span></div>
+          <div className="text-6xl mb-4">🚀</div>
           <h1 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-2">12th ke Baad Kya?</h1>
-          <p className="text-muted-foreground font-body text-lg">Tum decide karo — hum guide karenge <span aria-hidden='true'>🗺️</span></p>
+          <p className="text-muted-foreground font-body text-lg">Tum decide karo — hum guide karenge 🗺️</p>
         </motion.div>
 
         {/* Path Cards */}
@@ -124,149 +124,154 @@ export default function AfterTwelfth() {
                       className={`w-full font-display font-semibold text-sm ${isActive ? "gradient-hero text-primary-foreground" : "variant-outline"}`}
                       variant={isActive ? "default" : "outline"}
                     >
-                      {isActive ? "Selected <span aria-hidden='true'>✓</span>" : "Details dekho"} <ArrowRight className="w-3.5 h-3.5 ml-1" />
-                    </Button>
-                  </CardContent>
-                </Card>
+                      {isActive ? "Selected ✓" : "Details dekho"} <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                  </Button>
+                </CardContent>
+              </Card>
               </motion.div>
-            );
+        );
           })}
-        </div>
+      </div>
 
-        {/* Detail Panel */}
-        <AnimatePresence mode="wait">
-          {selectedPath && selectedPathData && (
-            <motion.div
-              key={selectedPath}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-            >
-              {/* Higher Education Detail */}
-              {selectedPath === "higher-edu" && (
-                <div className="space-y-5">
-                  {/* Stream Selector */}
-                  <div className="flex gap-2 justify-center">
-                    {(["science", "commerce", "arts"] as StreamKey[]).map((s) => (
-                      <button
-                        key={s}
-                        onClick={() => setSelectedStream(s)}
-                        className={`px-4 py-2 rounded-xl font-display font-semibold text-sm transition-all capitalize ${
-                          selectedStream === s ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
+      {/* Detail Panel */}
+      <AnimatePresence mode="wait">
+        {selectedPath && selectedPathData && (
+          <motion.div
+            key={selectedPath}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Higher Education Detail */}
+            {selectedPath === "higher-edu" && (
+              <div className="space-y-5">
+                {/* Stream Selector */}
+                <div className="flex gap-2 justify-center">
+                  {(["science", "commerce", "arts"] as StreamKey[]).map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => setSelectedStream(s)}
+                      className={`px-4 py-2 rounded-xl font-display font-semibold text-sm transition-all capitalize ${selectedStream === s ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
                         }`}
-                      >
-                        {s === "science" ? "<span aria-hidden='true'>🔬</span>" : s === "commerce" ? "<span aria-hidden='true'>📈</span>" : "<span aria-hidden='true'>🎨</span>"} {s.charAt(0).toUpperCase() + s.slice(1)}
-                      </button>
-                    ))}
-                  </div>
+                    >
+                      {s === "science" ? "🔬" : s === "commerce" ? "📈" : "🎨"} {s.charAt(0).toUpperCase() + s.slice(1)}
+              </button>
+            ))}
+          </div>
 
                   {(() => {
-                    const data = (selectedPathData as any).streams[selectedStream];
-                    return (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Card>
-                          <CardHeader><CardTitle className="font-display text-base"><span aria-hidden="true">📝</span> Exams to Target</CardTitle></CardHeader>
-                          <CardContent>
-                            <div className="flex flex-wrap gap-2">
-                              {data.exams.map((e: string) => (
-                                <Badge key={e} variant="secondary" className="font-body">{e}</Badge>
-                              ))}
-                            </div>
-                          </CardContent>
-                        </Card>
-                        <Card>
-                          <CardHeader><CardTitle className="font-display text-base"><span aria-hidden="true">🏛️</span> Top Colleges</CardTitle></CardHeader>
-                          <CardContent>
-                            <div className="flex flex-wrap gap-2">
-                              {data.colleges.map((c: string) => (
-                                <Badge key={c} className="bg-primary/10 text-primary font-body">{c}</Badge>
-                              ))}
-                            </div>
-                          </CardContent>
-                        </Card>
-                        <Card className="md:col-span-2">
-                          <CardHeader><CardTitle className="font-display text-base"><span aria-hidden="true">📅</span> Timeline</CardTitle></CardHeader>
-                          <CardContent>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                              {data.timeline.map((t: string, i: number) => (
-                                <div key={i} className="flex items-start gap-2">
-                                  <span className="w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
-                                  <span className="font-body text-sm text-foreground">{t}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </CardContent>
-                        </Card>
-                        <Card className="md:col-span-2 bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-700">
-                          <CardContent className="pt-4">
-                            <p className="font-body text-amber-900 dark:text-amber-200"><span aria-hidden="true">💡</span> <strong>Tip:</strong> {data.tip}</p>
-                          </CardContent>
-                        </Card>
+          const data = (selectedPathData as any).streams[selectedStream];
+          return (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Card>
+                <CardHeader><CardTitle className="font-display text-base">📝 Exams to Target</CardTitle></CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {data.exams.map((e: string) => (
+                      <Badge key={e} variant="secondary" className="font-body">{e}</Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader><CardTitle className="font-display text-base">🏛️ Top Colleges</CardTitle></CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {data.colleges.map((c: string) => (
+                      <Badge key={c} className="bg-primary/10 text-primary font-body">{c}</Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="md:col-span-2">
+                <CardHeader><CardTitle className="font-display text-base">📅 Timeline</CardTitle></CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {data.timeline.map((t: string, i: number) => (
+                      <div key={i} className="flex items-start gap-2">
+                        <span className="w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
+                        <span className="font-body text-sm text-foreground">{t}</span>
                       </div>
-                    );
-                  })()}
-                </div>
-              )}
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="md:col-span-2 bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-700">
+                <CardContent className="pt-4">
+                  <p className="font-body text-amber-900 dark:text-amber-200">💡 <strong>Tip:</strong> {data.tip}</p>
+                </CardContent>
+              </Card>
+            </div>
+          );
+        })()}
+    </div>
+  )
+}
 
-              {/* Direct Job Detail */}
-              {selectedPath === "direct-job" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {(selectedPathData as any).options.map((opt: any, i: number) => (
-                    <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                      <Card className="h-full border-2 hover:border-green-400 transition-colors">
-                        <CardContent className="pt-5 space-y-2">
-                          <h3 className="font-display font-bold text-foreground">{opt.title}</h3>
-                          <div className="flex gap-2 flex-wrap">
-                            <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 font-body text-xs">
-                              <Clock className="w-3 h-3 mr-1" />{opt.duration}
-                            </Badge>
-                            <Badge className="bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300 font-body text-xs"><span aria-hidden="true">💰</span> {opt.salary}</Badge>
-                          </div>
-                          <p className="font-body text-sm text-muted-foreground">{opt.desc}</p>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
-
-              {/* Gap Year Detail */}
-              {selectedPath === "gap-year" && (
-                <div className="space-y-3">
-                  {(selectedPathData as any).options.map((opt: any, i: number) => (
-                    <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.07 }}>
-                      <Card className="border-2 hover:border-purple-400 transition-colors">
-                        <CardContent className="pt-4 flex flex-col sm:flex-row sm:items-start gap-3">
-                          <div className="flex-1">
-                            <h3 className="font-display font-bold text-foreground mb-1">{opt.title}</h3>
-                            <p className="font-body text-sm text-muted-foreground">{opt.desc}</p>
-                          </div>
-                          <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300 font-body text-xs whitespace-nowrap shrink-0">
-                            <span aria-hidden="true">📅</span> {opt.action}
-                          </Badge>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Bottom CTA */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="mt-10 text-center">
-          <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30">
-            <CardContent className="pt-6">
-              <BookOpen className="w-8 h-8 text-primary mx-auto mb-3" />
-              <h3 className="font-display font-bold text-xl text-foreground mb-2">Aur guidance chahiye?</h3>
-              <p className="text-muted-foreground font-body mb-4">AI chatbot se apne specific questions poochho — personalized answers milenge!</p>
-              <p className="text-muted-foreground font-body text-sm"><span aria-hidden="true">👇</span> Neeche chatbot ka icon hai — click karo!</p>
+{/* Direct Job Detail */ }
+{
+  selectedPath === "direct-job" && (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {(selectedPathData as any).options.map((opt: any, i: number) => (
+        <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+          <Card className="h-full border-2 hover:border-green-400 transition-colors">
+            <CardContent className="pt-5 space-y-2">
+              <h3 className="font-display font-bold text-foreground">{opt.title}</h3>
+              <div className="flex gap-2 flex-wrap">
+                <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 font-body text-xs">
+                  <Clock className="w-3 h-3 mr-1" />{opt.duration}
+                </Badge>
+                <Badge className="bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300 font-body text-xs">💰 {opt.salary}</Badge>
+              </div>
+              <p className="font-body text-sm text-muted-foreground">{opt.desc}</p>
             </CardContent>
           </Card>
         </motion.div>
-      </div>
+      ))}
     </div>
+  )
+}
+
+{/* Gap Year Detail */ }
+{
+  selectedPath === "gap-year" && (
+    <div className="space-y-3">
+      {(selectedPathData as any).options.map((opt: any, i: number) => (
+        <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.07 }}>
+          <Card className="border-2 hover:border-purple-400 transition-colors">
+            <CardContent className="pt-4 flex flex-col sm:flex-row sm:items-start gap-3">
+              <div className="flex-1">
+                <h3 className="font-display font-bold text-foreground mb-1">{opt.title}</h3>
+                <p className="font-body text-sm text-muted-foreground">{opt.desc}</p>
+              </div>
+              <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300 font-body text-xs whitespace-nowrap shrink-0">
+                📅 {opt.action}
+              </Badge>
+            </CardContent>
+          </Card>
+        </motion.div>
+      ))}
+    </div>
+  )
+}
+            </motion.div >
+          )}
+        </AnimatePresence >
+
+  {/* Bottom CTA */ }
+  < motion.div initial = {{ opacity: 0 }} animate = {{ opacity: 1 }} transition = {{ delay: 0.4 }} className = "mt-10 text-center" >
+    <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30">
+      <CardContent className="pt-6">
+        <BookOpen className="w-8 h-8 text-primary mx-auto mb-3" />
+        <h3 className="font-display font-bold text-xl text-foreground mb-2">Aur guidance chahiye?</h3>
+        <p className="text-muted-foreground font-body mb-4">AI chatbot se apne specific questions poochho — personalized answers milenge!</p>
+        <p className="text-muted-foreground font-body text-sm">👇 Neeche chatbot ka icon hai — click karo!</p>
+      </CardContent>
+    </Card>
+        </motion.div >
+      </div >
+    </div >
   );
 }
+

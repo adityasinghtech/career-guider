@@ -62,21 +62,21 @@ const AdminSetup = () => {
 
     if (error) {
       setRedeemStatus("error");
-      setRedeemMessage("Galat code hai ya already use ho chuka hai <span aria-hidden='true'>❌</span>");
+      setRedeemMessage("Galat code hai ya already use ho chuka hai ❌");
       return;
     }
 
     const payload = data as { ok?: boolean; already_admin?: boolean } | null;
     if (!payload?.ok) {
       setRedeemStatus("error");
-      setRedeemMessage("Galat code hai ya already use ho chuka hai <span aria-hidden='true'>❌</span>");
+      setRedeemMessage("Galat code hai ya already use ho chuka hai ❌");
       return;
     }
 
     await refreshRole();
     setRedeemStatus("success");
     setRedeemMessage(
-      payload.already_admin ? "Aap pehle se admin hain! Dashboard pe jao <span aria-hidden='true'>✅</span>" : "Admin ban gaye! Dashboard pe jao <span aria-hidden='true'>✅</span>",
+      payload.already_admin ? "Aap pehle se admin hain! Dashboard pe jao ✅" : "Admin ban gaye! Dashboard pe jao ✅",
     );
   };
 
@@ -112,7 +112,7 @@ const AdminSetup = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="text-4xl mb-3 animate-bounce"><span aria-hidden='true'>⏳</span></div>
+          <div className="text-4xl mb-3 animate-bounce">⏳</div>
           <p className="text-muted-foreground font-display">Loading...</p>
         </div>
       </div>
@@ -133,7 +133,7 @@ const AdminSetup = () => {
         className="max-w-lg w-full bg-card border-2 border-border rounded-2xl p-8 shadow-card"
       >
         <header className="text-center mb-8">
-          <div className="text-3xl mb-2"><span aria-hidden='true'>🔒</span></div>
+          <div className="text-3xl mb-2">🔒</div>
           <h1 className="font-display font-semibold text-lg text-muted-foreground">Restricted Access</h1>
         </header>
 
@@ -141,18 +141,16 @@ const AdminSetup = () => {
           <button
             type="button"
             onClick={() => setTab("invite")}
-            className={`flex-1 rounded-xl py-3 px-2 text-center font-display text-sm font-semibold transition-opacity ${
-              tab === "invite" ? "gradient-hero text-primary-foreground" : "bg-muted/60 text-muted-foreground hover:opacity-90"
-            }`}
+            className={`flex-1 rounded-xl py-3 px-2 text-center font-display text-sm font-semibold transition-opacity ${tab === "invite" ? "gradient-hero text-primary-foreground" : "bg-muted/60 text-muted-foreground hover:opacity-90"
+              }`}
           >
             Invite Code Use Karo
           </button>
           <button
             type="button"
             onClick={() => setTab("manage")}
-            className={`flex-1 rounded-xl py-3 px-2 text-center font-display text-sm font-semibold transition-opacity ${
-              tab === "manage" ? "gradient-hero text-primary-foreground" : "bg-muted/60 text-muted-foreground hover:opacity-90"
-            }`}
+            className={`flex-1 rounded-xl py-3 px-2 text-center font-display text-sm font-semibold transition-opacity ${tab === "manage" ? "gradient-hero text-primary-foreground" : "bg-muted/60 text-muted-foreground hover:opacity-90"
+              }`}
           >
             Codes Manage Karo
           </button>
@@ -161,7 +159,7 @@ const AdminSetup = () => {
         {tab === "invite" && (
           <div className="space-y-5">
             <div>
-              <h2 className="font-display font-bold text-2xl text-foreground">Admin Access Lo <span aria-hidden='true'>🛡️</span></h2>
+              <h2 className="font-display font-bold text-2xl text-foreground">Admin Access Lo 🛡️</h2>
               <p className="text-muted-foreground font-body text-sm mt-2">
                 Agar tumhare paas invite code hai toh yahan daalo
               </p>
@@ -225,7 +223,7 @@ const AdminSetup = () => {
             )}
 
             <p className="text-xs text-muted-foreground font-body text-center pt-1">
-              Yeh page sirf authorized log ke liye hai <span aria-hidden='true'>🔒</span>
+              Yeh page sirf authorized log ke liye hai 🔒
             </p>
           </div>
         )}
@@ -290,9 +288,8 @@ const AdminSetup = () => {
                                 <td className="px-3 py-2.5 font-mono text-foreground whitespace-nowrap">{row.code}</td>
                                 <td className="px-3 py-2.5">
                                   <span
-                                    className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-display font-semibold ${
-                                      active ? "bg-green-600/20 text-green-700 dark:text-green-400" : "bg-muted text-muted-foreground"
-                                    }`}
+                                    className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-display font-semibold ${active ? "bg-green-600/20 text-green-700 dark:text-green-400" : "bg-muted text-muted-foreground"
+                                      }`}
                                   >
                                     {active ? "Active" : "Used"}
                                   </span>
@@ -327,3 +324,4 @@ const AdminSetup = () => {
 };
 
 export default AdminSetup;
+

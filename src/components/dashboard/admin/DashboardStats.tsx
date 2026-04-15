@@ -60,7 +60,7 @@ const DashboardStats = ({
         </div>
         <p className="text-muted-foreground text-sm font-body">Active Streams</p>
         <p className="text-xs text-muted-foreground mt-1 font-body">
-          {Object.keys(streamCounts).length > 0 ? "Trending <span aria-hidden='true'>📈</span>" : "No streams yet"}
+          {Object.keys(streamCounts).length > 0 ? "Trending 📈" : "No streams yet"}
         </p>
       </motion.div>
 
@@ -76,8 +76,9 @@ const DashboardStats = ({
           +{analyticsExtra.messagesToday} aaj
         </p>
       </motion.div>
-    </div>
+    </div >
   );
 };
 
 export default DashboardStats;
+

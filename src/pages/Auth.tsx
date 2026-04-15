@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Emoji, ScreenReaderOnly } from "@/components/a11y/A11yUtils";
 
 const OAUTH_PENDING_KEY = "pf_oauth_pending";
 
@@ -29,20 +30,24 @@ const Auth = () => {
     const oauthPending = sessionStorage.getItem(OAUTH_PENDING_KEY) === "1";
 
     if (oauthPending) {
+      console.info("[Auth] OAuth login detected, session found:", !!user);
       sessionStorage.removeItem(OAUTH_PENDING_KEY);
 
       (async () => {
-        const { data: rows } = await supabase
+        console.log("[Auth] Fetching user role for:", user.id);
+        const { data: rows, error: roleError } = await supabase
           .from("user_roles")
           .select("role")
           .eq("user_id", user.id);
 
+        if (roleError) console.error("[Auth] Role fetch error:", roleError);
+
         const isAdmin = rows?.some((r) => r.role === "admin");
 
         if (isAdmin) {
-          toast.success("Admin login safal! <span aria-hidden='true'>🛡️</span>");
+          toast.success("Admin login safal! 🛡️");
         } else {
-          toast.success("Login safal! <span aria-hidden='true'>🎉</span>");
+          toast.success("Login safal! 🎉");
         }
 
         navigate(redirectTo, { replace: true });
@@ -62,12 +67,12 @@ const Auth = () => {
       if (cancelled) return;
       const isAdmin = rows?.some((r) => r.role === "admin");
       if (isAdmin) {
-        toast.success("Admin login safal! <span aria-hidden='true'>🛡️</span> Admin dashboard khul raha hai...");
+        toast.success("Admin login safal! 🛡️ Admin dashboard khul raha hai...");
         setShowAdminLoginSuccess(true);
         await new Promise((r) => setTimeout(r, 2000));
         if (!cancelled) navigate(redirectTo, { replace: true });
       } else {
-        toast.success("Login safal! Swagat hai! <span aria-hidden='true'>🎉</span>");
+        toast.success("Login safal! Swagat hai! 🎉");
         navigate(redirectTo, { replace: true });
       }
     })();
@@ -107,14 +112,14 @@ const Auth = () => {
       const isAdmin = rows?.some((r) => r.role === "admin");
 
       if (isAdmin) {
-        toast.success("Admin login safal! <span aria-hidden='true'>🛡️</span> Admin dashboard khul raha hai...");
+        toast.success("Admin login safal! 🛡️ Admin dashboard khul raha hai...");
         setShowAdminLoginSuccess(true);
         setLoading(false);
         setTimeout(() => navigate(redirectTo), 2000);
         return;
       }
 
-      toast.success("Login safal! Swagat hai! <span aria-hidden='true'>🎉</span>");
+      toast.success("Login safal! Swagat hai! 🎉");
       navigate(redirectTo);
       setLoading(false);
       return;
@@ -132,22 +137,32 @@ const Auth = () => {
       handledByFormRef.current = false;
       toast.error(error.message || "Signup nahi ho paaya");
     } else {
-      toast.success("Account ban gaya! Aapka swagat hai! <span aria-hidden='true'>🎉</span>");
+      toast.success("Account ban gaya! Aapka swagat hai! 🎉");
       navigate(redirectTo);
     }
     setLoading(false);
   };
 
   const handleGoogleLogin = async () => {
+    console.info("[Auth] Starting Google OAuth flow...");
     setGoogleLoading(true);
     sessionStorage.setItem(OAUTH_PENDING_KEY, "1");
+    
+    const loginRedirect = `${window.location.origin}/auth?redirect=${encodeURIComponent(redirectTo)}`;
+    console.log("[Auth] OAuth Redirect URI:", loginRedirect);
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth?redirect=${encodeURIComponent(redirectTo)}`,
+        redirectTo: loginRedirect,
+        queryParams: {
+          prompt: 'select_account',
+          access_type: 'offline',
+        }
       },
     });
     if (error) {
+      console.error("[Auth] Google Login Error:", error);
       sessionStorage.removeItem(OAUTH_PENDING_KEY);
       toast.error(error.message);
       setGoogleLoading(false);
@@ -167,30 +182,32 @@ const Auth = () => {
           className="bg-card rounded-2xl border-2 border-border p-8 shadow-card"
         >
           <div className="text-center mb-8">
-            <div className="text-4xl mb-3">{isLogin ? "<span aria-hidden='true'>👋</span>" : "<span aria-hidden='true'>🚀</span>"}</div>
-            <h1 className="font-display font-bold text-2xl text-foreground">
-              {isLogin ? "Swagat Hai!" : "Account Banayein"}
-            </h1>
-            <p className="text-muted-foreground font-body text-sm mt-1">
-              {isLogin ? "Login karke apna dashboard dekhein" : "Free mein signup karein aur career guide paayein"}
-            </p>
-          </div>
-
-          {showAdminLoginSuccess ? (
-            <div className="p-4 rounded-xl border-2 border-green-600/50 bg-green-500/10 flex flex-col items-center gap-3 text-center">
-              <span className="inline-flex items-center rounded-full bg-green-600 text-white px-3 py-1.5 text-xs font-display font-bold uppercase tracking-wide shadow-sm">
-                Admin Account
-              </span>
-              <p className="text-sm text-muted-foreground font-body">Thodi der mein dashboard khul jayega...</p>
-              <Link
-                to={redirectTo}
-                className="text-sm text-primary font-display font-semibold hover:underline"
-              >
-                Dashboard kholo →
-              </Link>
+            <div className="text-4xl mb-3" aria-hidden="true">
+              {isLogin ? <Emoji symbol="👋" label="waving hand" /> : <Emoji symbol="🚀" label="rocket" />}
             </div>
-          ) : (
-            <>
+          <h1 className="font-display font-bold text-2xl text-foreground">
+            {isLogin ? "Swagat Hai!" : "Account Banayein"}
+          </h1>
+          <p className="text-muted-foreground font-body text-sm mt-1">
+            {isLogin ? "Login karke apna dashboard dekhein" : "Free mein signup karein aur career guide paayein"}
+          </p>
+      </div>
+
+      {showAdminLoginSuccess ? (
+        <div className="p-4 rounded-xl border-2 border-green-600/50 bg-green-500/10 flex flex-col items-center gap-3 text-center">
+          <span className="inline-flex items-center rounded-full bg-green-600 text-white px-3 py-1.5 text-xs font-display font-bold uppercase tracking-wide shadow-sm" role="status">
+            Admin Account
+          </span>
+          <p className="text-sm text-muted-foreground font-body" aria-live="polite">Thodi der mein dashboard khul jayega...</p>
+          <Link
+            to={redirectTo}
+            className="text-sm text-primary font-display font-semibold hover:underline"
+          >
+            Dashboard kholo →
+          </Link>
+        </div>
+      ) : (
+        <>
           <button
             type="button"
             onClick={handleGoogleLogin}
@@ -225,6 +242,7 @@ const Auth = () => {
               </svg>
             )}
             {isLogin ? "Google se Login Karein" : "Google se Signup Karein"}
+            <ScreenReaderOnly> (Google login external window khulega)</ScreenReaderOnly>
           </button>
 
           <div className="relative my-6">
@@ -240,14 +258,16 @@ const Auth = () => {
             {!isLogin && (
               <div className="relative">
                 <User className="absolute left-3.5 top-3.5 w-4 h-4 text-muted-foreground" />
-                <input
-                  type="text"
-                  placeholder="Aapka naam..."
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className={inputClass}
-                  maxLength={100}
-                />
+                  <input
+                    type="text"
+                    placeholder="Aapka naam..."
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    className={inputClass}
+                    maxLength={100}
+                    aria-label="Aapka poora naam"
+                    required={!isLogin}
+                  />
               </div>
             )}
 
@@ -260,6 +280,7 @@ const Auth = () => {
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 className={inputClass}
                 required
+                aria-label="Email address"
               />
             </div>
 
@@ -273,11 +294,13 @@ const Auth = () => {
                 className={`${inputClass} pr-11`}
                 required
                 minLength={6}
+                aria-label="Password (kam se kam 6 characters)"
               />
               <button
                 type="button"
                 onClick={() => setShowPass(!showPass)}
                 className="absolute right-3.5 top-3.5 text-muted-foreground hover:text-foreground"
+                aria-label={showPass ? "Password chhupao" : "Password dikhao"}
               >
                 {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -288,25 +311,33 @@ const Auth = () => {
               disabled={loading}
               className="w-full flex items-center justify-center gap-2 gradient-hero text-primary-foreground font-display font-bold py-3 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-60"
             >
-              {loading ? "Kripya Rukein... <span aria-hidden='true'>⏳</span>" : isLogin ? "Login Karein" : "Sign Up Karein"}
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </form>
+              {loading ? (
+                <>Kripya Rukein... ⏳</>
+              ) : isLogin ? (
+                "Login Karein"
+              ) : (
+                "Sign Up Karein"
+              )}
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </form>
 
-          <div className="text-center mt-6">
-            <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-primary font-display font-semibold hover:underline"
-            >
-              {isLogin ? "Account nahi hai? Sign Up karein" : "Pehle se account hai? Login karein"}
-            </button>
-          </div>
-            </>
-          )}
-        </motion.div>
+      <div className="text-center mt-6">
+        <button
+          onClick={() => setIsLogin(!isLogin)}
+          className="text-sm text-primary font-display font-semibold hover:underline"
+        >
+          {isLogin ? "Account nahi hai? Sign Up karein" : "Pehle se account hai? Login karein"}
+        </button>
       </div>
-    </div>
+    </>
+  )
+}
+        </motion.div >
+      </div >
+    </div >
   );
 };
 
 export default Auth;
+

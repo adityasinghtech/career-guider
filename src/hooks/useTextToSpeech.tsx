@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 
 interface SpeakOptions {
-  rate?: number;   // 0.5 (slow) to 2 (fast)
-  pitch?: number;  // 0 to 2
-  lang?: string;   // 'hi-IN' ya 'en-IN'
+  rate?: number;
+  pitch?: number;
+  lang?: string;
   onEnd?: () => void;
 }
 
@@ -11,63 +11,106 @@ export function useTextToSpeech() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [supported, setSupported] = useState(false);
   const voicesRef = useRef<SpeechSynthesisVoice[]>([]);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const lastTextRef = useRef<string>("");
 
-  // Browser support check + voices preload
   useEffect(() => {
     if (!('speechSynthesis' in window)) return;
     setSupported(true);
-
     const loadVoices = () => {
-      voicesRef.current = window.speechSynthesis.getVoices();
+      const v = window.speechSynthesis.getVoices();
+      if (v.length > 0) voicesRef.current = v;
     };
-
-    // Voices async load hoti hain — event bhi sunna padta hai
     loadVoices();
     window.speechSynthesis.onvoiceschanged = loadVoices;
-
+    const timer = setInterval(() => {
+      if (voicesRef.current.length === 0) loadVoices();
+      else clearInterval(timer);
+    }, 1000);
     return () => {
       window.speechSynthesis.cancel();
+      clearInterval(timer);
     };
+  }, []);
+
+  const stripEmoji = (text: string): string => {
+    return text.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '').trim();
+  };
+
+  const testSound = useCallback(() => {
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
+      gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+      oscillator.start();
+      setTimeout(() => {
+        oscillator.stop();
+        audioCtx.close();
+      }, 500);
+      console.log("🔊 Beep triggered via Web Audio API");
+    } catch (e) {
+      console.error("🚨 Web Audio API Error:", e);
+    }
   }, []);
 
   const speak = useCallback(
     (text: string, options?: SpeakOptions) => {
-      if (!('speechSynthesis' in window)) return;
+      const cleanText = stripEmoji(text);
+      if (!cleanText || !('speechSynthesis' in window)) return;
 
-      // Pehle sab kuch band karo
+      lastTextRef.current = text;
+      
+      // ✅ PHASE 22: High-Speed & Hindi Focus
+      window.speechSynthesis.resume();
       window.speechSynthesis.cancel();
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = options?.lang || 'hi-IN';
-      utterance.rate = options?.rate ?? 0.9; // Thoda slow — samajh aaye
-      utterance.pitch = options?.pitch ?? 1;
+      // Faster delay (50ms) to ensure queue clearing
+      setTimeout(() => {
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        const voices = voicesRef.current;
+        
+        // Priority: Local Hindi -> ANY Hindi -> ANY Local -> Default
+        const selectedVoice = 
+          voices.find((v) => v.lang.startsWith('hi') && v.localService) ||
+          voices.find((v) => v.lang.startsWith('hi')) ||
+          voices.find((v) => v.localService) ||
+          voices[0];
+        
+        if (selectedVoice) {
+          utterance.voice = selectedVoice;
+          utterance.lang = selectedVoice.lang;
+        }
 
-      // Hindi voice prefer karo, fallback to en-IN
-      const voices = voicesRef.current;
-      const hindiVoice =
-        voices.find((v) => v.lang === 'hi-IN') ||
-        voices.find((v) => v.lang.startsWith('hi')) ||
-        voices.find((v) => v.lang === 'en-IN') ||
-        null;
+        utterance.rate = 0.95; 
+        utterance.pitch = 1;
+        utterance.onstart = () => setIsSpeaking(true);
+        utterance.onend = () => {
+          setIsSpeaking(false);
+          options?.onEnd?.();
+        };
+        utterance.onerror = () => setIsSpeaking(false);
 
-      if (hindiVoice) utterance.voice = hindiVoice;
-
-      utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => {
-        setIsSpeaking(false);
-        options?.onEnd?.();
-      };
-      utterance.onerror = () => setIsSpeaking(false);
-
-      window.speechSynthesis.speak(utterance);
+        window.speechSynthesis.speak(utterance);
+      }, 50);
     },
     []
   );
 
+  const initVoice = useCallback((initialText?: string) => {
+    testSound(); // Always beep to confirm hardware and context unlock
+    if (initialText) speak(initialText);
+  }, [testSound, speak]);
+
   const stop = useCallback(() => {
     window.speechSynthesis.cancel();
+    if (audioRef.current) audioRef.current.pause();
     setIsSpeaking(false);
   }, []);
 
-  return { speak, stop, isSpeaking, supported };
+  return { speak, stop, initVoice, isSpeaking, supported, voiceCount: voicesRef.current.length, testSound };
 }
