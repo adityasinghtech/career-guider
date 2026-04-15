@@ -235,7 +235,7 @@ export default function DeepAnalysis() {
                           profile.stream === s.toLowerCase() ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
                         }`}
                       >
-                        {s === "Science" ? "<span aria-hidden="true">🔬</span>" : s === "Commerce" ? "<span aria-hidden="true">📈</span>" : "<span aria-hidden="true">🎨</span>"} {s}
+                        {s === "Science" ? "<span aria-hidden='true'>🔬</span>" : s === "Commerce" ? "<span aria-hidden='true'>📈</span>" : "<span aria-hidden='true'>🎨</span>"} {s}
                       </button>
                     ))}
                   </div>
@@ -276,7 +276,7 @@ export default function DeepAnalysis() {
                             profile.personality === p ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
                           }`}
                         >
-                          {p === "analytical" ? "<span aria-hidden="true">🔍</span>" : p === "creative" ? "<span aria-hidden="true">🎨</span>" : p === "practical" ? "<span aria-hidden="true">🔧</span>" : "<span aria-hidden="true">⚖️</span>"} {p}
+                          {p === "analytical" ? "<span aria-hidden='true'>🔍</span>" : p === "creative" ? "<span aria-hidden='true'>🎨</span>" : p === "practical" ? "<span aria-hidden='true'>🔧</span>" : "<span aria-hidden='true'>⚖️</span>"} {p}
                         </button>
                       ))}
                     </div>
@@ -295,7 +295,7 @@ export default function DeepAnalysis() {
                             profile.budget === b ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
                           }`}
                         >
-                          {b === "low" ? "<span aria-hidden="true">🏛️</span> Sarkari prefer" : b === "medium" ? "<span aria-hidden="true">📚</span> Thoda invest" : "<span aria-hidden="true">💎</span> Premium"} 
+                          {b === "low" ? "<span aria-hidden='true'>🏛️</span> Sarkari prefer" : b === "medium" ? "<span aria-hidden='true'>📚</span> Thoda invest" : "<span aria-hidden='true'>💎</span> Premium"} 
                         </button>
                       ))}
                     </div>
@@ -314,7 +314,7 @@ export default function DeepAnalysis() {
                             profile.location === l ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
                           }`}
                         >
-                          {l === "metro" ? "<span aria-hidden="true">🏙️</span> Metro" : l === "tier2" ? "<span aria-hidden="true">🌆</span> Tier 2" : l === "tier3" ? "<span aria-hidden="true">🏘️</span> Tier 3" : "<span aria-hidden="true">🌾</span> Rural"}
+                          {l === "metro" ? "<span aria-hidden='true'>🏙️</span> Metro" : l === "tier2" ? "<span aria-hidden='true'>🌆</span> Tier 2" : l === "tier3" ? "<span aria-hidden='true'>🏘️</span> Tier 3" : "<span aria-hidden='true'>🌾</span> Rural"}
                         </button>
                       ))}
                     </div>
@@ -330,8 +330,8 @@ export default function DeepAnalysis() {
                 className="w-full gradient-hero text-primary-foreground font-display font-bold text-lg py-6 rounded-xl hover:opacity-90 transition-all disabled:opacity-60"
               >
                 {loading ? (
-                  <span className="flex items-center gap-2"><Loader2 className="w-5 h-5 animate-spin" /> AI analysis kar raha hai... thoda wait karo <span aria-hidden="true">⏳</span></span>
-                ) : "Deep Analysis Karo <span aria-hidden="true">🚀</span>"}
+                  <span className="flex items-center gap-2"><Loader2 className="w-5 h-5 animate-spin" /> AI analysis kar raha hai... thoda wait karo <span aria-hidden='true'>⏳</span></span>
+                ) : "Deep Analysis Karo <span aria-hidden='true'>🚀</span>"}
               </Button>
             </motion.div>
           ) : (
@@ -457,10 +457,10 @@ export default function DeepAnalysis() {
                   {activeTab === "roadmap" && (
                     <div className="space-y-4">
                       {[
-                        { key: "now", label: "<span aria-hidden="true">🔥</span> Abhi Karo", color: "emerald" },
-                        { key: "year1", label: "<span aria-hidden="true">📅</span> Year 1", color: "blue" },
-                        { key: "year2", label: "<span aria-hidden="true">🎯</span> Year 2", color: "purple" },
-                        { key: "longterm", label: "<span aria-hidden="true">🌟</span> Long Term (5 years)", color: "orange" },
+                        { key: "now", label: "<span aria-hidden='true'>🔥</span> Abhi Karo", color: "emerald" },
+                        { key: "year1", label: "<span aria-hidden='true'>📅</span> Year 1", color: "blue" },
+                        { key: "year2", label: "<span aria-hidden='true'>🎯</span> Year 2", color: "purple" },
+                        { key: "longterm", label: "<span aria-hidden='true'>🌟</span> Long Term (5 years)", color: "orange" },
                       ].map(({ key, label, color }) => (
                         <Card key={key} className={`border-2 border-${color}-300 dark:border-${color}-800 bg-${color}-50 dark:bg-${color}-950/20`}>
                           <CardHeader className="pb-2"><CardTitle className="font-display text-base">{label}</CardTitle></CardHeader>

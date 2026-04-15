@@ -23,11 +23,11 @@ const issueTypeOptions: {
   title: string;
   description: string;
 }[] = [
-  { id: "quiz", title: "<span aria-hidden="true">🎯</span> Quiz Issue", description: "Quiz se related problem" },
-  { id: "login", title: "<span aria-hidden="true">🔐</span> Login Issue", description: "Login ya signup mein dikkat" },
-  { id: "result", title: "<span aria-hidden="true">📊</span> Result Issue", description: "Result ya recommendation se problem" },
-  { id: "career", title: "<span aria-hidden="true">💬</span> Career Guidance", description: "Career advice chahiye" },
-  { id: "other", title: "<span aria-hidden="true">❓</span> Other", description: "Kuch aur" },
+  { id: "quiz", title: "<span aria-hidden='true'>🎯</span> Quiz Issue", description: "Quiz se related problem" },
+  { id: "login", title: "<span aria-hidden='true'>🔐</span> Login Issue", description: "Login ya signup mein dikkat" },
+  { id: "result", title: "<span aria-hidden='true'>📊</span> Result Issue", description: "Result ya recommendation se problem" },
+  { id: "career", title: "<span aria-hidden='true'>💬</span> Career Guidance", description: "Career advice chahiye" },
+  { id: "other", title: "<span aria-hidden='true'>❓</span> Other", description: "Kuch aur" },
 ];
 
 const faqs = [
@@ -67,7 +67,7 @@ const Contact = () => {
 
       if (!withColumn.error) {
         setSubmitted(true);
-        toast.success("Message bhej diya! <span aria-hidden="true">✅</span>", { description: "Hum jald hi reply karenge" });
+        toast.success("Message bhej diya! <span aria-hidden='true'>✅</span>", { description: "Hum jald hi reply karenge" });
         return;
       }
 
@@ -76,7 +76,7 @@ const Contact = () => {
         /issue_type|column|schema|42703|PGRST204/i.test(msg) || withColumn.error.code === "PGRST204";
 
       if (!likelyMissingColumn) {
-        toast.error("Message bhej nahi paaya <span aria-hidden="true">😔</span>", { description: "Kripya dubara koshish karein" });
+        toast.error("Message bhej nahi paaya <span aria-hidden='true'>😔</span>", { description: "Kripya dubara koshish karein" });
         return;
       }
 
@@ -87,12 +87,12 @@ const Contact = () => {
       });
 
       if (fallback.error) {
-        toast.error("Message bhej nahi paaya <span aria-hidden="true">😔</span>", { description: "Kripya dubara koshish karein" });
+        toast.error("Message bhej nahi paaya <span aria-hidden='true'>😔</span>", { description: "Kripya dubara koshish karein" });
         return;
       }
 
       setSubmitted(true);
-      toast.success("Message bhej diya! <span aria-hidden="true">✅</span>", { description: "Hum jald hi reply karenge" });
+      toast.success("Message bhej diya! <span aria-hidden='true'>✅</span>", { description: "Hum jald hi reply karenge" });
     } catch {
       const prefixedMessage = CONTACT_ISSUE_MESSAGE_PREFIX[formData.issueType] + formData.message;
       const fallback = await supabase.from("contact_messages").insert({
@@ -100,11 +100,11 @@ const Contact = () => {
         message: prefixedMessage,
       });
       if (fallback.error) {
-        toast.error("Message bhej nahi paaya <span aria-hidden="true">😔</span>", { description: "Kripya dubara koshish karein" });
+        toast.error("Message bhej nahi paaya <span aria-hidden='true'>😔</span>", { description: "Kripya dubara koshish karein" });
         return;
       }
       setSubmitted(true);
-      toast.success("Message bhej diya! <span aria-hidden="true">✅</span>", { description: "Hum jald hi reply karenge" });
+      toast.success("Message bhej diya! <span aria-hidden='true'>✅</span>", { description: "Hum jald hi reply karenge" });
     }
   };
 
@@ -236,7 +236,7 @@ const Contact = () => {
                             : "bg-muted text-muted-foreground hover:bg-muted/80"
                         }`}
                       >
-                        {type === "student" ? "Student <span aria-hidden="true">👨</span>‍<span aria-hidden="true">🎓</span>" : type === "parent" ? "Parent <span aria-hidden="true">👨</span>‍<span aria-hidden="true">👩</span>‍<span aria-hidden="true">👦</span>" : type === "school" ? "School <span aria-hidden="true">🏫</span>" : "Other"}
+                        {type === "student" ? "Student <span aria-hidden='true'>👨</span>‍<span aria-hidden='true'>🎓</span>" : type === "parent" ? "Parent <span aria-hidden='true'>👨</span>‍<span aria-hidden='true'>👩</span>‍<span aria-hidden='true'>👦</span>" : type === "school" ? "School <span aria-hidden='true'>🏫</span>" : "Other"}
                       </button>
                     ))}
                   </div>

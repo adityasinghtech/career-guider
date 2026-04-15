@@ -25,7 +25,7 @@ export default function VoiceAssistant() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [lastCommand, setLastCommand] = useState('');
-  const { speak, isSpeaking, supported: ttsSupported } = useTextToSpeech();
+  const { speak, stop, isSpeaking, supported: ttsSupported } = useTextToSpeech();
 
   const handleNavigate = useCallback(
     (path: string, announcement: string) => {
@@ -38,8 +38,9 @@ export default function VoiceAssistant() {
   );
 
   const handleHelp = useCallback(() => {
-    setLastCommand('Help bol raha hoon...');
-    speak(HELP_TEXT);
+    const text = HELP_TEXT;
+    setLastCommand(text);
+    speak(text);
   }, [speak]);
 
   const { isListening, transcript, startListening, stopListening, supported: voiceSupported } =
@@ -86,27 +87,50 @@ export default function VoiceAssistant() {
       },
     ]);
 
-  // Keyboard shortcut — Alt + V
+  // Keyboard shortcut
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.altKey && e.key === 'v') {
-        e.preventDefault();
-        if (isListening) {
-          stopListening();
-        } else {
-          startListening();
-          setIsOpen(true);
-        }
+      // Don't trigger if user is typing
+      if (e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement) return;
+
+      // Escape — close
+      if (e.key === 'Escape') {
+        setIsOpen(false);
       }
-      // Alt + H — help
-      if (e.altKey && e.key === 'h') {
-        e.preventDefault();
-        handleHelp();
+
+      if (e.altKey) {
+        if (e.key === 'v') {
+          e.preventDefault();
+          if (isListening) {
+            stopListening();
+          } else {
+            startListening();
+            setIsOpen(true);
+          }
+        }
+        // Alt + H — help
+        if (e.key === 'h') {
+          e.preventDefault();
+          handleHelp();
+        }
+        // Alt + S — stop
+        if (e.key === 's') {
+          e.preventDefault();
+          stop();
+          setLastCommand('Stop kiya gaya.');
+        }
+        // Alt + R — repeat
+        if (e.key === 'r') {
+          e.preventDefault();
+          if (lastCommand) speak(lastCommand);
+          else speak('Maaf kijiye, repeat karne ke liye kuch nahi hai.');
+        }
       }
     };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
-  }, [isListening, startListening, stopListening, handleHelp]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isListening, startListening, stopListening, handleHelp, lastCommand]);
 
   // Clear lastCommand after 3 seconds
   useEffect(() => {

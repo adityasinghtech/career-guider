@@ -109,6 +109,29 @@ const Quiz = () => {
     }
   };
 
+  // Global keyboard shortcuts for Quiz
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      // Ignore if typing in an input/textarea
+      if (e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement) return;
+
+      if (!showForm) {
+        if (e.key === '1') selectOption(0);
+        if (e.key === '2') selectOption(1);
+        if (e.key === '3') selectOption(2);
+        if (e.key === '4') selectOption(3);
+        if (e.key === 'Enter' || e.key === ' ') {
+          if (hasAnswer) goNext();
+        }
+        if (e.key.toLowerCase() === 's') skipQuestion();
+        if (e.key.toLowerCase() === 'r') speak(`Sawaal ${current + 1}: ${question.question}`);
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [current, showForm, hasAnswer]);
+
   // Voice commands
   const { isListening, startListening, stopListening, supported: voiceSupported } = useVoiceControl([
     {
@@ -403,7 +426,11 @@ const Quiz = () => {
                         : "bg-muted text-muted-foreground cursor-not-allowed"
                     }`}
                   >
-                    {current === quizQuestions.length - 1 ? "Lagbhag Ho Gaya! <span aria-hidden="true">✨</span>" : "Aage"}
+                    {current === quizQuestions.length - 1 ? (
+                      <>Lagbhag Ho Gaya! <span aria-hidden="true">✨</span></>
+                    ) : (
+                      "Aage"
+                    )}
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>

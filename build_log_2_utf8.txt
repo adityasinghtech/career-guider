@@ -1,0 +1,78 @@
+﻿
+> vite_react_shadcn_ts@0.0.0 build
+> vite build
+
+[36mvite v5.4.21 [32mbuilding for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 24 modules transformed.
+node.exe : [31mx[39m Build failed 
+in 3.45s
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" "C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpe 
+   cified: ([31mx[39m Build faile  
+  d in 3.45s:String) [], RemoteExc   
+ eption
+    + FullyQualifiedErrorId : Native 
+   CommandError
+ 
+[31merror during build:
+[31m[vite-plugin-pwa:build] [plugin 
+vite-plugin-pwa:build] 
+src/pages/Auth.tsx (43:63): There 
+was an error during the build:
+  Transform failed with 1 error:
+D:/Pathfinder/src/pages/Auth.tsx:43:6
+3: ERROR: Expected ")" but found 
+"true"
+Additionally, handling the error in 
+the 'buildEnd' hook caused the 
+following error:
+  Transform failed with 1 error:
+D:/Pathfinder/src/pages/Auth.tsx:43:6
+3: ERROR: Expected ")" but found 
+"true"[31m
+file: [36mD:/Pathfinder/src/pages/Au
+th.tsx:43:63[31m
+[33m
+[33mExpected ")" but found 
+"true"[33m
+41 |  
+42 |          if (isAdmin) {
+43 |            toast.success("Admin 
+login safal! <span 
+aria-hidden="true">≡ƒ¢í∩╕Å</span>");
+   |                                 
+                                ^
+44 |          } else {
+45 |            toast.success("Login 
+safal! <span 
+aria-hidden="true">≡ƒÄë</span>");
+[31m
+    at getRollupError (file:///D:/Pat
+hfinder/node_modules/rollup/dist/es/s
+hared/parseAst.js:406:41)
+    at file:///D:/Pathfinder/node_mod
+ules/rollup/dist/es/shared/node-entry
+.js:23863:39
+    at 
+process.processTicksAndRejections (no
+de:internal/process/task_queues:103:5
+)
+    at async 
+catchUnfinishedHookActions (file:///D
+:/Pathfinder/node_modules/rollup/dist
+/es/shared/node-entry.js:23321:16)
+    at async rollupInternal (file:///
+D:/Pathfinder/node_modules/rollup/dis
+t/es/shared/node-entry.js:23846:5)
+    at async build (file:///D:/Pathfi
+nder/node_modules/vite/dist/node/chun
+ks/dep-BK3b2jBa.js:65709:14)
+    at async CAC.<anonymous> (file://
+/D:/Pathfinder/node_modules/vite/dist
+/node/cli.js:829:5)[39m

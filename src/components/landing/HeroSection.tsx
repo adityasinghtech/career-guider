@@ -3,17 +3,17 @@ import { motion } from "framer-motion";
 import { Sparkles, Zap, ArrowRight, Rocket } from "lucide-react";
 
 const stats = [
-  { number: "10K+", label: "Students Guided", emoji: "<span aria-hidden="true">🎓</span>" },
-  { number: "500+", label: "Schools Connected", emoji: "<span aria-hidden="true">🏫</span>" },
-  { number: "95%", label: "Accuracy Rate", emoji: "<span aria-hidden="true">🎯</span>" },
-  { number: "3 min", label: "Quiz Duration", emoji: "<span aria-hidden="true">⚡</span>" },
+  { number: "10K+", label: "Students Guided", emoji: "<span aria-hidden='true'>🎓</span>" },
+  { number: "500+", label: "Schools Connected", emoji: "<span aria-hidden='true'>🏫</span>" },
+  { number: "95%", label: "Accuracy Rate", emoji: "<span aria-hidden='true'>🎯</span>" },
+  { number: "3 min", label: "Quiz Duration", emoji: "<span aria-hidden='true'>⚡</span>" },
 ];
 
 const careerBadges = [
-  "AI Engineer <span aria-hidden="true">🤖</span>",
-  "Doctor <span aria-hidden="true">👨</span>‍<span aria-hidden="true">⚕️</span>",
-  "CA ₹50L <span aria-hidden="true">💰</span>",
-  "IIT Topper <span aria-hidden="true">🏆</span>",
+  "AI Engineer <span aria-hidden='true'>🤖</span>",
+  "Doctor <span aria-hidden='true'>👨</span>‍<span aria-hidden='true'>⚕️</span>",
+  "CA ₹50L <span aria-hidden='true'>💰</span>",
+  "IIT Topper <span aria-hidden='true'>🏆</span>",
 ];
 
 const HeroSection = () => (

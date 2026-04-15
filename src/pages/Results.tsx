@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useEffect, useState } from "react";
 import { generateGuidance, profileFromLocalStorage } from "@/utils/guidanceEngine";
 import { motion } from "framer-motion";
 import { Download, RotateCcw, Share2 } from "lucide-react";
@@ -21,6 +21,8 @@ import ResultScholarships from "@/components/results/ResultScholarships";
 import ResultYouTube from "@/components/results/ResultYouTube";
 import ResultFreeCourses from "@/components/results/ResultFreeCourses";
 import CareerPathGraph from "@/components/results/CareerPathGraph";
+import { useTextToSpeech } from "@/hooks/useTextToSpeech";
+import { useVoiceControl } from "@/hooks/useVoiceControl";
 
 const EXPLORE_INTERESTS = [
   {
@@ -60,6 +62,82 @@ const Results = () => {
   const { stream } = useParams<{ stream: string }>();
   const result = streamResults[stream || "science"];
   const reportRef = useRef<HTMLDivElement>(null);
+  const resultHeadingRef = useRef<HTMLHeadingElement>(null);
+  const [statusMessage, setStatusMessage] = useState('');
+
+  const { speak, stop, isSpeaking, supported: ttsSupported } = useTextToSpeech();
+
+  // Focus result heading on mount
+  useEffect(() => {
+    resultHeadingRef.current?.focus();
+  }, []);
+
+  // Auto announcement on result load
+  useEffect(() => {
+    if (result && ttsSupported) {
+      const streamName = result.stream || 'Science';
+      const percentages = quizProfile?.scores || { science: 0, commerce: 0, arts: 0 };
+      const pct = (percentages as any)[streamName.toLowerCase()] || 85; // Fallback for demo
+
+      const announcement = `
+        Badhai ho! Aapka career guidance result aa gaya hai.
+        Aapke liye best stream hai: ${streamName}.
+        Match percentage: ${pct} percent.
+        Ab main aapko career options, colleges, aur roadmap ke baare mein bataunga.
+        Sunne ke liye Alt+V dabao aur kaho "career sunao", "colleges batao", ya "roadmap sunao".
+      `;
+
+      setStatusMessage(announcement);
+      const timer = setTimeout(() => speak(announcement), 1000);
+      return () => clearTimeout(timer);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result, ttsSupported]);
+
+  // Voice commands for results page
+  const { isListening, startListening, stopListening, supported: voiceSupported } = useVoiceControl([
+    {
+      pattern: ['career sunao', 'options', 'kaam', 'career'],
+      action: () => speak(`Career options: ${result?.careers?.join(', ')}`),
+      description: 'Career options sunao',
+    },
+    {
+      pattern: ['colleges batao', 'college', 'kahan padhu'],
+      action: () => speak(`Colleges: ${result?.colleges?.join(', ')}`),
+      description: 'Colleges sunao',
+    },
+    {
+      pattern: ['roadmap sunao', 'rastra', 'map'],
+      action: () => speak(`Roadmap: ${result?.roadmap?.join('. ')}`),
+      description: 'Roadmap sunao',
+    },
+    {
+      pattern: ['scholarships batao', 'scholarship', 'paisa'],
+      action: () => speak(`Scholarships available: ${result?.scholarships?.join(', ')}`),
+      description: 'Scholarships sunao',
+    },
+    {
+      pattern: ['exams', 'pariksha', 'entrence'],
+      action: () => speak(`Main exams: ${result?.examsToPrepare?.join(', ')}`),
+      description: 'Exams sunao',
+    },
+    {
+      pattern: ['PDF download karo', 'download', 'pdf'],
+      action: () => {
+        speak('PDF download ho raha hai.');
+        downloadPDF();
+      },
+      description: 'PDF download karo',
+    },
+    {
+      pattern: ['share karo', 'whatsapp', 'bhejo'],
+      action: () => {
+        speak('Whatsapp share khul raha hai.');
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`🎯 PathFinder Career Report\n\nMera result: ${result?.stream} Stream\nAap bhi apna career path discover karein!\n${window.location.origin}/quiz`)}`, '_blank');
+      },
+      description: 'Share karo',
+    },
+  ]);
 
   const guidanceUrgency = useMemo(() => {
     try {
@@ -210,16 +288,24 @@ const Results = () => {
   };
 
   const show12thPassBanner = selectedClass === "12th Pass";
-
   return (
     <div className="min-h-screen bg-background">
+      {/* Visually hidden live region */}
+      <div
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {statusMessage}
+      </div>
       <Navbar />
 
       <div className="pt-24 pb-16 px-4 max-w-4xl mx-auto">
         {/* Action buttons */}
         <div className="flex gap-3 mb-6 justify-end flex-wrap">
           <a
-            href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`<span aria-hidden="true">🎯</span> PathFinder Career Report\n\nMera result: ${result.stream} Stream ${result.emoji}\n${result.tagline}\n\nAap bhi apna career path discover karein!\n${window.location.origin}/quiz`)}`}
+            href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`🎯 PathFinder Career Report\n\nMera result: ${result.stream} Stream\nAap bhi apna career path discover karein!\n${window.location.origin}/quiz`)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 bg-[hsl(142,70%,45%)] text-primary-foreground font-display font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-opacity"
@@ -267,6 +353,7 @@ const Results = () => {
           )}
 
           <ResultHeroCard result={result} allScores={allScores} />
+          <h2 ref={resultHeadingRef} tabIndex={-1} className="sr-only">Career Result: {result.stream}</h2>
           <ResultDescription result={result} />
           <ResultNextSteps fallbackStream={stream || "science"} />
           <ResultEarningPaths />

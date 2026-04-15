@@ -21,12 +21,12 @@ function getQuizProfile() {
 }
 
 function getStreamEmoji(stream: string) {
-  if (!stream) return "<span aria-hidden="true">🎯</span>";
+  if (!stream) return "<span aria-hidden='true'>🎯</span>";
   const s = stream.toLowerCase();
-  if (s === "science") return "<span aria-hidden="true">🔬</span>";
-  if (s === "commerce") return "<span aria-hidden="true">📈</span>";
-  if (s === "arts") return "<span aria-hidden="true">🎨</span>";
-  return "<span aria-hidden="true">🎯</span>";
+  if (s === "science") return "<span aria-hidden='true'>🔬</span>";
+  if (s === "commerce") return "<span aria-hidden='true'>📈</span>";
+  if (s === "arts") return "<span aria-hidden='true'>🎨</span>";
+  return "<span aria-hidden='true'>🎯</span>";
 }
 
 // ─────────────────────────────────────────────
@@ -37,7 +37,7 @@ function buildInitialMessage(profile: any): Message {
     return {
       role: "assistant",
       content:
-        "Namaste! <span aria-hidden="true">👋</span> Main **PathFinder AI** hoon — aapka career guidance assistant!\n\nStream, colleges, scholarships, exams — kuch bhi poochhein! <span aria-hidden="true">🎯</span>\n\n<span aria-hidden="true">💡</span> *Tip: Pehle quiz dein toh main aapko personalized advice de sakta hoon!*",
+        "Namaste! <span aria-hidden='true'>👋</span> Main **PathFinder AI** hoon — aapka career guidance assistant!\n\nStream, colleges, scholarships, exams — kuch bhi poochhein! <span aria-hidden='true'>🎯</span>\n\n<span aria-hidden='true'>💡</span> *Tip: Pehle quiz dein toh main aapko personalized advice de sakta hoon!*",
     };
   }
 
@@ -49,11 +49,11 @@ function buildInitialMessage(profile: any): Message {
 
   let confidenceMsg = "";
   if (confidence > 70) {
-    confidenceMsg = `Aapka **${stream} stream** bilkul clear hai — ${confidence}% match! <span aria-hidden="true">💪</span>`;
+    confidenceMsg = `Aapka **${stream} stream** bilkul clear hai — ${confidence}% match! <span aria-hidden='true'>💪</span>`;
   } else if (confidence > 50) {
     confidenceMsg = `**${stream} stream** aapke liye best fit hai — ${confidence}% match! Thoda aur explore karein.`;
   } else {
-    confidenceMsg = `Quiz se pata chala ki aap ek **${personality}** hain — multiple streams explore karo! <span aria-hidden="true">🌟</span>`;
+    confidenceMsg = `Quiz se pata chala ki aap ek **${personality}** hain — multiple streams explore karo! <span aria-hidden='true'>🌟</span>`;
   }
 
   if (profile.marksPercent) {
@@ -64,12 +64,12 @@ function buildInitialMessage(profile: any): Message {
   }
 
   if (profile.budget === "low") {
-    confidenceMsg += "\n<span aria-hidden="true">💡</span> Budget constraint note kiya — government colleges aur scholarships pe focus karunga.";
+    confidenceMsg += "\n<span aria-hidden='true'>💡</span> Budget constraint note kiya — government colleges aur scholarships pe focus karunga.";
   }
 
   return {
     role: "assistant",
-    content: `Namaste! <span aria-hidden="true">👋</span> Maine aapka quiz result dekh liya! ${emoji}\n\n${confidenceMsg}\n\nAb seedha poochhein:\n- <span aria-hidden="true">🎓</span> Kaunse colleges best hain?\n- <span aria-hidden="true">📝</span> Kaunse exams dene chahiye?\n- <span aria-hidden="true">💰</span> Scholarships kaise milegi?\n- <span aria-hidden="true">🗺️</span> Career roadmap kya hoga?\n\nKuch bhi poochhein — main aapke **${stream} stream** ke hisaab se specifically bataunga! <span aria-hidden="true">🚀</span>`,
+    content: `Namaste! <span aria-hidden='true'>👋</span> Maine aapka quiz result dekh liya! ${emoji}\n\n${confidenceMsg}\n\nAb seedha poochhein:\n- <span aria-hidden='true'>🎓</span> Kaunse colleges best hain?\n- <span aria-hidden='true'>📝</span> Kaunse exams dene chahiye?\n- <span aria-hidden='true'>💰</span> Scholarships kaise milegi?\n- <span aria-hidden='true'>🗺️</span> Career roadmap kya hoga?\n\nKuch bhi poochhein — main aapke **${stream} stream** ke hisaab se specifically bataunga! <span aria-hidden='true'>🚀</span>`,
   };
 }
 

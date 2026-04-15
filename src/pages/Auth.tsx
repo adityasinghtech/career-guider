@@ -40,9 +40,9 @@ const Auth = () => {
         const isAdmin = rows?.some((r) => r.role === "admin");
 
         if (isAdmin) {
-          toast.success("Admin login safal! <span aria-hidden="true">🛡️</span>");
+          toast.success("Admin login safal! <span aria-hidden='true'>🛡️</span>");
         } else {
-          toast.success("Login safal! <span aria-hidden="true">🎉</span>");
+          toast.success("Login safal! <span aria-hidden='true'>🎉</span>");
         }
 
         navigate(redirectTo, { replace: true });
@@ -62,12 +62,12 @@ const Auth = () => {
       if (cancelled) return;
       const isAdmin = rows?.some((r) => r.role === "admin");
       if (isAdmin) {
-        toast.success("Admin login safal! <span aria-hidden="true">🛡️</span> Admin dashboard khul raha hai...");
+        toast.success("Admin login safal! <span aria-hidden='true'>🛡️</span> Admin dashboard khul raha hai...");
         setShowAdminLoginSuccess(true);
         await new Promise((r) => setTimeout(r, 2000));
         if (!cancelled) navigate(redirectTo, { replace: true });
       } else {
-        toast.success("Login safal! Swagat hai! <span aria-hidden="true">🎉</span>");
+        toast.success("Login safal! Swagat hai! <span aria-hidden='true'>🎉</span>");
         navigate(redirectTo, { replace: true });
       }
     })();
@@ -107,14 +107,14 @@ const Auth = () => {
       const isAdmin = rows?.some((r) => r.role === "admin");
 
       if (isAdmin) {
-        toast.success("Admin login safal! <span aria-hidden="true">🛡️</span> Admin dashboard khul raha hai...");
+        toast.success("Admin login safal! <span aria-hidden='true'>🛡️</span> Admin dashboard khul raha hai...");
         setShowAdminLoginSuccess(true);
         setLoading(false);
         setTimeout(() => navigate(redirectTo), 2000);
         return;
       }
 
-      toast.success("Login safal! Swagat hai! <span aria-hidden="true">🎉</span>");
+      toast.success("Login safal! Swagat hai! <span aria-hidden='true'>🎉</span>");
       navigate(redirectTo);
       setLoading(false);
       return;
@@ -132,7 +132,7 @@ const Auth = () => {
       handledByFormRef.current = false;
       toast.error(error.message || "Signup nahi ho paaya");
     } else {
-      toast.success("Account ban gaya! Aapka swagat hai! <span aria-hidden="true">🎉</span>");
+      toast.success("Account ban gaya! Aapka swagat hai! <span aria-hidden='true'>🎉</span>");
       navigate(redirectTo);
     }
     setLoading(false);
@@ -167,7 +167,7 @@ const Auth = () => {
           className="bg-card rounded-2xl border-2 border-border p-8 shadow-card"
         >
           <div className="text-center mb-8">
-            <div className="text-4xl mb-3">{isLogin ? "<span aria-hidden="true">👋</span>" : "<span aria-hidden="true">🚀</span>"}</div>
+            <div className="text-4xl mb-3">{isLogin ? "<span aria-hidden='true'>👋</span>" : "<span aria-hidden='true'>🚀</span>"}</div>
             <h1 className="font-display font-bold text-2xl text-foreground">
               {isLogin ? "Swagat Hai!" : "Account Banayein"}
             </h1>
@@ -288,7 +288,7 @@ const Auth = () => {
               disabled={loading}
               className="w-full flex items-center justify-center gap-2 gradient-hero text-primary-foreground font-display font-bold py-3 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-60"
             >
-              {loading ? "Kripya Rukein... <span aria-hidden="true">⏳</span>" : isLogin ? "Login Karein" : "Sign Up Karein"}
+              {loading ? "Kripya Rukein... <span aria-hidden='true'>⏳</span>" : isLogin ? "Login Karein" : "Sign Up Karein"}
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>

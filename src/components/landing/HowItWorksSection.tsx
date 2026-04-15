@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import { Rocket } from "lucide-react";
 
 const steps = [
-  { step: "1", title: "Quiz Dijiye <span aria-hidden="true">📝</span>", desc: "15 fun sawaal answer karein — sirf 5 minute lagenge. Emoji wale mazedaar options!" },
-  { step: "2", title: "Result Dekhein <span aria-hidden="true">📊</span>", desc: "Turant pata chalega kaunsa stream best hai — match percentage ke saath!" },
-  { step: "3", title: "Roadmap Follow Karein <span aria-hidden="true">🗺️</span>", desc: "15-year plan milega — colleges, careers, courses, scholarships sab ek jagah" },
-  { step: "4", title: "Share & Discuss <span aria-hidden="true">📱</span>", desc: "PDF download karein, parents ko dikhayein, WhatsApp pe friends ko bhejein!" },
+  { step: "1", title: "Quiz Dijiye <span aria-hidden='true'>📝</span>", desc: "15 fun sawaal answer karein — sirf 5 minute lagenge. Emoji wale mazedaar options!" },
+  { step: "2", title: "Result Dekhein <span aria-hidden='true'>📊</span>", desc: "Turant pata chalega kaunsa stream best hai — match percentage ke saath!" },
+  { step: "3", title: "Roadmap Follow Karein <span aria-hidden='true'>🗺️</span>", desc: "15-year plan milega — colleges, careers, courses, scholarships sab ek jagah" },
+  { step: "4", title: "Share & Discuss <span aria-hidden='true'>📱</span>", desc: "PDF download karein, parents ko dikhayein, WhatsApp pe friends ko bhejein!" },
 ];
 
 const HowItWorksSection = () => (
@@ -21,10 +21,10 @@ const HowItWorksSection = () => (
         viewport={{ once: true }}
       >
         <span className="inline-block text-sm font-display font-semibold text-primary bg-primary/10 px-4 py-1.5 rounded-full mb-4 border border-primary/15">
-          <span aria-hidden="true">🔄</span> Simple Process
+          <span aria-hidden='true'>🔄</span> Simple Process
         </span>
         <h2 className="font-display font-bold text-3xl md:text-5xl text-foreground mb-14">
-          Kaise Kaam Karta Hai? <span aria-hidden="true">🤔</span>
+          Kaise Kaam Karta Hai? <span aria-hidden='true'>🤔</span>
         </h2>
       </motion.div>
 
@@ -66,7 +66,7 @@ const HowItWorksSection = () => (
           className="group inline-flex items-center gap-3 mt-14 gradient-hero text-primary-foreground font-display font-bold px-10 py-5 rounded-2xl text-xl hover:opacity-90 transition-all shadow-elevated animate-pulse-glow"
         >
           <Rocket className="w-5 h-5" /> Chaliye Shuru Karte Hain!
-          <span className="group-hover:translate-x-1 transition-transform"><span aria-hidden="true">💪</span></span>
+          <span className="group-hover:translate-x-1 transition-transform"><span aria-hidden='true'>💪</span></span>
         </Link>
       </motion.div>
     </div>

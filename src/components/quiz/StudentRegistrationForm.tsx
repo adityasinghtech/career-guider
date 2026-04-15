@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
-  name: z.string().trim().min(2, "Kripya apna naam likhein (minimum 2 akshar)").max(100, "Naam bahut lamba hai <span aria-hidden="true">😅</span>"),
+  name: z.string().trim().min(2, "Kripya apna naam likhein (minimum 2 akshar)").max(100, "Naam bahut lamba hai <span aria-hidden='true'>😅</span>"),
   phone: z.string().trim().regex(/^[6-9]\d{9}$/, "Sahi phone number dalein (10 digits, 6-9 se shuru)"),
   email: z.string().trim().email("Sahi email address dalein").max(255, "Email bahut lamba hai"),
   city: z.string().trim().min(2, "Kripya apna city/district bataayein").max(100, "City name bahut lamba hai"),
@@ -27,22 +27,22 @@ interface Props {
 const classOptions = ["Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "12th Pass"];
 
 const interestOptions: { value: "tech" | "business" | "creative" | "sports" | "vocational" | "undecided"; label: string }[] = [
-  { value: "tech", label: "<span aria-hidden="true">💻</span> Technology & Science" },
-  { value: "business", label: "<span aria-hidden="true">💼</span> Business & Finance" },
-  { value: "creative", label: "<span aria-hidden="true">🎨</span> Arts & Creativity" },
-  { value: "sports", label: "<span aria-hidden="true">🏏</span> Sports & Fitness" },
-  { value: "vocational", label: "<span aria-hidden="true">🔧</span> Skill & Vocational Training" },
-  { value: "undecided", label: "<span aria-hidden="true">🤷</span> Abhi decide nahi" },
+  { value: "tech", label: "<span aria-hidden='true'>💻</span> Technology & Science" },
+  { value: "business", label: "<span aria-hidden='true'>💼</span> Business & Finance" },
+  { value: "creative", label: "<span aria-hidden='true'>🎨</span> Arts & Creativity" },
+  { value: "sports", label: "<span aria-hidden='true'>🏏</span> Sports & Fitness" },
+  { value: "vocational", label: "<span aria-hidden='true'>🔧</span> Skill & Vocational Training" },
+  { value: "undecided", label: "<span aria-hidden='true'>🤷</span> Abhi decide nahi" },
 ];
 
 const situations = [
-  "<span aria-hidden="true">💰</span> Padhai ke saath earning chahiye",
-  "<span aria-hidden="true">📉</span> Maths mein thoda weak hoon",
-  "<span aria-hidden="true">📚</span> Padhai boring lagti hai / focus nahi banta",
-  "<span aria-hidden="true">💸</span> Financial constraints hain",
-  "<span aria-hidden="true">🔄</span> Stream change karna chahta/chahti hoon",
-  "<span aria-hidden="true">👨</span>‍<span aria-hidden="true">👩</span>‍<span aria-hidden="true">👦</span> Family ne stream decide ki hai",
-  "<span aria-hidden="true">😕</span> Confused hoon — guidance chahiye",
+  "<span aria-hidden='true'>💰</span> Padhai ke saath earning chahiye",
+  "<span aria-hidden='true'>📉</span> Maths mein thoda weak hoon",
+  "<span aria-hidden='true'>📚</span> Padhai boring lagti hai / focus nahi banta",
+  "<span aria-hidden='true'>💸</span> Financial constraints hain",
+  "<span aria-hidden='true'>🔄</span> Stream change karna chahta/chahti hoon",
+  "<span aria-hidden='true'>👨</span>‍<span aria-hidden='true'>👩</span>‍<span aria-hidden='true'>👦</span> Family ne stream decide ki hai",
+  "<span aria-hidden='true'>😕</span> Confused hoon — guidance chahiye",
 ];
 
 const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
@@ -252,20 +252,20 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
             className="border-2 border-border rounded-xl px-4 py-3 bg-card font-body text-foreground w-full outline-none focus:border-primary transition-colors cursor-pointer"
           >
             <option value="">Select karo (optional)</option>
-            <option value="doctor"><span aria-hidden="true">👨</span>‍<span aria-hidden="true">⚕️</span> Doctor / Medical</option>
-            <option value="engineer"><span aria-hidden="true">💻</span> Engineer / Software Dev</option>
-            <option value="ai_ml"><span aria-hidden="true">🤖</span> AI / Data Science</option>
-            <option value="ca"><span aria-hidden="true">📊</span> CA / Finance</option>
-            <option value="mba"><span aria-hidden="true">🏢</span> MBA / Business</option>
-            <option value="startup"><span aria-hidden="true">🚀</span> Startup / Entrepreneur</option>
-            <option value="ias"><span aria-hidden="true">🏛️</span> IAS / Government Officer</option>
-            <option value="lawyer"><span aria-hidden="true">⚖️</span> Lawyer</option>
-            <option value="teacher"><span aria-hidden="true">📚</span> Teacher / Professor</option>
-            <option value="content_creator"><span aria-hidden="true">🎬</span> Content Creator / YouTuber</option>
-            <option value="defense"><span aria-hidden="true">🎖️</span> Army / Navy / Air Force</option>
-            <option value="sports"><span aria-hidden="true">🏏</span> Professional Sports</option>
-            <option value="designer"><span aria-hidden="true">🎨</span> Designer / Artist</option>
-            <option value="undecided"><span aria-hidden="true">🤷</span> Abhi decide nahi</option>
+            <option value="doctor">👨‍⚕️ Doctor / Medical</option>
+            <option value="engineer">💻 Engineer / Software Dev</option>
+            <option value="ai_ml">🤖 AI / Data Science</option>
+            <option value="ca">📊 CA / Finance</option>
+            <option value="mba">🏢 MBA / Business</option>
+            <option value="startup">🚀 Startup / Entrepreneur</option>
+            <option value="ias">🏛️ IAS / Government Officer</option>
+            <option value="lawyer">⚖️ Lawyer</option>
+            <option value="teacher">📚 Teacher / Professor</option>
+            <option value="content_creator">🎬 Content Creator / YouTuber</option>
+            <option value="defense">🎖️ Army / Navy / Air Force</option>
+            <option value="sports">🏏 Professional Sports</option>
+            <option value="designer">🎨 Designer / Artist</option>
+            <option value="undecided">🤷 Abhi decide nahi</option>
           </select>
         </div>
 
@@ -390,7 +390,11 @@ const StudentRegistrationForm = ({ onSubmit, onBack }: Props) => {
           disabled={submitting}
           className="flex items-center gap-2 font-display font-bold px-6 py-3 rounded-xl gradient-hero text-primary-foreground hover:opacity-90 transition-all disabled:opacity-60"
         >
-          {submitting ? "Loading... <span aria-hidden="true">⏳</span>" : "Mera Result Dikhayein! <span aria-hidden="true">🎉</span>"}
+          {submitting ? (
+            <>Loading... <span aria-hidden="true">⏳</span></>
+          ) : (
+            <>Mera Result Dikhayein! <span aria-hidden="true">🎉</span></>
+          )}
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>

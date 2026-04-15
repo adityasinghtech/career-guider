@@ -4,11 +4,11 @@ import Navbar from "@/components/Navbar";
 import { Link } from "react-router-dom";
 
 const values = [
-  { icon: Target, title: "Mission <span aria-hidden="true">🎯</span>", desc: "Har Indian student ko sahi career guidance milni chahiye — chahe woh village se hon ya city se. Humara goal hai ki koi bhi student confusion mein na rahe." },
-  { icon: Users, title: "For Students <span aria-hidden="true">👨</span>‍<span aria-hidden="true">🎓</span>", desc: "Class 9-12 ke students jo stream selection mein confused hain — unke liye humne ye platform banaya hai. Simple, free, aur effective." },
-  { icon: Heart, title: "Free Forever <span aria-hidden="true">💚</span>", desc: "PathFinder hamesha free rahega students ke liye. Koi hidden charges nahi, koi premium wall nahi. Education guidance sabka adhikaar hai." },
-  { icon: BookOpen, title: "Data-Driven <span aria-hidden="true">📊</span>", desc: "Humara quiz research-based hai — psychology aur career counseling ke principles pe based. Generic nahi, personalized results milte hain." },
-  { icon: Lightbulb, title: "Bihar & UP Focus <span aria-hidden="true">🏛️</span>", desc: "Specifically Bihar aur UP ke students ke liye — local colleges, state scholarships, aur region-specific guidance sab included hai." },
+  { icon: Target, title: "Mission <span aria-hidden='true'>🎯</span>", desc: "Har Indian student ko sahi career guidance milni chahiye — chahe woh village se hon ya city se. Humara goal hai ki koi bhi student confusion mein na rahe." },
+  { icon: Users, title: "For Students <span aria-hidden='true'>👨</span>‍<span aria-hidden='true'>🎓</span>", desc: "Class 9-12 ke students jo stream selection mein confused hain — unke liye humne ye platform banaya hai. Simple, free, aur effective." },
+  { icon: Heart, title: "Free Forever <span aria-hidden='true'>💚</span>", desc: "PathFinder hamesha free rahega students ke liye. Koi hidden charges nahi, koi premium wall nahi. Education guidance sabka adhikaar hai." },
+  { icon: BookOpen, title: "Data-Driven <span aria-hidden='true'>📊</span>", desc: "Humara quiz research-based hai — psychology aur career counseling ke principles pe based. Generic nahi, personalized results milte hain." },
+  { icon: Lightbulb, title: "Bihar & UP Focus <span aria-hidden='true'>🏛️</span>", desc: "Specifically Bihar aur UP ke students ke liye — local colleges, state scholarships, aur region-specific guidance sab included hai." },
 ];
 
 const team = [

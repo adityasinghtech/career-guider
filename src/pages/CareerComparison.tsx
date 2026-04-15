@@ -133,9 +133,9 @@ const CareerComparison = () => {
         `Cons: ${c.cons.join(" | ")}`,
       ].join("\n");
     });
-    const text = [`PathFinder — Career Comparison <span aria-hidden="true">⚖️</span>`, "", ...lines].join("\n\n");
+    const text = [`PathFinder — Career Comparison <span aria-hidden='true'>⚖️</span>`, "", ...lines].join("\n\n");
     navigator.clipboard.writeText(text).then(
-      () => toast.success("Comparison copy ho gayi! <span aria-hidden="true">📋</span>"),
+      () => toast.success("Comparison copy ho gayi! <span aria-hidden='true'>📋</span>"),
       () => toast.error("Copy nahi ho paaya"),
     );
   }, [resolved]);

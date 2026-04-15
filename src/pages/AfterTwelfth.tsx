@@ -11,7 +11,7 @@ type StreamKey = "science" | "commerce" | "arts";
 const paths = [
   {
     id: "higher-edu",
-    emoji: "<span aria-hidden="true">🎓</span>",
+    emoji: "<span aria-hidden='true'>🎓</span>",
     title: "Higher Education",
     subtitle: "College / University admission",
     color: "blue",
@@ -39,7 +39,7 @@ const paths = [
   },
   {
     id: "direct-job",
-    emoji: "<span aria-hidden="true">💼</span>",
+    emoji: "<span aria-hidden='true'>💼</span>",
     title: "Direct Job / Skill Course",
     subtitle: "Earn karo jaldi, experience lo",
     color: "green",
@@ -55,7 +55,7 @@ const paths = [
   },
   {
     id: "gap-year",
-    emoji: "<span aria-hidden="true">📅</span>",
+    emoji: "<span aria-hidden='true'>📅</span>",
     title: "Gap Year / Coaching",
     subtitle: "Prepare karo, target achieve karo",
     color: "purple",
@@ -96,9 +96,9 @@ export default function AfterTwelfth() {
       <div className="pt-24 pb-16 px-4 max-w-5xl mx-auto">
         {/* Hero */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
-          <div className="text-6xl mb-4"><span aria-hidden="true">🚀</span></div>
+          <div className="text-6xl mb-4"><span aria-hidden='true'>🚀</span></div>
           <h1 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-2">12th ke Baad Kya?</h1>
-          <p className="text-muted-foreground font-body text-lg">Tum decide karo — hum guide karenge <span aria-hidden="true">🗺️</span></p>
+          <p className="text-muted-foreground font-body text-lg">Tum decide karo — hum guide karenge <span aria-hidden='true'>🗺️</span></p>
         </motion.div>
 
         {/* Path Cards */}
@@ -124,7 +124,7 @@ export default function AfterTwelfth() {
                       className={`w-full font-display font-semibold text-sm ${isActive ? "gradient-hero text-primary-foreground" : "variant-outline"}`}
                       variant={isActive ? "default" : "outline"}
                     >
-                      {isActive ? "Selected <span aria-hidden="true">✓</span>" : "Details dekho"} <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                      {isActive ? "Selected <span aria-hidden='true'>✓</span>" : "Details dekho"} <ArrowRight className="w-3.5 h-3.5 ml-1" />
                     </Button>
                   </CardContent>
                 </Card>
@@ -156,7 +156,7 @@ export default function AfterTwelfth() {
                           selectedStream === s ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
                         }`}
                       >
-                        {s === "science" ? "<span aria-hidden="true">🔬</span>" : s === "commerce" ? "<span aria-hidden="true">📈</span>" : "<span aria-hidden="true">🎨</span>"} {s.charAt(0).toUpperCase() + s.slice(1)}
+                        {s === "science" ? "<span aria-hidden='true'>🔬</span>" : s === "commerce" ? "<span aria-hidden='true'>📈</span>" : "<span aria-hidden='true'>🎨</span>"} {s.charAt(0).toUpperCase() + s.slice(1)}
                       </button>
                     ))}
                   </div>

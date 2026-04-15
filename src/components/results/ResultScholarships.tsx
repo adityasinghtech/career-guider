@@ -13,28 +13,28 @@ const categoryOrder = [
 ];
 
 const categoryLabels: Record<string, string> = {
-  Bihar: "<span aria-hidden="true">🏛️</span> Bihar",
-  UP: "<span aria-hidden="true">🏛️</span> UP",
-  National: "<span aria-hidden="true">🇮🇳</span> National",
-  Delhi: "<span aria-hidden="true">🏙️</span> Delhi",
-  Maharashtra: "<span aria-hidden="true">🏙️</span> Maharashtra",
-  Karnataka: "<span aria-hidden="true">🏙️</span> Karnataka",
-  "Tamil Nadu": "<span aria-hidden="true">🏙️</span> Tamil Nadu",
-  "West Bengal": "<span aria-hidden="true">🏙️</span> West Bengal",
-  Rajasthan: "<span aria-hidden="true">🏛️</span> Rajasthan",
-  "Madhya Pradesh": "<span aria-hidden="true">🏛️</span> MP",
-  Gujarat: "<span aria-hidden="true">🏙️</span> Gujarat",
-  Telangana: "<span aria-hidden="true">🏙️</span> Telangana",
-  Kerala: "<span aria-hidden="true">🌴</span> Kerala",
-  Punjab: "<span aria-hidden="true">🏛️</span> Punjab",
-  Haryana: "<span aria-hidden="true">🏛️</span> Haryana",
-  Jharkhand: "<span aria-hidden="true">🏛️</span> Jharkhand",
-  Uttarakhand: "<span aria-hidden="true">🏔️</span> Uttarakhand",
-  Assam: "<span aria-hidden="true">🌿</span> Assam",
-  Odisha: "<span aria-hidden="true">🏛️</span> Odisha",
-  Chhattisgarh: "<span aria-hidden="true">🏛️</span> Chhattisgarh",
-  "Andhra Pradesh": "<span aria-hidden="true">🏛️</span> AP",
-  International: "<span aria-hidden="true">🌍</span> International",
+  Bihar: '<span aria-hidden="true">🏛️</span> Bihar',
+  UP: '<span aria-hidden="true">🏛️</span> UP',
+  National: '<span aria-hidden="true">🇮🇳</span> National',
+  Delhi: '<span aria-hidden="true">🏙️</span> Delhi',
+  Maharashtra: '<span aria-hidden="true">🏙️</span> Maharashtra',
+  Karnataka: '<span aria-hidden="true">🏙️</span> Karnataka',
+  "Tamil Nadu": '<span aria-hidden="true">🏙️</span> Tamil Nadu',
+  "West Bengal": '<span aria-hidden="true">🏙️</span> West Bengal',
+  Rajasthan: '<span aria-hidden="true">🏛️</span> Rajasthan',
+  "Madhya Pradesh": '<span aria-hidden="true">🏛️</span> MP',
+  Gujarat: '<span aria-hidden="true">🏙️</span> Gujarat',
+  Telangana: '<span aria-hidden="true">🏙️</span> Telangana',
+  Kerala: '<span aria-hidden="true">🌴</span> Kerala',
+  Punjab: '<span aria-hidden="true">🏛️</span> Punjab',
+  Haryana: '<span aria-hidden="true">🏛️</span> Haryana',
+  Jharkhand: '<span aria-hidden="true">🏛️</span> Jharkhand',
+  Uttarakhand: '<span aria-hidden="true">🏔️</span> Uttarakhand',
+  Assam: '<span aria-hidden="true">🌿</span> Assam',
+  Odisha: '<span aria-hidden="true">🏛️</span> Odisha',
+  Chhattisgarh: '<span aria-hidden="true">🏛️</span> Chhattisgarh',
+  "Andhra Pradesh": '<span aria-hidden="true">🏛️</span> AP',
+  International: '<span aria-hidden="true">🌍</span> International',
 };
 
 const ResultScholarships = ({ result }: { result: StreamResult }) => {
@@ -56,13 +56,13 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
     "Bihar",
     "UP",
     "International",
-    ...(studentCategory && studentCategory !== "general" ? ["Aapke liye <span aria-hidden="true">🎯</span>"] : []),
+    ...(studentCategory && studentCategory !== "general" ? ["Aapke liye <span aria-hidden='true'>🎯</span>"] : []),
   ];
 
   // Pre-scoped pool based on top-level filter
   const scopedScholarships = useMemo(() => {
     if (activeFilter === "All") return result.scholarships;
-    if (activeFilter === "Aapke liye <span aria-hidden="true">🎯</span>") {
+    if (activeFilter === "Aapke liye <span aria-hidden='true'>🎯</span>") {
       return result.scholarships.filter(
         (s) =>
           s.category === "National" ||
@@ -126,7 +126,7 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
       <div className="mb-4">
         <div className="flex gap-2 flex-wrap">
           {filterOptions.map((opt) => {
-            const isPersonalised = opt === "Aapke liye <span aria-hidden="true">🎯</span>";
+            const isPersonalised = opt === "Aapke liye <span aria-hidden='true'>🎯</span>";
             const isActive = activeFilter === opt;
             return (
               <button
@@ -137,7 +137,7 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
                   // Reset category to first available when filter changes
                   const first = categoryOrder.find((cat) =>
                     (opt === "All" ? result.scholarships : result.scholarships.filter(
-                      (s) => opt === "Aapke liye <span aria-hidden="true">🎯</span>"
+                      (s) => opt === "Aapke liye <span aria-hidden='true'>🎯</span>"
                         ? s.category === "National" || s.eligibility?.toLowerCase().includes(studentCategory?.toLowerCase() ?? "")
                         : s.category === opt
                     )).some((s) => s.category === cat)

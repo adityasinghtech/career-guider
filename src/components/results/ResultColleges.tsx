@@ -17,7 +17,7 @@ function resolveCollegeType(c: College): CollegeTypeTag {
   if (/\biiit\b/.test(n)) return "top";
   if (/\bbits\b/.test(n)) return "top";
   if (/polytechnic/.test(n) || /\bdiploma\b/.test(n)) return "polytechnic";
-  if (/international|<span aria-hidden="true">🇺🇸</span>|<span aria-hidden="true">🇬🇧</span>|<span aria-hidden="true">🇩🇪</span>|<span aria-hidden="true">🇨🇦</span>|<span aria-hidden="true">🇫🇷</span>|<span aria-hidden="true">🇸🇬</span>|<span aria-hidden="true">🇰🇷</span>|<span aria-hidden="true">🇯🇵</span>|<span aria-hidden="true">🇦🇺</span>/.test(loc)) return "top";
+  if (/international|<span aria-hidden='true'>🇺🇸<\/span>|<span aria-hidden='true'>🇬🇧<\/span>|<span aria-hidden='true'>🇩🇪<\/span>|<span aria-hidden='true'>🇨🇦<\/span>|<span aria-hidden='true'>🇫🇷<\/span>|<span aria-hidden='true'>🇸🇬<\/span>|<span aria-hidden='true'>🇰🇷<\/span>|<span aria-hidden='true'>🇯🇵<\/span>|<span aria-hidden='true'>🇦🇺<\/span>/.test(loc)) return "top";
   if (
     /iim |xlri|fms |mdi |nlsiu|nlud|^nlu |srcc|lse |harvard|wharton|insead|oxford|cambridge|stanford|^mit |eth |nus |kaist|mannheim|rotman|yonsei|mext|fulbright|commonwealth|daad|national law school|school of economics/.test(
       n,

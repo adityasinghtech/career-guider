@@ -37,7 +37,7 @@ const FeedbackModal = ({ isOpen, onClose }: FeedbackModalProps) => {
 
       if (error) throw error;
 
-      toast.success("Feedback submitted successfully! Thank you <span aria-hidden="true">🙌</span>");
+      toast.success("Feedback submitted successfully! Thank you <span aria-hidden='true'>🙌</span>");
       setMessage("");
       onClose();
     } catch (error) {

@@ -62,21 +62,21 @@ const AdminSetup = () => {
 
     if (error) {
       setRedeemStatus("error");
-      setRedeemMessage("Galat code hai ya already use ho chuka hai <span aria-hidden="true">❌</span>");
+      setRedeemMessage("Galat code hai ya already use ho chuka hai <span aria-hidden='true'>❌</span>");
       return;
     }
 
     const payload = data as { ok?: boolean; already_admin?: boolean } | null;
     if (!payload?.ok) {
       setRedeemStatus("error");
-      setRedeemMessage("Galat code hai ya already use ho chuka hai <span aria-hidden="true">❌</span>");
+      setRedeemMessage("Galat code hai ya already use ho chuka hai <span aria-hidden='true'>❌</span>");
       return;
     }
 
     await refreshRole();
     setRedeemStatus("success");
     setRedeemMessage(
-      payload.already_admin ? "Aap pehle se admin hain! Dashboard pe jao <span aria-hidden="true">✅</span>" : "Admin ban gaye! Dashboard pe jao <span aria-hidden="true">✅</span>",
+      payload.already_admin ? "Aap pehle se admin hain! Dashboard pe jao <span aria-hidden='true'>✅</span>" : "Admin ban gaye! Dashboard pe jao <span aria-hidden='true'>✅</span>",
     );
   };
 
@@ -112,7 +112,7 @@ const AdminSetup = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="text-4xl mb-3 animate-bounce"><span aria-hidden="true">⏳</span></div>
+          <div className="text-4xl mb-3 animate-bounce"><span aria-hidden='true'>⏳</span></div>
           <p className="text-muted-foreground font-display">Loading...</p>
         </div>
       </div>
@@ -133,7 +133,7 @@ const AdminSetup = () => {
         className="max-w-lg w-full bg-card border-2 border-border rounded-2xl p-8 shadow-card"
       >
         <header className="text-center mb-8">
-          <div className="text-3xl mb-2"><span aria-hidden="true">🔒</span></div>
+          <div className="text-3xl mb-2"><span aria-hidden='true'>🔒</span></div>
           <h1 className="font-display font-semibold text-lg text-muted-foreground">Restricted Access</h1>
         </header>
 
@@ -161,7 +161,7 @@ const AdminSetup = () => {
         {tab === "invite" && (
           <div className="space-y-5">
             <div>
-              <h2 className="font-display font-bold text-2xl text-foreground">Admin Access Lo <span aria-hidden="true">🛡️</span></h2>
+              <h2 className="font-display font-bold text-2xl text-foreground">Admin Access Lo <span aria-hidden='true'>🛡️</span></h2>
               <p className="text-muted-foreground font-body text-sm mt-2">
                 Agar tumhare paas invite code hai toh yahan daalo
               </p>
@@ -225,7 +225,7 @@ const AdminSetup = () => {
             )}
 
             <p className="text-xs text-muted-foreground font-body text-center pt-1">
-              Yeh page sirf authorized log ke liye hai <span aria-hidden="true">🔒</span>
+              Yeh page sirf authorized log ke liye hai <span aria-hidden='true'>🔒</span>
             </p>
           </div>
         )}

@@ -4,42 +4,42 @@ import { Compass, BookOpen, GraduationCap, TrendingUp, Clock, Download, Shield, 
 const features = [
   {
     icon: Clock,
-    title: "Sirf 5 Minute <span aria-hidden="true">⏱️</span>",
+    title: "Sirf 5 Minute <span aria-hidden='true'>⏱️</span>",
     desc: "15 fun questions, aur aapka career path crystal clear!",
   },
   {
     icon: Compass,
-    title: "AI Smart Recommendation <span aria-hidden="true">🧠</span>",
+    title: "AI Smart Recommendation <span aria-hidden='true'>🧠</span>",
     desc: "Science, Commerce, ya Arts — kya best hai aapke liye + match percentage",
   },
   {
     icon: BookOpen,
-    title: "15-Year Roadmap <span aria-hidden="true">🗺️</span>",
+    title: "15-Year Roadmap <span aria-hidden='true'>🗺️</span>",
     desc: "2026 se 2040 tak ka complete plan — kya karna hai, kab karna hai",
   },
   {
     icon: GraduationCap,
-    title: "All India Colleges <span aria-hidden="true">🎓</span>",
+    title: "All India Colleges <span aria-hidden='true'>🎓</span>",
     desc: "IIT, AIIMS, NLU se lekar state colleges tak — fees aur cutoffs ke saath",
   },
   {
     icon: Download,
-    title: "Parents PDF Report <span aria-hidden="true">📥</span>",
+    title: "Parents PDF Report <span aria-hidden='true'>📥</span>",
     desc: "Download karein, parents ko dikhayein — unhe bhi samajh aayega",
   },
   {
     icon: TrendingUp,
-    title: "Career Paths + Salary <span aria-hidden="true">💰</span>",
+    title: "Career Paths + Salary <span aria-hidden='true'>💰</span>",
     desc: "₹5 LPA se ₹50 LPA tak — kaunsa career kitna paisa dega",
   },
   {
     icon: Shield,
-    title: "FREE Government Courses <span aria-hidden="true">🆓</span>",
+    title: "FREE Government Courses <span aria-hidden='true'>🆓</span>",
     desc: "SWAYAM, NPTEL, Google — ₹2 Lakh ki value ke courses bilkul free!",
   },
   {
     icon: Smartphone,
-    title: "WhatsApp Share <span aria-hidden="true">📱</span>",
+    title: "WhatsApp Share <span aria-hidden='true'>📱</span>",
     desc: "Ek click mein friends ko share karein — sabko test karwayein!",
   },
 ];

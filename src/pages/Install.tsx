@@ -145,10 +145,10 @@ const Install = () => {
           {/* Benefits */}
           <div className="grid grid-cols-2 gap-3 text-left">
             {[
-              { emoji: "<span aria-hidden="true">⚡</span>", text: "Super Fast Loading" },
-              { emoji: "<span aria-hidden="true">📴</span>", text: "Offline Bhi Chale" },
-              { emoji: "<span aria-hidden="true">🔔</span>", text: "App Jaisa Feel" },
-              { emoji: "<span aria-hidden="true">💾</span>", text: "No Storage Use" },
+              { emoji: "<span aria-hidden='true'>⚡</span>", text: "Super Fast Loading" },
+              { emoji: "<span aria-hidden='true'>📴</span>", text: "Offline Bhi Chale" },
+              { emoji: "<span aria-hidden='true'>🔔</span>", text: "App Jaisa Feel" },
+              { emoji: "<span aria-hidden='true'>💾</span>", text: "No Storage Use" },
             ].map((b) => (
               <div key={b.text} className="bg-card border border-border/50 rounded-xl p-3 flex items-center gap-2">
                 <span className="text-lg">{b.emoji}</span>

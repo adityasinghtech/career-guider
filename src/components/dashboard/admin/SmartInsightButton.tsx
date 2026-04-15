@@ -30,7 +30,7 @@ export const SmartInsightButton = ({ studentId }: SmartInsightButtonProps) => {
 
       if (functionError) throw functionError;
       setInsight(data);
-      toast.success("AI Insight taiyar hai! <span aria-hidden="true">✨</span>");
+      toast.success("AI Insight taiyar hai! <span aria-hidden='true'>✨</span>");
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Insight generate karne mein dikkat aayi");
@@ -92,7 +92,7 @@ export const SmartInsightButton = ({ studentId }: SmartInsightButtonProps) => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="p-3 rounded-xl bg-amber-500/5 border border-amber-500/20">
-                  <h4 className="text-[10px] font-display font-bold text-amber-600 uppercase tracking-wider mb-1"><span aria-hidden="true">⚠️</span> Top Concern</h4>
+                  <h4 className="text-[10px] font-display font-bold text-amber-600 uppercase tracking-wider mb-1"><span aria-hidden='true'>⚠️</span> Top Concern</h4>
                   <p className="text-sm font-body text-amber-700 dark:text-amber-400">
                     {insight.concern}
                   </p>

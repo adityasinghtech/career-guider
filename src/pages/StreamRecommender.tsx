@@ -110,9 +110,9 @@ function getRecommendation(
 }
 
 const streamConfig = {
-  science: { label: "Science <span aria-hidden="true">🔬</span>", color: "blue", bg: "bg-blue-50 dark:bg-blue-950/30", border: "border-blue-400", badge: "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300", bar: "bg-blue-500", emoji: "<span aria-hidden="true">🔬</span>" },
-  commerce: { label: "Commerce <span aria-hidden="true">📈</span>", color: "green", bg: "bg-green-50 dark:bg-green-950/30", border: "border-green-400", badge: "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300", bar: "bg-green-500", emoji: "<span aria-hidden="true">📈</span>" },
-  arts: { label: "Arts <span aria-hidden="true">🎨</span>", color: "purple", bg: "bg-purple-50 dark:bg-purple-950/30", border: "border-purple-400", badge: "bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300", bar: "bg-purple-500", emoji: "<span aria-hidden="true">🎨</span>" },
+  science: { label: "Science <span aria-hidden='true'>🔬</span>", color: "blue", bg: "bg-blue-50 dark:bg-blue-950/30", border: "border-blue-400", badge: "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300", bar: "bg-blue-500", emoji: "<span aria-hidden='true'>🔬</span>" },
+  commerce: { label: "Commerce <span aria-hidden='true'>📈</span>", color: "green", bg: "bg-green-50 dark:bg-green-950/30", border: "border-green-400", badge: "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300", bar: "bg-green-500", emoji: "<span aria-hidden='true'>📈</span>" },
+  arts: { label: "Arts <span aria-hidden='true'>🎨</span>", color: "purple", bg: "bg-purple-50 dark:bg-purple-950/30", border: "border-purple-400", badge: "bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300", bar: "bg-purple-500", emoji: "<span aria-hidden='true'>🎨</span>" },
 };
 
 export default function StreamRecommender() {
@@ -262,7 +262,9 @@ export default function StreamRecommender() {
               disabled={loading || !marks}
               className="w-full gradient-hero text-primary-foreground font-display font-bold text-lg py-6 rounded-xl hover:opacity-90 transition-all disabled:opacity-60"
             >
-              {loading ? "Analyze kar raha hoon... <span aria-hidden="true">⏳</span>" : "Stream Dhundo →"}
+              {loading ? (
+                <>Analyze kar raha hoon... <span aria-hidden="true">⏳</span></>
+              ) : "Stream Dhundo →"}
             </Button>
           </motion.div>
         ) : (
