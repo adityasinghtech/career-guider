@@ -236,7 +236,7 @@ const Contact = () => {
                             : "bg-muted text-muted-foreground hover:bg-muted/80"
                         }`}
                       >
-                        {type === "student" ? "Student <span aria-hidden='true'>👨</span>‍<span aria-hidden='true'>🎓</span>" : type === "parent" ? "Parent <span aria-hidden='true'>👨</span>‍<span aria-hidden='true'>👩</span>‍<span aria-hidden='true'>👦</span>" : type === "school" ? "School <span aria-hidden='true'>🏫</span>" : "Other"}
+                        {type === "student" ? "Student <span aria-hidden='true'>👨‍🎓</span>" : type === "parent" ? "Parent <span aria-hidden='true'>👨‍👩‍👦</span>" : type === "school" ? "School <span aria-hidden='true'>🏫</span>" : "Other"}
                       </button>
                     ))}
                   </div>

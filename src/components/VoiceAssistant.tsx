@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mic, MicOff, Volume2, X, HelpCircle } from 'lucide-react';
 import { useTextToSpeech } from '@/hooks/useTextToSpeech';
@@ -43,49 +43,58 @@ export default function VoiceAssistant() {
     speak(text);
   }, [speak]);
 
+  // Voice Greeting: Speak when the assistant is opened
+  useEffect(() => {
+    if (isOpen && ttsSupported && !isSpeaking) {
+      speak('Main aapki madad kar sakta hoon. Boliye "Help" commands sunne ke liye.');
+    }
+  }, [isOpen]);
+
+  const commands = useMemo(() => [
+    {
+      pattern: ['quiz shuru', 'quiz start', 'quiz'],
+      action: () => handleNavigate('/quiz', 'Quiz shuru ho raha hai!'),
+      description: 'Quiz pe jao',
+    },
+    {
+      pattern: ['ghar', 'home', 'wapas jao', 'main page'],
+      action: () => handleNavigate('/', 'Home page pe aa gaye.'),
+      description: 'Home page pe jao',
+    },
+    {
+      pattern: ['dashboard', 'mera page', 'meri profile'],
+      action: () => handleNavigate('/dashboard', 'Dashboard khul raha hai.'),
+      description: 'Dashboard pe jao',
+    },
+    {
+      pattern: ['career compare', 'compare karo', 'tulna'],
+      action: () => handleNavigate('/career-comparison', 'Career comparison page.'),
+      description: 'Career comparison page',
+    },
+    {
+      pattern: ['seekhna hai', 'learning', 'resources', 'padhna'],
+      action: () => handleNavigate('/learning', 'Learning resources page.'),
+      description: 'Learning resources',
+    },
+    {
+      pattern: ['deep analysis', 'analysis', 'gehri jaanch'],
+      action: () => handleNavigate('/deep-analysis', 'Deep analysis page.'),
+      description: 'Deep analysis pe jao',
+    },
+    {
+      pattern: ['contact', 'message', 'sampark'],
+      action: () => handleNavigate('/contact', 'Contact page.'),
+      description: 'Contact page pe jao',
+    },
+    {
+      pattern: ['madad chahiye', 'madad', 'help', 'kya karu'],
+      action: handleHelp,
+      description: 'Help sunao',
+    },
+  ], [handleNavigate, handleHelp]);
+
   const { isListening, transcript, startListening, stopListening, supported: voiceSupported } =
-    useVoiceControl([
-      {
-        pattern: ['quiz shuru', 'quiz start', 'quiz'],
-        action: () => handleNavigate('/quiz', 'Quiz shuru ho raha hai!'),
-        description: 'Quiz pe jao',
-      },
-      {
-        pattern: ['ghar', 'home', 'wapas jao', 'main page'],
-        action: () => handleNavigate('/', 'Home page pe aa gaye.'),
-        description: 'Home page pe jao',
-      },
-      {
-        pattern: ['dashboard', 'mera page', 'meri profile'],
-        action: () => handleNavigate('/dashboard', 'Dashboard khul raha hai.'),
-        description: 'Dashboard pe jao',
-      },
-      {
-        pattern: ['career compare', 'compare karo', 'tulna'],
-        action: () => handleNavigate('/career-comparison', 'Career comparison page.'),
-        description: 'Career comparison page',
-      },
-      {
-        pattern: ['seekhna hai', 'learning', 'resources', 'padhna'],
-        action: () => handleNavigate('/learning', 'Learning resources page.'),
-        description: 'Learning resources',
-      },
-      {
-        pattern: ['deep analysis', 'analysis', 'gehri jaanch'],
-        action: () => handleNavigate('/deep-analysis', 'Deep analysis page.'),
-        description: 'Deep analysis pe jao',
-      },
-      {
-        pattern: ['contact', 'message', 'sampark'],
-        action: () => handleNavigate('/contact', 'Contact page.'),
-        description: 'Contact page pe jao',
-      },
-      {
-        pattern: ['madad chahiye', 'madad', 'help', 'kya karu'],
-        action: handleHelp,
-        description: 'Help sunao',
-      },
-    ]);
+    useVoiceControl(commands);
 
   // Keyboard shortcut
   useEffect(() => {

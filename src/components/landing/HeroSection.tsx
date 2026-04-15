@@ -11,7 +11,7 @@ const stats = [
 
 const careerBadges = [
   "AI Engineer <span aria-hidden='true'>🤖</span>",
-  "Doctor <span aria-hidden='true'>👨</span>‍<span aria-hidden='true'>⚕️</span>",
+  "Doctor <span aria-hidden='true'>👨‍⚕️</span>",
   "CA ₹50L <span aria-hidden='true'>💰</span>",
   "IIT Topper <span aria-hidden='true'>🏆</span>",
 ];

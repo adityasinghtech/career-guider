@@ -8,7 +8,7 @@ const testimonials = [
     class: "Class 11 — Science",
     text: "Mujhe pata hi nahi tha ki mera interest Science mein hai! PathFinder ne 3 minute mein clear kar diya. Ab IIT ki taiyari kar rahi hoon <span aria-hidden='true'>💪</span>",
     rating: 5,
-    emoji: "<span aria-hidden='true'>👩</span>‍<span aria-hidden='true'>🔬</span>",
+    emoji: "<span aria-hidden='true'>👩‍🔬</span>",
   },
   {
     name: "Rohit Sharma",
@@ -16,7 +16,7 @@ const testimonials = [
     class: "Class 10 — Confused tha!",
     text: "Papa bolte the Science lo, dost bolte the Commerce. PathFinder ne meri strength dekhi aur Commerce suggest kiya. Ab CA ki taiyari kar raha hoon! <span aria-hidden='true'>📊</span>",
     rating: 5,
-    emoji: "<span aria-hidden='true'>👨</span>‍<span aria-hidden='true'>💼</span>",
+    emoji: "<span aria-hidden='true'>👨‍💼</span>",
   },
   {
     name: "Sneha Gupta",
@@ -24,7 +24,7 @@ const testimonials = [
     class: "Class 12 — Arts",
     text: "Sabne bola Arts mein kya scope hai. PathFinder ne dikhaya ki Law mein kitna scope hai — CLAT crack karke NLU mein admission mil gaya! <span aria-hidden='true'>⚖️</span>",
     rating: 5,
-    emoji: "<span aria-hidden='true'>👩</span>‍<span aria-hidden='true'>⚖️</span>",
+    emoji: "<span aria-hidden='true'>👩‍⚖️</span>",
   },
   {
     name: "Aman Kumar",
@@ -32,7 +32,7 @@ const testimonials = [
     class: "Class 9 — Early Explorer",
     text: "9th mein hi pata chal gaya ki mujhe Data Science mein jaana hai. Roadmap follow kar raha hoon — Python bhi seekh liya! <span aria-hidden='true'>🤖</span>",
     rating: 5,
-    emoji: "<span aria-hidden='true'>👨</span>‍<span aria-hidden='true'>💻</span>",
+    emoji: "<span aria-hidden='true'>👨‍💻</span>",
   },
   {
     name: "Anjali Devi",
@@ -40,7 +40,7 @@ const testimonials = [
     class: "Class 10 — Village se",
     text: "Hamare village mein koi career counselor nahi hai. PathFinder ne free mein itna accha guidance diya — PDF parents ko dikhayi toh bohot khush hue! <span aria-hidden='true'>🎉</span>",
     rating: 5,
-    emoji: "<span aria-hidden='true'>👩</span>‍<span aria-hidden='true'>🎓</span>",
+    emoji: "<span aria-hidden='true'>👩‍🎓</span>",
   },
   {
     name: "Ravi Ranjan",

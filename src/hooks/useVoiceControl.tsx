@@ -12,6 +12,12 @@ export function useVoiceControl(commands: VoiceCommand[]) {
   const [supported, setSupported] = useState(false);
   const recognitionRef = useRef<any>(null);
 
+  const commandsRef = useRef(commands);
+  
+  useEffect(() => {
+    commandsRef.current = commands;
+  }, [commands]);
+
   useEffect(() => {
     // Browser support check
     const SpeechRecognition =
@@ -33,8 +39,8 @@ export function useVoiceControl(commands: VoiceCommand[]) {
       const text = event.results[0][0].transcript.toLowerCase();
       setTranscript(text);
 
-      // Command match karo
-      commands.forEach((cmd) => {
+      // Command match karo using Ref
+      commandsRef.current.forEach((cmd) => {
         if (Array.isArray(cmd.pattern)) {
           if (cmd.pattern.some((p) => text.includes(p))) cmd.action();
         } else {
@@ -57,7 +63,7 @@ export function useVoiceControl(commands: VoiceCommand[]) {
     return () => {
       recognition.abort();
     };
-  }, [commands]);
+  }, []);
 
   const startListening = useCallback(() => {
     console.info('Voice Assistant: Attempting to start listening...', { supported, hasRecognition: !!recognitionRef.current });

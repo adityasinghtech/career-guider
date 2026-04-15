@@ -224,7 +224,7 @@ const AdminRepliesSection = ({ userEmail }: { userEmail: string | undefined }) =
               Aapka message: "{reply.message?.slice(0, 60)}{reply.message?.length > 60 ? "..." : ""}"
             </p>
             <p className="text-sm font-body text-foreground font-medium">
-              <span aria-hidden='true'>🧑</span>‍<span aria-hidden='true'>💼</span> Admin: {reply.admin_reply}
+              <span aria-hidden='true'>🧑‍💼</span> Admin: {reply.admin_reply}
             </p>
             <p className="text-xs text-muted-foreground mt-2">
               {reply.replied_at

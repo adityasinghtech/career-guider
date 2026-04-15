@@ -506,8 +506,8 @@ const AdminDashboard = () => {
   }, [students, quizResults, analyticsExtra]);
 
   const senderTypeLabels: Record<string, string> = {
-    student: `<span aria-hidden='true'>👨</span>‍<span aria-hidden='true'>🎓</span> Student`,
-    parent: `<span aria-hidden='true'>👨</span>‍<span aria-hidden='true'>👩</span>‍<span aria-hidden='true'>👦</span> Parent`,
+    student: `<span aria-hidden='true'>👨‍🎓</span> Student`,
+    parent: `<span aria-hidden='true'>👨‍👩‍👦</span> Parent`,
     school: `<span aria-hidden='true'>🏫</span> School`,
     other: "Other",
   };

@@ -41,7 +41,7 @@ const situations = [
   "<span aria-hidden='true'>📚</span> Padhai boring lagti hai / focus nahi banta",
   "<span aria-hidden='true'>💸</span> Financial constraints hain",
   "<span aria-hidden='true'>🔄</span> Stream change karna chahta/chahti hoon",
-  "<span aria-hidden='true'>👨</span>‍<span aria-hidden='true'>👩</span>‍<span aria-hidden='true'>👦</span> Family ne stream decide ki hai",
+  "<span aria-hidden='true'>👨‍👩‍👦</span> Family ne stream decide ki hai",
   "<span aria-hidden='true'>😕</span> Confused hoon — guidance chahiye",
 ];
 
