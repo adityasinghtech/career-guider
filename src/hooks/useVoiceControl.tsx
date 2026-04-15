@@ -18,7 +18,11 @@ export function useVoiceControl(commands: VoiceCommand[]) {
       (window as any).SpeechRecognition ||
       (window as any).webkitSpeechRecognition;
 
-    if (!SpeechRecognition) return;
+    if (!SpeechRecognition) {
+      console.warn('Voice Assistant: SpeechRecognition is not supported in this browser.');
+      return;
+    }
+    console.info('Voice Assistant: SpeechRecognition supported.');
     setSupported(true);
 
     const recognition = new SpeechRecognition();
@@ -56,13 +60,19 @@ export function useVoiceControl(commands: VoiceCommand[]) {
   }, [commands]);
 
   const startListening = useCallback(() => {
+    console.info('Voice Assistant: Attempting to start listening...', { supported, hasRecognition: !!recognitionRef.current });
     if (recognitionRef.current) {
-      recognitionRef.current.start();
-      setIsListening(true);
+      try {
+        recognitionRef.current.start();
+        setIsListening(true);
+      } catch (err) {
+        console.error('Voice Assistant: Failed to start recognition', err);
+      }
     }
-  }, []);
+  }, [supported]);
 
   const stopListening = useCallback(() => {
+    console.info('Voice Assistant: Stopping listening...');
     if (recognitionRef.current) {
       recognitionRef.current.stop();
       setIsListening(false);

@@ -99,8 +99,13 @@ export default function VoiceAssistant() {
       }
 
       if (e.altKey) {
-        if (e.key === 'v') {
+        const isV = e.key.toLowerCase() === 'v' || e.code === 'KeyV';
+        
+        if (isV) {
           e.preventDefault();
+          e.stopPropagation();
+          console.info('Voice Assistant: Alt+V detected', { isListening });
+          
           if (isListening) {
             stopListening();
           } else {
