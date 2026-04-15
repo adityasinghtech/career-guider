@@ -51,10 +51,10 @@ const ActivityFeed = ({ activityFeed }: ActivityFeedProps) => {
               >
                 <span className="text-lg">
                   {item.type === "student"
-                    ? "👤"
+                    ? "<span aria-hidden="true">👤</span>"
                     : item.type === "quiz"
-                    ? "📝"
-                    : "💬"}
+                    ? "<span aria-hidden="true">📝</span>"
+                    : "<span aria-hidden="true">💬</span>"}
                 </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-body text-foreground truncate">

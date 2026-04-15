@@ -61,11 +61,11 @@ const MessageRow = ({
             )}
             {msg.status === 'replied' ? (
               <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/15 text-green-700 dark:text-green-400 font-display font-semibold border border-green-500/30">
-                ✅ Replied
+                <span aria-hidden="true">✅</span> Replied
               </span>
             ) : (
               <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-400 font-display font-semibold border border-amber-500/30">
-                ⏳ Pending
+                <span aria-hidden="true">⏳</span> Pending
               </span>
             )}
           </div>

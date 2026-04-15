@@ -97,7 +97,7 @@ const Navbar = () => {
                 to="/quiz"
                 className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-display font-bold px-5 py-2 md:px-6 md:py-2 rounded-full text-xs md:text-[15px] shadow-md shadow-orange-500/20 hover:shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all duration-300 active:scale-95"
               >
-                Quiz Shuru Karein 🚀
+                Quiz Shuru Karein <span aria-hidden="true">🚀</span>
               </Link>
             )}
 

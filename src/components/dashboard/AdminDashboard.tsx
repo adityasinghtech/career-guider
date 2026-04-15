@@ -227,7 +227,7 @@ const AdminDashboard = () => {
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'profiles' },
         (payload) => {
           setStudents(prev => [payload.new as StudentData, ...prev]);
-          toast.success(`🎉 Naya student join kiya: ${(payload.new as StudentData).full_name || 'Unknown'}`);
+          toast.success(`<span aria-hidden="true">🎉</span> Naya student join kiya: ${(payload.new as StudentData).full_name || 'Unknown'}`);
         }
       ).subscribe();
 
@@ -237,7 +237,7 @@ const AdminDashboard = () => {
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'quiz_results' },
         (payload) => {
           setQuizResults(prev => [payload.new as QuizResultData, ...prev]);
-          toast.info(`📝 Naya quiz result aaya!`);
+          toast.info(`<span aria-hidden="true">📝</span> Naya quiz result aaya!`);
         }
       ).subscribe();
 
@@ -247,7 +247,7 @@ const AdminDashboard = () => {
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'contact_messages' },
         (payload) => {
           setContactMessages(prev => [payload.new as ContactMessage, ...prev]);
-          toast.warning(`💬 Naya message aaya! Reply zaroor dena.`);
+          toast.warning(`<span aria-hidden="true">💬</span> Naya message aaya! Reply zaroor dena.`);
         }
       ).subscribe();
 
@@ -282,7 +282,7 @@ const AdminDashboard = () => {
       return;
     }
     setUserRoles((prev) => [...prev, { user_id: studentId, role: "admin" }]);
-    toast.success("Admin role de diya gaya! 🛡️");
+    toast.success("Admin role de diya gaya! <span aria-hidden="true">🛡️</span>");
     setConfirmAdmin(null);
   };
 
@@ -292,7 +292,7 @@ const AdminDashboard = () => {
       toast.error("Admin role hatane mein dikkat aayi");
     } else {
       setUserRoles((prev) => prev.filter((r) => !(r.user_id === studentId && r.role === "admin")));
-      toast.success("Admin role hata diya gaya ✅");
+      toast.success("Admin role hata diya gaya <span aria-hidden="true">✅</span>");
     }
   };
 
@@ -355,7 +355,7 @@ const AdminDashboard = () => {
     if (error) {
       toast.error("Suggestion bhej nahi paaye");
     } else {
-      toast.success("Suggestion bhej diya gaya! ✅");
+      toast.success("Suggestion bhej diya gaya! <span aria-hidden="true">✅</span>");
       setSuggestionText("");
       setSendingTo(null);
     }
@@ -385,7 +385,7 @@ const AdminDashboard = () => {
     link.href = URL.createObjectURL(blob);
     link.download = `pathfinder-students-${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
-    toast.success('CSV download ho rahi hai! 📁');
+    toast.success('CSV download ho rahi hai! <span aria-hidden="true">📁</span>');
   };
 
   // Analytics
@@ -506,9 +506,9 @@ const AdminDashboard = () => {
   }, [students, quizResults, analyticsExtra]);
 
   const senderTypeLabels: Record<string, string> = {
-    student: "👨‍🎓 Student",
-    parent: "👨‍👩‍👦 Parent",
-    school: "🏫 School",
+    student: "<span aria-hidden="true">👨</span>‍<span aria-hidden="true">🎓</span> Student",
+    parent: "<span aria-hidden="true">👨</span>‍<span aria-hidden="true">👩</span>‍<span aria-hidden="true">👦</span> Parent",
+    school: "<span aria-hidden="true">🏫</span> School",
     other: "Other",
   };
 
@@ -553,7 +553,7 @@ const AdminDashboard = () => {
         <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
           <div className="space-y-2 min-w-0">
             <h1 className="font-display font-bold text-2xl md:text-3xl text-foreground">
-              🛡️ Admin Panel — PathFinder AI
+              <span aria-hidden="true">🛡️</span> Admin Panel — PathFinder AI
             </h1>
             {user?.email && (
               <p className="text-muted-foreground font-body text-sm break-all">{user.email}</p>
@@ -588,7 +588,7 @@ const AdminDashboard = () => {
       {/* Quick Actions */}
       <div className="flex flex-wrap gap-2 p-4 bg-muted/30 rounded-2xl border border-border">
         <p className="w-full text-xs font-display font-semibold text-muted-foreground uppercase mb-1">
-          ⚡ Quick Actions
+          <span aria-hidden="true">⚡</span> Quick Actions
         </p>
         <button
           onClick={() => setActiveTab('messages')}
@@ -677,7 +677,7 @@ const AdminDashboard = () => {
               : "border-border text-muted-foreground hover:text-foreground bg-muted hover:border-primary/30"
           }`}
         >
-          ⭐ Feedback
+          <span aria-hidden="true">⭐</span> Feedback
         </button>
       </div>
 
@@ -698,7 +698,7 @@ const AdminDashboard = () => {
               onClick={exportStudentsCSV}
               className="flex items-center justify-center gap-2 text-sm font-display font-semibold px-4 py-2.5 rounded-xl border-2 border-border hover:border-primary/40 transition-all bg-card"
             >
-              📥 Export CSV
+              <span aria-hidden="true">📥</span> Export CSV
             </button>
           </div>
 
@@ -710,7 +710,7 @@ const AdminDashboard = () => {
             </div>
           ) : filteredStudents.length === 0 && !search ? (
             <div className="text-center py-16">
-              <div className="text-6xl mb-4">🎓</div>
+              <div className="text-6xl mb-4"><span aria-hidden="true">🎓</span></div>
               <h3 className="font-display font-bold text-xl text-foreground mb-2">
                 Abhi tak koi student nahi
               </h3>
@@ -718,7 +718,7 @@ const AdminDashboard = () => {
                 Jab students quiz complete karenge, woh yahan dikhenge.
               </p>
               <p className="text-xs text-primary font-display font-semibold mt-3">
-                💡 Share karo: career-guider-six.vercel.app
+                <span aria-hidden="true">💡</span> Share karo: career-guider-six.vercel.app
               </p>
             </div>
           ) : filteredStudents.length === 0 ? (
@@ -749,7 +749,7 @@ const AdminDashboard = () => {
       {activeTab === "messages" && (
         <div className="bg-card border-2 border-border rounded-2xl p-6">
           <h3 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
-            <Mail className="w-5 h-5 text-primary" /> Contact Messages 📨
+            <Mail className="w-5 h-5 text-primary" /> Contact Messages <span aria-hidden="true">📨</span>
           </h3>
 
           {/* Messages tab ke top pe add karo */}
@@ -812,7 +812,7 @@ const AdminDashboard = () => {
                       : "border-border bg-card text-muted-foreground hover:border-primary/40"
                   }`}
                 >
-                  Unread only {messagesUnreadOnly ? "✓" : ""}
+                  Unread only {messagesUnreadOnly ? "<span aria-hidden="true">✓</span>" : ""}
                 </motion.button>
               </div>
 

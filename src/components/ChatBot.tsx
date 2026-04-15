@@ -21,12 +21,12 @@ function getQuizProfile() {
 }
 
 function getStreamEmoji(stream: string) {
-  if (!stream) return "🎯";
+  if (!stream) return "<span aria-hidden="true">🎯</span>";
   const s = stream.toLowerCase();
-  if (s === "science") return "🔬";
-  if (s === "commerce") return "📈";
-  if (s === "arts") return "🎨";
-  return "🎯";
+  if (s === "science") return "<span aria-hidden="true">🔬</span>";
+  if (s === "commerce") return "<span aria-hidden="true">📈</span>";
+  if (s === "arts") return "<span aria-hidden="true">🎨</span>";
+  return "<span aria-hidden="true">🎯</span>";
 }
 
 // ─────────────────────────────────────────────
@@ -37,7 +37,7 @@ function buildInitialMessage(profile: any): Message {
     return {
       role: "assistant",
       content:
-        "Namaste! 👋 Main **PathFinder AI** hoon — aapka career guidance assistant!\n\nStream, colleges, scholarships, exams — kuch bhi poochhein! 🎯\n\n💡 *Tip: Pehle quiz dein toh main aapko personalized advice de sakta hoon!*",
+        "Namaste! <span aria-hidden="true">👋</span> Main **PathFinder AI** hoon — aapka career guidance assistant!\n\nStream, colleges, scholarships, exams — kuch bhi poochhein! <span aria-hidden="true">🎯</span>\n\n<span aria-hidden="true">💡</span> *Tip: Pehle quiz dein toh main aapko personalized advice de sakta hoon!*",
     };
   }
 
@@ -49,11 +49,11 @@ function buildInitialMessage(profile: any): Message {
 
   let confidenceMsg = "";
   if (confidence > 70) {
-    confidenceMsg = `Aapka **${stream} stream** bilkul clear hai — ${confidence}% match! 💪`;
+    confidenceMsg = `Aapka **${stream} stream** bilkul clear hai — ${confidence}% match! <span aria-hidden="true">💪</span>`;
   } else if (confidence > 50) {
     confidenceMsg = `**${stream} stream** aapke liye best fit hai — ${confidence}% match! Thoda aur explore karein.`;
   } else {
-    confidenceMsg = `Quiz se pata chala ki aap ek **${personality}** hain — multiple streams explore karo! 🌟`;
+    confidenceMsg = `Quiz se pata chala ki aap ek **${personality}** hain — multiple streams explore karo! <span aria-hidden="true">🌟</span>`;
   }
 
   if (profile.marksPercent) {
@@ -64,12 +64,12 @@ function buildInitialMessage(profile: any): Message {
   }
 
   if (profile.budget === "low") {
-    confidenceMsg += "\n💡 Budget constraint note kiya — government colleges aur scholarships pe focus karunga.";
+    confidenceMsg += "\n<span aria-hidden="true">💡</span> Budget constraint note kiya — government colleges aur scholarships pe focus karunga.";
   }
 
   return {
     role: "assistant",
-    content: `Namaste! 👋 Maine aapka quiz result dekh liya! ${emoji}\n\n${confidenceMsg}\n\nAb seedha poochhein:\n- 🎓 Kaunse colleges best hain?\n- 📝 Kaunse exams dene chahiye?\n- 💰 Scholarships kaise milegi?\n- 🗺️ Career roadmap kya hoga?\n\nKuch bhi poochhein — main aapke **${stream} stream** ke hisaab se specifically bataunga! 🚀`,
+    content: `Namaste! <span aria-hidden="true">👋</span> Maine aapka quiz result dekh liya! ${emoji}\n\n${confidenceMsg}\n\nAb seedha poochhein:\n- <span aria-hidden="true">🎓</span> Kaunse colleges best hain?\n- <span aria-hidden="true">📝</span> Kaunse exams dene chahiye?\n- <span aria-hidden="true">💰</span> Scholarships kaise milegi?\n- <span aria-hidden="true">🗺️</span> Career roadmap kya hoga?\n\nKuch bhi poochhein — main aapke **${stream} stream** ke hisaab se specifically bataunga! <span aria-hidden="true">🚀</span>`,
   };
 }
 
@@ -152,7 +152,7 @@ function saveChatHistory(messages: Message[]) {
 // CHATBOT COMPONENT
 // ─────────────────────────────────────────────
 const ChatBot = () => {
-  // ✅ FIX: Har baar fresh read — stale cache nahi chalega
+  // <span aria-hidden="true">✅</span> FIX: Har baar fresh read — stale cache nahi chalega
   const [isOpen, setIsOpen] = useState(false);
   const [quizProfile, setQuizProfile] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -161,7 +161,7 @@ const ChatBot = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // ✅ FIX: Chatbot khulte waqt fresh profile read karo
+  // <span aria-hidden="true">✅</span> FIX: Chatbot khulte waqt fresh profile read karo
   // Agar stream badal gaya toh chat history bhi reset karo
   useEffect(() => {
     if (!isOpen) return;
@@ -238,7 +238,7 @@ const ChatBot = () => {
         ...prev,
         {
           role: "assistant",
-          content: `Maaf kijiye, kuch gadbad ho gayi 😔\n\n**${err.message || "Kripya dubara koshish karein."}**`,
+          content: `Maaf kijiye, kuch gadbad ho gayi <span aria-hidden="true">😔</span>\n\n**${err.message || "Kripya dubara koshish karein."}**`,
         },
       ]);
     } finally {

@@ -48,7 +48,7 @@ const SuggestionModal = ({
             disabled={!suggestionText.trim()}
             className="font-display font-semibold text-sm px-4 py-2 rounded-lg gradient-hero text-primary-foreground hover:opacity-90 disabled:opacity-50"
           >
-            Bhejein ✈️
+            Bhejein <span aria-hidden="true">✈️</span>
           </button>
         </div>
       </motion.div>

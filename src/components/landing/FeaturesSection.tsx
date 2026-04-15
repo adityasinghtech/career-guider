@@ -4,42 +4,42 @@ import { Compass, BookOpen, GraduationCap, TrendingUp, Clock, Download, Shield, 
 const features = [
   {
     icon: Clock,
-    title: "Sirf 5 Minute ⏱️",
+    title: "Sirf 5 Minute <span aria-hidden="true">⏱️</span>",
     desc: "15 fun questions, aur aapka career path crystal clear!",
   },
   {
     icon: Compass,
-    title: "AI Smart Recommendation 🧠",
+    title: "AI Smart Recommendation <span aria-hidden="true">🧠</span>",
     desc: "Science, Commerce, ya Arts — kya best hai aapke liye + match percentage",
   },
   {
     icon: BookOpen,
-    title: "15-Year Roadmap 🗺️",
+    title: "15-Year Roadmap <span aria-hidden="true">🗺️</span>",
     desc: "2026 se 2040 tak ka complete plan — kya karna hai, kab karna hai",
   },
   {
     icon: GraduationCap,
-    title: "All India Colleges 🎓",
+    title: "All India Colleges <span aria-hidden="true">🎓</span>",
     desc: "IIT, AIIMS, NLU se lekar state colleges tak — fees aur cutoffs ke saath",
   },
   {
     icon: Download,
-    title: "Parents PDF Report 📥",
+    title: "Parents PDF Report <span aria-hidden="true">📥</span>",
     desc: "Download karein, parents ko dikhayein — unhe bhi samajh aayega",
   },
   {
     icon: TrendingUp,
-    title: "Career Paths + Salary 💰",
+    title: "Career Paths + Salary <span aria-hidden="true">💰</span>",
     desc: "₹5 LPA se ₹50 LPA tak — kaunsa career kitna paisa dega",
   },
   {
     icon: Shield,
-    title: "FREE Government Courses 🆓",
+    title: "FREE Government Courses <span aria-hidden="true">🆓</span>",
     desc: "SWAYAM, NPTEL, Google — ₹2 Lakh ki value ke courses bilkul free!",
   },
   {
     icon: Smartphone,
-    title: "WhatsApp Share 📱",
+    title: "WhatsApp Share <span aria-hidden="true">📱</span>",
     desc: "Ek click mein friends ko share karein — sabko test karwayein!",
   },
 ];
@@ -68,10 +68,10 @@ const FeaturesSection = () => (
         className="text-center mb-14"
       >
         <span className="inline-block text-sm font-display font-semibold text-primary bg-primary/10 px-4 py-1.5 rounded-full mb-4 border border-primary/15">
-          ✨ Premium Features
+          <span aria-hidden="true">✨</span> Premium Features
         </span>
         <h2 className="font-display font-bold text-3xl md:text-5xl text-foreground mb-4">
-          Aapko Kya Milega? 🎁
+          Aapko Kya Milega? <span aria-hidden="true">🎁</span>
         </h2>
         <p className="text-muted-foreground text-lg max-w-xl mx-auto">
           ₹5,000+ ki value — bilkul <strong className="text-foreground">FREE!</strong> Koi hidden charges nahi!

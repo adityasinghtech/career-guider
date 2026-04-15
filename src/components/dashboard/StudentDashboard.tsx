@@ -212,7 +212,7 @@ const AdminRepliesSection = ({ userEmail }: { userEmail: string | undefined }) =
   return (
     <div className="bg-card border-2 border-green-500/30 rounded-2xl p-5 mt-4">
       <h3 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
-        💬 Admin ke Replies
+        <span aria-hidden="true">💬</span> Admin ke Replies
       </h3>
       <div className="space-y-3">
         {replies.map((reply) => (
@@ -224,7 +224,7 @@ const AdminRepliesSection = ({ userEmail }: { userEmail: string | undefined }) =
               Aapka message: "{reply.message?.slice(0, 60)}{reply.message?.length > 60 ? "..." : ""}"
             </p>
             <p className="text-sm font-body text-foreground font-medium">
-              🧑‍💼 Admin: {reply.admin_reply}
+              <span aria-hidden="true">🧑</span>‍<span aria-hidden="true">💼</span> Admin: {reply.admin_reply}
             </p>
             <p className="text-xs text-muted-foreground mt-2">
               {reply.replied_at
@@ -306,7 +306,7 @@ const HelpSupportSection = ({ user, profile }: { user: any; profile: Profile | n
     if (error) {
       toast.error("Message bhejne mein problem aayi.");
     } else {
-      toast.success("Message bhej diya! Admin jald reply karenge 🙏");
+      toast.success("Message bhej diya! Admin jald reply karenge <span aria-hidden="true">🙏</span>");
       setMessage("");
     }
   };
@@ -314,7 +314,7 @@ const HelpSupportSection = ({ user, profile }: { user: any; profile: Profile | n
   return (
     <div className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 mt-6 shadow-card">
       <h3 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
-        🛠️ Help & Support
+        <span aria-hidden="true">🛠️</span> Help & Support
       </h3>
       
       <form onSubmit={handleSubmit} className="space-y-4 mb-6">
@@ -347,7 +347,7 @@ const HelpSupportSection = ({ user, profile }: { user: any; profile: Profile | n
           disabled={isSubmitting || !message.trim()}
           className="gradient-hero text-primary-foreground font-display font-semibold px-4 py-2 rounded-xl hover:opacity-90 transition-opacity text-sm disabled:opacity-50 flex items-center gap-2"
         >
-          {isSubmitting ? "Bhej rahe hain..." : "Message Bhejo 📨"}
+          {isSubmitting ? "Bhej rahe hain..." : "Message Bhejo <span aria-hidden="true">📨</span>"}
         </button>
       </form>
 
@@ -495,7 +495,7 @@ const StudentDashboard = () => {
     if (error) {
       toast.error("Profile update nahi ho paaya");
     } else {
-      toast.success("Profile update ho gaya! ✅");
+      toast.success("Profile update ho gaya! <span aria-hidden="true">✅</span>");
       setProfile({ ...profile, ...editForm } as Profile);
       setEditMode(false);
     }
@@ -513,7 +513,7 @@ const StudentDashboard = () => {
     if (error) {
       toast.error("Career goal save nahi ho paaya");
     } else {
-      toast.success("Career goal save ho gaya! ✅");
+      toast.success("Career goal save ho gaya! <span aria-hidden="true">✅</span>");
       setProfile((prev) =>
         prev ? { ...prev, career_goal: careerGoalDraft.trim() || null } : prev,
       );
@@ -550,7 +550,7 @@ const StudentDashboard = () => {
   const nextAction: NextActionConfig = useMemo(() => {
     if (!stageQuizDone) {
       return {
-        title: "Quiz dijiye — apna stream discover karo 🎯",
+        title: "Quiz dijiye — apna stream discover karo <span aria-hidden="true">🎯</span>",
         ctaLabel: "Quiz shuru karein",
         ctaHref: "/quiz",
         scrollToId: null,
@@ -559,7 +559,7 @@ const StudentDashboard = () => {
     }
     if (!stageGoalSet) {
       return {
-        title: "Career goal set karo — dashboard tab mein 🎯",
+        title: "Career goal set karo — dashboard tab mein <span aria-hidden="true">🎯</span>",
         ctaLabel: "Goal set karein",
         ctaHref: null,
         scrollToId: "student-dashboard-career-goal",
@@ -568,7 +568,7 @@ const StudentDashboard = () => {
     }
     if (!stageChecklistStarted) {
       return {
-        title: "Preparation checklist start karo ✅",
+        title: "Preparation checklist start karo <span aria-hidden="true">✅</span>",
         ctaLabel: "Checklist kholo",
         ctaHref: null,
         scrollToId: "student-dashboard-checklist",
@@ -577,7 +577,7 @@ const StudentDashboard = () => {
     }
     if (!stageExpert) {
       return {
-        title: "Kal bhi aao — streak banaye rakho 🔥",
+        title: "Kal bhi aao — streak banaye rakho <span aria-hidden="true">🔥</span>",
         ctaLabel: "Checklist continue karein",
         ctaHref: null,
         scrollToId: "student-dashboard-checklist",
@@ -585,7 +585,7 @@ const StudentDashboard = () => {
       };
     }
     return {
-      title: "Bahut badhiya! Expert suggestion ka wait karo 💬",
+      title: "Bahut badhiya! Expert suggestion ka wait karo <span aria-hidden="true">💬</span>",
       ctaLabel: "Suggestions dekhein",
       ctaHref: null,
       scrollToId: null,
@@ -669,7 +669,7 @@ const StudentDashboard = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="font-display font-bold text-2xl md:text-3xl text-foreground">
-            Namaste, {profile?.full_name || "Student"} ji 👋
+            Namaste, {profile?.full_name || "Student"} ji <span aria-hidden="true">👋</span>
           </h1>
           <p className="text-muted-foreground font-body text-sm">{user?.email}</p>
         </div>
@@ -727,7 +727,7 @@ const StudentDashboard = () => {
             className="bg-card border-2 border-border rounded-2xl p-5 md:p-6 shadow-card"
           >
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-4">
-              <h2 className="font-display font-bold text-lg md:text-xl text-foreground">Aapka Journey 🗺️</h2>
+              <h2 className="font-display font-bold text-lg md:text-xl text-foreground">Aapka Journey <span aria-hidden="true">🗺️</span></h2>
               <p className="text-sm font-display font-semibold text-primary">{journeyPercent}% complete</p>
             </div>
             <div className="h-3 rounded-full bg-muted overflow-hidden mb-5">
@@ -747,7 +747,7 @@ const StudentDashboard = () => {
                   }`}
                 >
                   <p className="font-display font-bold text-sm text-foreground mb-1">
-                    {st.done ? "✅" : "⭕"} {st.label}
+                    {st.done ? "<span aria-hidden="true">✅</span>" : "<span aria-hidden="true">⭕</span>"} {st.label}
                   </p>
                   <div className={`h-1.5 rounded-full overflow-hidden ${st.done ? "bg-muted" : "bg-muted/60"}`}>
                     {st.done && <div className="h-full w-full gradient-hero rounded-full" />}
@@ -819,7 +819,7 @@ const StudentDashboard = () => {
                   <Flame className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                 </div>
                 <span className="font-display font-bold text-2xl text-foreground">
-                  🔥 {streakCount}
+                  <span aria-hidden="true">🔥</span> {streakCount}
                 </span>
               </div>
               <p className="text-foreground text-sm font-display font-semibold">day streak</p>
@@ -1077,7 +1077,7 @@ const StudentDashboard = () => {
           </h2>
           {results.length === 0 ? (
             <div className="text-center py-8">
-              <div className="text-4xl mb-3">📝</div>
+              <div className="text-4xl mb-3"><span aria-hidden="true">📝</span></div>
               <p className="text-muted-foreground font-body mb-3">Abhi tak koi quiz nahi diya</p>
               <Link to="/quiz" className="gradient-hero text-primary-foreground font-display font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 inline-block">
                 Pehla Quiz Dijiye →
@@ -1118,7 +1118,7 @@ const StudentDashboard = () => {
           </h2>
           {suggestions.length === 0 ? (
             <div className="text-center py-8">
-              <div className="text-4xl mb-3">💬</div>
+              <div className="text-4xl mb-3"><span aria-hidden="true">💬</span></div>
               <p className="text-muted-foreground font-body">Koi suggestion abhi tak nahi aaya</p>
               <p className="text-xs text-muted-foreground mt-1">Jab experts aapko koi salah denge, woh yahan dikhegi</p>
             </div>

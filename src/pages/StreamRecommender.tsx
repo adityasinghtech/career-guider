@@ -110,9 +110,9 @@ function getRecommendation(
 }
 
 const streamConfig = {
-  science: { label: "Science 🔬", color: "blue", bg: "bg-blue-50 dark:bg-blue-950/30", border: "border-blue-400", badge: "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300", bar: "bg-blue-500", emoji: "🔬" },
-  commerce: { label: "Commerce 📈", color: "green", bg: "bg-green-50 dark:bg-green-950/30", border: "border-green-400", badge: "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300", bar: "bg-green-500", emoji: "📈" },
-  arts: { label: "Arts 🎨", color: "purple", bg: "bg-purple-50 dark:bg-purple-950/30", border: "border-purple-400", badge: "bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300", bar: "bg-purple-500", emoji: "🎨" },
+  science: { label: "Science <span aria-hidden="true">🔬</span>", color: "blue", bg: "bg-blue-50 dark:bg-blue-950/30", border: "border-blue-400", badge: "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300", bar: "bg-blue-500", emoji: "<span aria-hidden="true">🔬</span>" },
+  commerce: { label: "Commerce <span aria-hidden="true">📈</span>", color: "green", bg: "bg-green-50 dark:bg-green-950/30", border: "border-green-400", badge: "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300", bar: "bg-green-500", emoji: "<span aria-hidden="true">📈</span>" },
+  arts: { label: "Arts <span aria-hidden="true">🎨</span>", color: "purple", bg: "bg-purple-50 dark:bg-purple-950/30", border: "border-purple-400", badge: "bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300", bar: "bg-purple-500", emoji: "<span aria-hidden="true">🎨</span>" },
 };
 
 export default function StreamRecommender() {
@@ -156,7 +156,7 @@ export default function StreamRecommender() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-10"
         >
-          <div className="text-6xl mb-4">🎯</div>
+          <div className="text-6xl mb-4"><span aria-hidden="true">🎯</span></div>
           <h1 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-2">Stream Finder</h1>
           <p className="text-muted-foreground font-body text-lg">10th ke baad kaunsa stream? — Abhi pata karo!</p>
         </motion.div>
@@ -164,7 +164,7 @@ export default function StreamRecommender() {
         {!result ? (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
             <Card>
-              <CardHeader><CardTitle className="font-display">📊 10th mein percentage kya thi?</CardTitle></CardHeader>
+              <CardHeader><CardTitle className="font-display"><span aria-hidden="true">📊</span> 10th mein percentage kya thi?</CardTitle></CardHeader>
               <CardContent>
                 <input
                   type="number"
@@ -180,7 +180,7 @@ export default function StreamRecommender() {
             </Card>
 
             <Card>
-              <CardHeader><CardTitle className="font-display">📚 Kaunse subjects strong hain? (multiple select)</CardTitle></CardHeader>
+              <CardHeader><CardTitle className="font-display"><span aria-hidden="true">📚</span> Kaunse subjects strong hain? (multiple select)</CardTitle></CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
                   {SUBJECTS.map((s) => (
@@ -202,7 +202,7 @@ export default function StreamRecommender() {
             </Card>
 
             <Card>
-              <CardHeader><CardTitle className="font-display">❤️ Kaunse fields mein interest hai? (multiple select)</CardTitle></CardHeader>
+              <CardHeader><CardTitle className="font-display"><span aria-hidden="true">❤️</span> Kaunse fields mein interest hai? (multiple select)</CardTitle></CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
                   {INTERESTS.map((i) => (
@@ -225,7 +225,7 @@ export default function StreamRecommender() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Card>
-                <CardHeader><CardTitle className="font-display text-base">🗺️ State</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="font-display text-base"><span aria-hidden="true">🗺️</span> State</CardTitle></CardHeader>
                 <CardContent>
                   <select
                     value={state}
@@ -239,7 +239,7 @@ export default function StreamRecommender() {
               </Card>
 
               <Card>
-                <CardHeader><CardTitle className="font-display text-base">🏷️ Category</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="font-display text-base"><span aria-hidden="true">🏷️</span> Category</CardTitle></CardHeader>
                 <CardContent>
                   <select
                     value={category}
@@ -262,7 +262,7 @@ export default function StreamRecommender() {
               disabled={loading || !marks}
               className="w-full gradient-hero text-primary-foreground font-display font-bold text-lg py-6 rounded-xl hover:opacity-90 transition-all disabled:opacity-60"
             >
-              {loading ? "Analyze kar raha hoon... ⏳" : "Stream Dhundo →"}
+              {loading ? "Analyze kar raha hoon... <span aria-hidden="true">⏳</span>" : "Stream Dhundo →"}
             </Button>
           </motion.div>
         ) : (
@@ -275,7 +275,7 @@ export default function StreamRecommender() {
                   {streamConfig[result.primary].label}
                 </h2>
                 <Badge className={`${streamConfig[result.primary].badge} text-sm px-3 py-1`}>
-                  {result.confidence}% Match 🎯
+                  {result.confidence}% Match <span aria-hidden="true">🎯</span>
                 </Badge>
                 <p className="mt-4 text-muted-foreground font-body">{result.reasoning}</p>
               </CardContent>
@@ -308,7 +308,7 @@ export default function StreamRecommender() {
             <Card>
               <CardContent className="pt-4">
                 <p className="font-body text-muted-foreground">
-                  💡 <span className="font-semibold text-foreground">Alternate option:</span> {streamConfig[result.alternate].label} bhi consider kar sakte ho!
+                  <span aria-hidden="true">💡</span> <span className="font-semibold text-foreground">Alternate option:</span> {streamConfig[result.alternate].label} bhi consider kar sakte ho!
                 </p>
               </CardContent>
             </Card>
@@ -330,7 +330,7 @@ export default function StreamRecommender() {
 
             {/* Scholarships */}
             <Card>
-              <CardHeader><CardTitle className="font-display">💰 Eligible Scholarships</CardTitle></CardHeader>
+              <CardHeader><CardTitle className="font-display"><span aria-hidden="true">💰</span> Eligible Scholarships</CardTitle></CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
                   {result.scholarships.map((s, i) => (
@@ -352,7 +352,7 @@ export default function StreamRecommender() {
                 onClick={() => { setResult(null); setMarks(""); setSelectedSubjects([]); setSelectedInterests([]); }}
                 className="flex-1 font-display font-semibold"
               >
-                🔄 Dobara try karo
+                <span aria-hidden="true">🔄</span> Dobara try karo
               </Button>
             </div>
           </motion.div>

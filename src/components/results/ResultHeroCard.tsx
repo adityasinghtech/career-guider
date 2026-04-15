@@ -17,13 +17,13 @@ const streamColors: Record<string, string> = {
 };
 
 const streamEmojis: Record<string, string> = {
-  Science: "🔬",
-  Commerce: "📊",
-  Arts: "🎨",
-  Sports: "🏆",
-  Vocational: "🔧",
-  Creative: "🎨",
-  Skills: "💻",
+  Science: "<span aria-hidden="true">🔬</span>",
+  Commerce: "<span aria-hidden="true">📊</span>",
+  Arts: "<span aria-hidden="true">🎨</span>",
+  Sports: "<span aria-hidden="true">🏆</span>",
+  Vocational: "<span aria-hidden="true">🔧</span>",
+  Creative: "<span aria-hidden="true">🎨</span>",
+  Skills: "<span aria-hidden="true">💻</span>",
 };
 
 const ResultHeroCard = ({ result, allScores }: Props) => {
@@ -57,7 +57,7 @@ const ResultHeroCard = ({ result, allScores }: Props) => {
         </h1>
         <p className="font-display font-bold text-xl opacity-90">{result.tagline}</p>
         <div className="mt-2 inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm font-display font-semibold">
-          🎯 {percentages[result.stream]}% Match
+          <span aria-hidden="true">🎯</span> {percentages[result.stream]}% Match
         </div>
       </div>
 
@@ -77,7 +77,7 @@ const ResultHeroCard = ({ result, allScores }: Props) => {
               />
             </div>
             <span className="font-display font-bold text-sm w-10 text-right">
-              {i === 0 ? `🥇 ${pct}%` : i === 1 ? `🥈 ${pct}%` : `🥉 ${pct}%`}
+              {i === 0 ? `<span aria-hidden="true">🥇</span> ${pct}%` : i === 1 ? `<span aria-hidden="true">🥈</span> ${pct}%` : `<span aria-hidden="true">🥉</span> ${pct}%`}
             </span>
           </div>
         ))}

@@ -187,9 +187,9 @@ export default function DeepAnalysis() {
       <div className="pt-24 pb-16 px-4 max-w-3xl mx-auto">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
-          <div className="text-6xl mb-3">🔬</div>
+          <div className="text-6xl mb-3"><span aria-hidden="true">🔬</span></div>
           <h1 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-2">Deep Career Analysis</h1>
-          <p className="text-muted-foreground font-body">AI aapka poora career plan banayega — free mein! 🚀</p>
+          <p className="text-muted-foreground font-body">AI aapka poora career plan banayega — free mein! <span aria-hidden="true">🚀</span></p>
         </motion.div>
 
         <AnimatePresence mode="wait">
@@ -197,7 +197,7 @@ export default function DeepAnalysis() {
             <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-5">
               {/* Marks */}
               <Card>
-                <CardHeader><CardTitle className="font-display">📊 Marks (optional)</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="font-display"><span aria-hidden="true">📊</span> Marks (optional)</CardTitle></CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
@@ -224,7 +224,7 @@ export default function DeepAnalysis() {
 
               {/* Stream */}
               <Card>
-                <CardHeader><CardTitle className="font-display">🎓 Stream</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="font-display"><span aria-hidden="true">🎓</span> Stream</CardTitle></CardHeader>
                 <CardContent>
                   <div className="flex gap-2">
                     {["Science", "Commerce", "Arts"].map((s) => (
@@ -235,7 +235,7 @@ export default function DeepAnalysis() {
                           profile.stream === s.toLowerCase() ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
                         }`}
                       >
-                        {s === "Science" ? "🔬" : s === "Commerce" ? "📈" : "🎨"} {s}
+                        {s === "Science" ? "<span aria-hidden="true">🔬</span>" : s === "Commerce" ? "<span aria-hidden="true">📈</span>" : "<span aria-hidden="true">🎨</span>"} {s}
                       </button>
                     ))}
                   </div>
@@ -244,7 +244,7 @@ export default function DeepAnalysis() {
 
               {/* Interests */}
               <Card>
-                <CardHeader><CardTitle className="font-display">❤️ Interests (multiple select)</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="font-display"><span aria-hidden="true">❤️</span> Interests (multiple select)</CardTitle></CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
                     {INTERESTS_LIST.map((i) => (
@@ -265,7 +265,7 @@ export default function DeepAnalysis() {
               {/* Personality + Budget + Location */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <Card>
-                  <CardHeader><CardTitle className="font-display text-sm">🧠 Personality</CardTitle></CardHeader>
+                  <CardHeader><CardTitle className="font-display text-sm"><span aria-hidden="true">🧠</span> Personality</CardTitle></CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-2 gap-1.5">
                       {(["analytical", "creative", "practical", "balanced"] as Personality[]).map((p) => (
@@ -276,7 +276,7 @@ export default function DeepAnalysis() {
                             profile.personality === p ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
                           }`}
                         >
-                          {p === "analytical" ? "🔍" : p === "creative" ? "🎨" : p === "practical" ? "🔧" : "⚖️"} {p}
+                          {p === "analytical" ? "<span aria-hidden="true">🔍</span>" : p === "creative" ? "<span aria-hidden="true">🎨</span>" : p === "practical" ? "<span aria-hidden="true">🔧</span>" : "<span aria-hidden="true">⚖️</span>"} {p}
                         </button>
                       ))}
                     </div>
@@ -284,7 +284,7 @@ export default function DeepAnalysis() {
                 </Card>
 
                 <Card>
-                  <CardHeader><CardTitle className="font-display text-sm">💰 Budget</CardTitle></CardHeader>
+                  <CardHeader><CardTitle className="font-display text-sm"><span aria-hidden="true">💰</span> Budget</CardTitle></CardHeader>
                   <CardContent>
                     <div className="flex flex-col gap-1.5">
                       {(["low", "medium", "high"] as Budget[]).map((b) => (
@@ -295,7 +295,7 @@ export default function DeepAnalysis() {
                             profile.budget === b ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
                           }`}
                         >
-                          {b === "low" ? "🏛️ Sarkari prefer" : b === "medium" ? "📚 Thoda invest" : "💎 Premium"} 
+                          {b === "low" ? "<span aria-hidden="true">🏛️</span> Sarkari prefer" : b === "medium" ? "<span aria-hidden="true">📚</span> Thoda invest" : "<span aria-hidden="true">💎</span> Premium"} 
                         </button>
                       ))}
                     </div>
@@ -303,7 +303,7 @@ export default function DeepAnalysis() {
                 </Card>
 
                 <Card>
-                  <CardHeader><CardTitle className="font-display text-sm">📍 Location</CardTitle></CardHeader>
+                  <CardHeader><CardTitle className="font-display text-sm"><span aria-hidden="true">📍</span> Location</CardTitle></CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-2 gap-1.5">
                       {(["metro", "tier2", "tier3", "rural"] as LocationType[]).map((l) => (
@@ -314,7 +314,7 @@ export default function DeepAnalysis() {
                             profile.location === l ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
                           }`}
                         >
-                          {l === "metro" ? "🏙️ Metro" : l === "tier2" ? "🌆 Tier 2" : l === "tier3" ? "🏘️ Tier 3" : "🌾 Rural"}
+                          {l === "metro" ? "<span aria-hidden="true">🏙️</span> Metro" : l === "tier2" ? "<span aria-hidden="true">🌆</span> Tier 2" : l === "tier3" ? "<span aria-hidden="true">🏘️</span> Tier 3" : "<span aria-hidden="true">🌾</span> Rural"}
                         </button>
                       ))}
                     </div>
@@ -330,8 +330,8 @@ export default function DeepAnalysis() {
                 className="w-full gradient-hero text-primary-foreground font-display font-bold text-lg py-6 rounded-xl hover:opacity-90 transition-all disabled:opacity-60"
               >
                 {loading ? (
-                  <span className="flex items-center gap-2"><Loader2 className="w-5 h-5 animate-spin" /> AI analysis kar raha hai... thoda wait karo ⏳</span>
-                ) : "Deep Analysis Karo 🚀"}
+                  <span className="flex items-center gap-2"><Loader2 className="w-5 h-5 animate-spin" /> AI analysis kar raha hai... thoda wait karo <span aria-hidden="true">⏳</span></span>
+                ) : "Deep Analysis Karo <span aria-hidden="true">🚀</span>"}
               </Button>
             </motion.div>
           ) : (
@@ -377,7 +377,7 @@ export default function DeepAnalysis() {
                   {activeTab === "aptitude" && (
                     <div className="space-y-4">
                       <Card>
-                        <CardHeader><CardTitle className="font-display">💪 Strengths</CardTitle></CardHeader>
+                        <CardHeader><CardTitle className="font-display"><span aria-hidden="true">💪</span> Strengths</CardTitle></CardHeader>
                         <CardContent>
                           <div className="flex flex-wrap gap-2">
                             {analysis.psychological_aptitude.strengths.map((s, i) => (
@@ -387,11 +387,11 @@ export default function DeepAnalysis() {
                         </CardContent>
                       </Card>
                       <Card>
-                        <CardHeader><CardTitle className="font-display">📖 Learning Style</CardTitle></CardHeader>
+                        <CardHeader><CardTitle className="font-display"><span aria-hidden="true">📖</span> Learning Style</CardTitle></CardHeader>
                         <CardContent><p className="font-body text-foreground">{analysis.psychological_aptitude.learning_style}</p></CardContent>
                       </Card>
                       <Card>
-                        <CardHeader><CardTitle className="font-display">🏢 Career Personality</CardTitle></CardHeader>
+                        <CardHeader><CardTitle className="font-display"><span aria-hidden="true">🏢</span> Career Personality</CardTitle></CardHeader>
                         <CardContent><p className="font-body text-foreground">{analysis.psychological_aptitude.career_personality}</p></CardContent>
                       </Card>
                     </div>
@@ -401,15 +401,15 @@ export default function DeepAnalysis() {
                   {activeTab === "finance" && (
                     <div className="space-y-4">
                       <Card>
-                        <CardHeader><CardTitle className="font-display">💸 Estimated 4-Year Cost</CardTitle></CardHeader>
+                        <CardHeader><CardTitle className="font-display"><span aria-hidden="true">💸</span> Estimated 4-Year Cost</CardTitle></CardHeader>
                         <CardContent><p className="font-display font-bold text-2xl text-primary">{analysis.financial_feasibility.estimated_4year_cost}</p></CardContent>
                       </Card>
                       <Card>
-                        <CardHeader><CardTitle className="font-display">🎓 Scholarship Potential</CardTitle></CardHeader>
+                        <CardHeader><CardTitle className="font-display"><span aria-hidden="true">🎓</span> Scholarship Potential</CardTitle></CardHeader>
                         <CardContent><p className="font-body text-foreground">{analysis.financial_feasibility.scholarship_potential}</p></CardContent>
                       </Card>
                       <Card>
-                        <CardHeader><CardTitle className="font-display">⏱️ ROI Timeline</CardTitle></CardHeader>
+                        <CardHeader><CardTitle className="font-display"><span aria-hidden="true">⏱️</span> ROI Timeline</CardTitle></CardHeader>
                         <CardContent><p className="font-body text-foreground">{analysis.financial_feasibility.roi_timeline}</p></CardContent>
                       </Card>
                     </div>
@@ -457,10 +457,10 @@ export default function DeepAnalysis() {
                   {activeTab === "roadmap" && (
                     <div className="space-y-4">
                       {[
-                        { key: "now", label: "🔥 Abhi Karo", color: "emerald" },
-                        { key: "year1", label: "📅 Year 1", color: "blue" },
-                        { key: "year2", label: "🎯 Year 2", color: "purple" },
-                        { key: "longterm", label: "🌟 Long Term (5 years)", color: "orange" },
+                        { key: "now", label: "<span aria-hidden="true">🔥</span> Abhi Karo", color: "emerald" },
+                        { key: "year1", label: "<span aria-hidden="true">📅</span> Year 1", color: "blue" },
+                        { key: "year2", label: "<span aria-hidden="true">🎯</span> Year 2", color: "purple" },
+                        { key: "longterm", label: "<span aria-hidden="true">🌟</span> Long Term (5 years)", color: "orange" },
                       ].map(({ key, label, color }) => (
                         <Card key={key} className={`border-2 border-${color}-300 dark:border-${color}-800 bg-${color}-50 dark:bg-${color}-950/20`}>
                           <CardHeader className="pb-2"><CardTitle className="font-display text-base">{label}</CardTitle></CardHeader>
@@ -482,11 +482,11 @@ export default function DeepAnalysis() {
                   {activeTab === "tips" && (
                     <div className="space-y-4">
                       <Card>
-                        <CardHeader><CardTitle className="font-display">📊 Competition Level</CardTitle></CardHeader>
+                        <CardHeader><CardTitle className="font-display"><span aria-hidden="true">📊</span> Competition Level</CardTitle></CardHeader>
                         <CardContent><p className="font-body text-foreground">{analysis.competition_level}</p></CardContent>
                       </Card>
                       <Card>
-                        <CardHeader><CardTitle className="font-display">✅ Success Tips</CardTitle></CardHeader>
+                        <CardHeader><CardTitle className="font-display"><span aria-hidden="true">✅</span> Success Tips</CardTitle></CardHeader>
                         <CardContent>
                           <ul className="space-y-3">
                             {analysis.success_tips.map((tip, i) => (
@@ -499,7 +499,7 @@ export default function DeepAnalysis() {
                         </CardContent>
                       </Card>
                       <Card>
-                        <CardHeader><CardTitle className="font-display">🔄 Backup Paths</CardTitle></CardHeader>
+                        <CardHeader><CardTitle className="font-display"><span aria-hidden="true">🔄</span> Backup Paths</CardTitle></CardHeader>
                         <CardContent className="space-y-3">
                           {analysis.backup_paths.map((bp, i) => (
                             <div key={i} className="bg-muted/60 rounded-xl p-3">
@@ -519,7 +519,7 @@ export default function DeepAnalysis() {
                 variant="outline"
                 className="w-full font-display font-semibold"
               >
-                🔄 Naya Analysis Karo
+                <span aria-hidden="true">🔄</span> Naya Analysis Karo
               </Button>
             </motion.div>
           )}

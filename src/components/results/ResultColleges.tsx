@@ -17,7 +17,7 @@ function resolveCollegeType(c: College): CollegeTypeTag {
   if (/\biiit\b/.test(n)) return "top";
   if (/\bbits\b/.test(n)) return "top";
   if (/polytechnic/.test(n) || /\bdiploma\b/.test(n)) return "polytechnic";
-  if (/international|🇺🇸|🇬🇧|🇩🇪|🇨🇦|🇫🇷|🇸🇬|🇰🇷|🇯🇵|🇦🇺/.test(loc)) return "top";
+  if (/international|<span aria-hidden="true">🇺🇸</span>|<span aria-hidden="true">🇬🇧</span>|<span aria-hidden="true">🇩🇪</span>|<span aria-hidden="true">🇨🇦</span>|<span aria-hidden="true">🇫🇷</span>|<span aria-hidden="true">🇸🇬</span>|<span aria-hidden="true">🇰🇷</span>|<span aria-hidden="true">🇯🇵</span>|<span aria-hidden="true">🇦🇺</span>/.test(loc)) return "top";
   if (
     /iim |xlri|fms |mdi |nlsiu|nlud|^nlu |srcc|lse |harvard|wharton|insead|oxford|cambridge|stanford|^mit |eth |nus |kaist|mannheim|rotman|yonsei|mext|fulbright|commonwealth|daad|national law school|school of economics/.test(
       n,
@@ -187,7 +187,7 @@ const ResultColleges = ({ result }: { result: StreamResult }) => {
       className="bg-card rounded-2xl p-6 shadow-card border border-border"
     >
       <h2 className="font-display font-bold text-xl text-foreground mb-4 flex items-center gap-2">
-        <GraduationCap className="w-5 h-5 text-primary" /> Colleges — Top, Government & Local / Normal 🎓
+        <GraduationCap className="w-5 h-5 text-primary" /> Colleges — Top, Government & Local / Normal <span aria-hidden="true">🎓</span>
       </h2>
 
       {/* Search */}
@@ -283,7 +283,7 @@ const ResultColleges = ({ result }: { result: StreamResult }) => {
       </div>
 
       <p className="text-sm text-muted-foreground font-body mt-5 pt-4 border-t border-border leading-relaxed">
-        💡 Tip: Government colleges mein fees kam hoti hai. State-wise scholarship bhi milti hai — Scholarships section zaroor dekho!
+        <span aria-hidden="true">💡</span> Tip: Government colleges mein fees kam hoti hai. State-wise scholarship bhi milti hai — Scholarships section zaroor dekho!
       </p>
     </motion.div>
   );

@@ -10,7 +10,7 @@ const ResultExams = ({ result }: { result: StreamResult }) => (
     className="bg-card rounded-2xl p-6 shadow-card"
   >
     <h2 className="font-display font-bold text-xl text-foreground mb-4 flex items-center gap-2">
-      <FileText className="w-5 h-5 text-primary" /> Kaunse Exams Dene Hain? 📝
+      <FileText className="w-5 h-5 text-primary" /> Kaunse Exams Dene Hain? <span aria-hidden="true">📝</span>
     </h2>
     <div className="space-y-2">
       {result.examsToPrepare.map((exam) => (

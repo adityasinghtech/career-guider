@@ -44,15 +44,15 @@ const CareerReadinessScore = ({
 
   const message =
     total >= 80 ? (
-      <p className="font-display font-bold text-green-600 dark:text-green-400">Bahut Badhiya! 🔥</p>
+      <p className="font-display font-bold text-green-600 dark:text-green-400">Bahut Badhiya! <span aria-hidden="true">🔥</span></p>
     ) : total >= 50 ? (
-      <p className="font-display font-bold text-amber-600 dark:text-amber-400">Achha Progress! 💪</p>
+      <p className="font-display font-bold text-amber-600 dark:text-amber-400">Achha Progress! <span aria-hidden="true">💪</span></p>
     ) : (
-      <p className="font-display font-bold text-muted-foreground">Abhi Shuru Karo! 🎯</p>
+      <p className="font-display font-bold text-muted-foreground">Abhi Shuru Karo! <span aria-hidden="true">🎯</span></p>
     );
 
   const pills = [
-    { label: "Quiz ✅", score: quizScore, max: 25, text: `${quizScore}/25` },
+    { label: "Quiz <span aria-hidden="true">✅</span>", score: quizScore, max: 25, text: `${quizScore}/25` },
     { label: "Goal", score: goalScore, max: 20, text: `${goalScore}/20` },
     { label: "Checklist", score: checklistScore, max: 30, text: `${checklistScore}/30` },
     { label: "Streak", score: streakScore, max: 25, text: `${streakScore}/25` },

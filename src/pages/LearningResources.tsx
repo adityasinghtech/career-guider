@@ -11,50 +11,50 @@ type StreamTab = "all" | "science" | "commerce" | "arts" | "sports" | "skills" |
 
 // ─── SWAYAM Academic Courses ───────────────────────────────────────────────
 const swayamCourses = [
-  { title: "Physics Fundamentals (Class 11 & 12)", provider: "SWAYAM", stream: "science", duration: "12 weeks", students: "50,000+", highlights: ["JEE Preparation", "Core Physics Concepts", "Interactive Videos"], link: "https://swayam.gov.in", cert: true, emoji: "⚛️" },
-  { title: "Mathematics for Engineering Entrance", provider: "SWAYAM", stream: "science", duration: "14 weeks", students: "75,000+", highlights: ["JEE Main Coverage", "Problem Solving", "Mock Tests"], link: "https://swayam.gov.in", cert: true, emoji: "📐" },
-  { title: "Chemistry Essentials", provider: "IIT Bombay via SWAYAM", stream: "science", duration: "10 weeks", students: "40,000+", highlights: ["Organic & Inorganic", "Lab Simulations", "NEET Prep"], link: "https://swayam.gov.in", cert: true, emoji: "🧪" },
-  { title: "Biology for NEET", provider: "SWAYAM", stream: "science", duration: "16 weeks", students: "80,000+", highlights: ["NEET Syllabus", "Concept Clarity", "Previous Year Qs"], link: "https://swayam.gov.in", cert: true, emoji: "🧬" },
-  { title: "Accounting Basics (Class 11 & 12)", provider: "IIT BHU via SWAYAM", stream: "commerce", duration: "12 weeks", students: "30,000+", highlights: ["Journal & Ledger", "CA Foundation Ready", "Trial Balance"], link: "https://swayam.gov.in", cert: true, emoji: "📊" },
-  { title: "Business Studies Essentials", provider: "SWAYAM", stream: "commerce", duration: "10 weeks", students: "25,000+", highlights: ["Entrepreneurship", "Business Environment", "Ethics"], link: "https://swayam.gov.in", cert: true, emoji: "🏢" },
-  { title: "Economics for Commerce Students", provider: "Delhi University via SWAYAM", stream: "commerce", duration: "14 weeks", students: "45,000+", highlights: ["Microeconomics", "Macroeconomics", "Real Applications"], link: "https://swayam.gov.in", cert: true, emoji: "📈" },
-  { title: "Indian History: Ancient to Modern", provider: "SWAYAM", stream: "arts", duration: "15 weeks", students: "35,000+", highlights: ["Complete Timeline", "UPSC Preparation", "Interactive Maps"], link: "https://swayam.gov.in", cert: true, emoji: "🏛️" },
-  { title: "Political Science Fundamentals", provider: "JNU via SWAYAM", stream: "arts", duration: "12 weeks", students: "28,000+", highlights: ["Indian Constitution", "Political Systems", "Civic Concepts"], link: "https://swayam.gov.in", cert: true, emoji: "⚖️" },
-  { title: "English Literature (Class 11 & 12)", provider: "SWAYAM", stream: "arts", duration: "13 weeks", students: "32,000+", highlights: ["Poetry Analysis", "Grammar", "Composition"], link: "https://swayam.gov.in", cert: true, emoji: "📖" },
-  { title: "Geography: Physical & Human", provider: "SWAYAM", stream: "arts", duration: "12 weeks", students: "26,000+", highlights: ["Map Reading", "Climate Studies", "Population"], link: "https://swayam.gov.in", cert: true, emoji: "🌍" },
-  { title: "Effective Communication Skills", provider: "IIT Madras via SWAYAM", stream: "all", duration: "8 weeks", students: "1,00,000+", highlights: ["Speaking Skills", "Writing Practice", "Presentations"], link: "https://swayam.gov.in", cert: true, emoji: "🗣️" },
-  { title: "Critical Thinking & Problem Solving", provider: "SWAYAM", stream: "all", duration: "6 weeks", students: "55,000+", highlights: ["Logic Building", "Analytical Skills", "Real Applications"], link: "https://swayam.gov.in", cert: true, emoji: "🧠" },
+  { title: "Physics Fundamentals (Class 11 & 12)", provider: "SWAYAM", stream: "science", duration: "12 weeks", students: "50,000+", highlights: ["JEE Preparation", "Core Physics Concepts", "Interactive Videos"], link: "https://swayam.gov.in", cert: true, emoji: "<span aria-hidden="true">⚛️</span>" },
+  { title: "Mathematics for Engineering Entrance", provider: "SWAYAM", stream: "science", duration: "14 weeks", students: "75,000+", highlights: ["JEE Main Coverage", "Problem Solving", "Mock Tests"], link: "https://swayam.gov.in", cert: true, emoji: "<span aria-hidden="true">📐</span>" },
+  { title: "Chemistry Essentials", provider: "IIT Bombay via SWAYAM", stream: "science", duration: "10 weeks", students: "40,000+", highlights: ["Organic & Inorganic", "Lab Simulations", "NEET Prep"], link: "https://swayam.gov.in", cert: true, emoji: "<span aria-hidden="true">🧪</span>" },
+  { title: "Biology for NEET", provider: "SWAYAM", stream: "science", duration: "16 weeks", students: "80,000+", highlights: ["NEET Syllabus", "Concept Clarity", "Previous Year Qs"], link: "https://swayam.gov.in", cert: true, emoji: "<span aria-hidden="true">🧬</span>" },
+  { title: "Accounting Basics (Class 11 & 12)", provider: "IIT BHU via SWAYAM", stream: "commerce", duration: "12 weeks", students: "30,000+", highlights: ["Journal & Ledger", "CA Foundation Ready", "Trial Balance"], link: "https://swayam.gov.in", cert: true, emoji: "<span aria-hidden="true">📊</span>" },
+  { title: "Business Studies Essentials", provider: "SWAYAM", stream: "commerce", duration: "10 weeks", students: "25,000+", highlights: ["Entrepreneurship", "Business Environment", "Ethics"], link: "https://swayam.gov.in", cert: true, emoji: "<span aria-hidden="true">🏢</span>" },
+  { title: "Economics for Commerce Students", provider: "Delhi University via SWAYAM", stream: "commerce", duration: "14 weeks", students: "45,000+", highlights: ["Microeconomics", "Macroeconomics", "Real Applications"], link: "https://swayam.gov.in", cert: true, emoji: "<span aria-hidden="true">📈</span>" },
+  { title: "Indian History: Ancient to Modern", provider: "SWAYAM", stream: "arts", duration: "15 weeks", students: "35,000+", highlights: ["Complete Timeline", "UPSC Preparation", "Interactive Maps"], link: "https://swayam.gov.in", cert: true, emoji: "<span aria-hidden="true">🏛️</span>" },
+  { title: "Political Science Fundamentals", provider: "JNU via SWAYAM", stream: "arts", duration: "12 weeks", students: "28,000+", highlights: ["Indian Constitution", "Political Systems", "Civic Concepts"], link: "https://swayam.gov.in", cert: true, emoji: "<span aria-hidden="true">⚖️</span>" },
+  { title: "English Literature (Class 11 & 12)", provider: "SWAYAM", stream: "arts", duration: "13 weeks", students: "32,000+", highlights: ["Poetry Analysis", "Grammar", "Composition"], link: "https://swayam.gov.in", cert: true, emoji: "<span aria-hidden="true">📖</span>" },
+  { title: "Geography: Physical & Human", provider: "SWAYAM", stream: "arts", duration: "12 weeks", students: "26,000+", highlights: ["Map Reading", "Climate Studies", "Population"], link: "https://swayam.gov.in", cert: true, emoji: "<span aria-hidden="true">🌍</span>" },
+  { title: "Effective Communication Skills", provider: "IIT Madras via SWAYAM", stream: "all", duration: "8 weeks", students: "1,00,000+", highlights: ["Speaking Skills", "Writing Practice", "Presentations"], link: "https://swayam.gov.in", cert: true, emoji: "<span aria-hidden="true">🗣️</span>" },
+  { title: "Critical Thinking & Problem Solving", provider: "SWAYAM", stream: "all", duration: "6 weeks", students: "55,000+", highlights: ["Logic Building", "Analytical Skills", "Real Applications"], link: "https://swayam.gov.in", cert: true, emoji: "<span aria-hidden="true">🧠</span>" },
 ];
 
 // ─── Skill / Sports / Creative Courses ────────────────────────────────────
 const skillCourses = [
   // Coding / Tech
-  { title: "Python Programming (Zero to Hero)", provider: "FreeCodeCamp (YouTube)", stream: "skills", duration: "8 weeks", students: "5M+", highlights: ["Free, no signup", "Hindi + English both available", "Project-based learning"], link: "https://www.youtube.com/c/freecodecamp", cert: false, emoji: "🐍" },
-  { title: "Web Development Bootcamp", provider: "Apna College (YouTube)", stream: "skills", duration: "10 weeks", students: "3M+", highlights: ["HTML, CSS, JavaScript, React", "Hindi mein", "Industry projects"], link: "https://youtube.com/@ApnaCollegeOfficial", cert: false, emoji: "🌐" },
-  { title: "Google Digital Marketing Certificate", provider: "Google (Coursera)", stream: "skills", duration: "6 months", students: "1M+", highlights: ["Google certified", "Free financial aid available", "Job ready"], link: "https://coursera.org/google-certificates", cert: true, emoji: "📢" },
-  { title: "Data Analytics with Excel & Python", provider: "Google (Coursera)", stream: "skills", duration: "5 months", students: "800K+", highlights: ["Google certified", "Hands-on projects", "₹5-15 LPA jobs"], link: "https://coursera.org/google-data-analytics", cert: true, emoji: "📊" },
-  { title: "AWS Cloud Practitioner (Free)", provider: "AWS Training (Official)", stream: "skills", duration: "6 hours", students: "2M+", highlights: ["Free official AWS course", "Globally recognized cert", "Cloud jobs ₹8-30 LPA"], link: "https://aws.training", cert: true, emoji: "☁️" },
-  { title: "Freelancing: Start Earning from Day 1", provider: "Ishan Sharma (YouTube)", stream: "skills", duration: "3 weeks", students: "800K+", highlights: ["Hinglish", "Fiverr/Upwork complete guide", "Real earnings proof"], link: "https://youtube.com/@IshanSharma7390", cert: false, emoji: "💰" },
+  { title: "Python Programming (Zero to Hero)", provider: "FreeCodeCamp (YouTube)", stream: "skills", duration: "8 weeks", students: "5M+", highlights: ["Free, no signup", "Hindi + English both available", "Project-based learning"], link: "https://www.youtube.com/c/freecodecamp", cert: false, emoji: "<span aria-hidden="true">🐍</span>" },
+  { title: "Web Development Bootcamp", provider: "Apna College (YouTube)", stream: "skills", duration: "10 weeks", students: "3M+", highlights: ["HTML, CSS, JavaScript, React", "Hindi mein", "Industry projects"], link: "https://youtube.com/@ApnaCollegeOfficial", cert: false, emoji: "<span aria-hidden="true">🌐</span>" },
+  { title: "Google Digital Marketing Certificate", provider: "Google (Coursera)", stream: "skills", duration: "6 months", students: "1M+", highlights: ["Google certified", "Free financial aid available", "Job ready"], link: "https://coursera.org/google-certificates", cert: true, emoji: "<span aria-hidden="true">📢</span>" },
+  { title: "Data Analytics with Excel & Python", provider: "Google (Coursera)", stream: "skills", duration: "5 months", students: "800K+", highlights: ["Google certified", "Hands-on projects", "₹5-15 LPA jobs"], link: "https://coursera.org/google-data-analytics", cert: true, emoji: "<span aria-hidden="true">📊</span>" },
+  { title: "AWS Cloud Practitioner (Free)", provider: "AWS Training (Official)", stream: "skills", duration: "6 hours", students: "2M+", highlights: ["Free official AWS course", "Globally recognized cert", "Cloud jobs ₹8-30 LPA"], link: "https://aws.training", cert: true, emoji: "<span aria-hidden="true">☁️</span>" },
+  { title: "Freelancing: Start Earning from Day 1", provider: "Ishan Sharma (YouTube)", stream: "skills", duration: "3 weeks", students: "800K+", highlights: ["Hinglish", "Fiverr/Upwork complete guide", "Real earnings proof"], link: "https://youtube.com/@IshanSharma7390", cert: false, emoji: "<span aria-hidden="true">💰</span>" },
   // Creative
-  { title: "Graphic Design Fundamentals", provider: "Canva Design School (Free)", stream: "creative", duration: "4 weeks", students: "500K+", highlights: ["Completely free", "Certificate included", "Canva tools mastery"], link: "https://www.canva.com/designschool/", cert: true, emoji: "🎨" },
-  { title: "Video Editing with DaVinci Resolve", provider: "YouTube (Blackmagic)", stream: "creative", duration: "6 weeks", students: "2M+", highlights: ["Professional software free", "Hollywood level editing", "Job-ready skills"], link: "https://youtube.com/DaVinciResolve", cert: false, emoji: "🎬" },
-  { title: "UI/UX Design Basics", provider: "Google (Coursera)", stream: "creative", duration: "6 months", students: "600K+", highlights: ["Google UX Certificate", "Figma tools", "₹8-25 LPA scope"], link: "https://coursera.org/google-ux-design", cert: true, emoji: "🖌️" },
+  { title: "Graphic Design Fundamentals", provider: "Canva Design School (Free)", stream: "creative", duration: "4 weeks", students: "500K+", highlights: ["Completely free", "Certificate included", "Canva tools mastery"], link: "https://www.canva.com/designschool/", cert: true, emoji: "<span aria-hidden="true">🎨</span>" },
+  { title: "Video Editing with DaVinci Resolve", provider: "YouTube (Blackmagic)", stream: "creative", duration: "6 weeks", students: "2M+", highlights: ["Professional software free", "Hollywood level editing", "Job-ready skills"], link: "https://youtube.com/DaVinciResolve", cert: false, emoji: "<span aria-hidden="true">🎬</span>" },
+  { title: "UI/UX Design Basics", provider: "Google (Coursera)", stream: "creative", duration: "6 months", students: "600K+", highlights: ["Google UX Certificate", "Figma tools", "₹8-25 LPA scope"], link: "https://coursera.org/google-ux-design", cert: true, emoji: "<span aria-hidden="true">🖌️</span>" },
   // Sports
-  { title: "Sports Coaching Fundamentals", provider: "SAI NCOE (SWAYAM)", stream: "sports", duration: "8 weeks", students: "50K+", highlights: ["Official SAI material", "Coaching certificate", "All sports covered"], link: "https://swayam.gov.in", cert: true, emoji: "🏆" },
-  { title: "Sports Nutrition & Fitness", provider: "IGNOU via SWAYAM", stream: "sports", duration: "10 weeks", students: "30K+", highlights: ["Science-based", "Diet planning", "Injury prevention"], link: "https://swayam.gov.in", cert: true, emoji: "🥗" },
-  { title: "Physical Education & Sports Science", provider: "LNIPE via YouTube", stream: "sports", duration: "8 weeks", students: "100K+", highlights: ["BPEd syllabus", "Exercise physiology", "Kinesiology basics"], link: "https://youtube.com", cert: false, emoji: "🏋️" },
+  { title: "Sports Coaching Fundamentals", provider: "SAI NCOE (SWAYAM)", stream: "sports", duration: "8 weeks", students: "50K+", highlights: ["Official SAI material", "Coaching certificate", "All sports covered"], link: "https://swayam.gov.in", cert: true, emoji: "<span aria-hidden="true">🏆</span>" },
+  { title: "Sports Nutrition & Fitness", provider: "IGNOU via SWAYAM", stream: "sports", duration: "10 weeks", students: "30K+", highlights: ["Science-based", "Diet planning", "Injury prevention"], link: "https://swayam.gov.in", cert: true, emoji: "<span aria-hidden="true">🥗</span>" },
+  { title: "Physical Education & Sports Science", provider: "LNIPE via YouTube", stream: "sports", duration: "8 weeks", students: "100K+", highlights: ["BPEd syllabus", "Exercise physiology", "Kinesiology basics"], link: "https://youtube.com", cert: false, emoji: "<span aria-hidden="true">🏋️</span>" },
 ];
 
 const allCourses = [...swayamCourses, ...skillCourses];
 
 const tabs: { key: StreamTab; label: string }[] = [
-  { key: "all", label: "All 📚" },
-  { key: "science", label: "Science 🔬" },
-  { key: "commerce", label: "Commerce 📈" },
-  { key: "arts", label: "Arts 🎨" },
-  { key: "sports", label: "Sports 🏆" },
-  { key: "skills", label: "Skills 💻" },
-  { key: "creative", label: "Creative 🎭" },
+  { key: "all", label: "All <span aria-hidden="true">📚</span>" },
+  { key: "science", label: "Science <span aria-hidden="true">🔬</span>" },
+  { key: "commerce", label: "Commerce <span aria-hidden="true">📈</span>" },
+  { key: "arts", label: "Arts <span aria-hidden="true">🎨</span>" },
+  { key: "sports", label: "Sports <span aria-hidden="true">🏆</span>" },
+  { key: "skills", label: "Skills <span aria-hidden="true">💻</span>" },
+  { key: "creative", label: "Creative <span aria-hidden="true">🎭</span>" },
 ];
 
 const ALL_STREAMS = ["science", "commerce", "arts", "sports", "skills", "creative"];
@@ -86,9 +86,9 @@ export default function LearningResources() {
 
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
-          <div className="text-6xl mb-4">📚</div>
+          <div className="text-6xl mb-4"><span aria-hidden="true">📚</span></div>
           <h1 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-2">Free Learning Resources</h1>
-          <p className="text-muted-foreground font-body text-lg">SWAYAM + YouTube + Google — sabhi FREE! Sirf seekho aur grow karo 🚀</p>
+          <p className="text-muted-foreground font-body text-lg">SWAYAM + YouTube + Google — sabhi FREE! Sirf seekho aur grow karo <span aria-hidden="true">🚀</span></p>
         </motion.div>
 
         {/* Quick Start Banner */}
@@ -104,7 +104,7 @@ export default function LearningResources() {
             rel="noopener noreferrer"
             className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl hover:bg-red-500/20 transition-colors group"
           >
-            <div className="text-2xl mb-2">▶️</div>
+            <div className="text-2xl mb-2"><span aria-hidden="true">▶️</span></div>
             <p className="font-display font-bold text-foreground group-hover:text-red-600 transition-colors">Coding Seekho (Free)</p>
             <p className="text-xs text-muted-foreground">Apna College — 3M+ students</p>
           </a>
@@ -114,7 +114,7 @@ export default function LearningResources() {
             rel="noopener noreferrer"
             className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl hover:bg-blue-500/20 transition-colors group"
           >
-            <div className="text-2xl mb-2">🎓</div>
+            <div className="text-2xl mb-2"><span aria-hidden="true">🎓</span></div>
             <p className="font-display font-bold text-foreground group-hover:text-blue-600 transition-colors">Google Certifications</p>
             <p className="text-xs text-muted-foreground">Free financial aid available</p>
           </a>
@@ -124,7 +124,7 @@ export default function LearningResources() {
             rel="noopener noreferrer"
             className="p-4 bg-green-500/10 border border-green-500/20 rounded-2xl hover:bg-green-500/20 transition-colors group"
           >
-            <div className="text-2xl mb-2">🏛️</div>
+            <div className="text-2xl mb-2"><span aria-hidden="true">🏛️</span></div>
             <p className="font-display font-bold text-foreground group-hover:text-green-600 transition-colors">SWAYAM (Govt Free)</p>
             <p className="text-xs text-muted-foreground">IIT/IIM professors ke lectures</p>
           </a>
@@ -171,7 +171,7 @@ export default function LearningResources() {
                         <CardTitle className="font-display text-base leading-snug">{course.title}</CardTitle>
                       </div>
                       {course.cert && (
-                        <Badge className="bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300 text-xs shrink-0">Free Cert ✓</Badge>
+                        <Badge className="bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300 text-xs shrink-0">Free Cert <span aria-hidden="true">✓</span></Badge>
                       )}
                     </div>
                     <p className="text-xs text-muted-foreground font-body">{course.provider}</p>
@@ -230,12 +230,12 @@ export default function LearningResources() {
           transition={{ delay: 0.3 }}
           className="bg-blue-50 dark:bg-blue-950/30 border-2 border-blue-200 dark:border-blue-800 rounded-2xl p-6"
         >
-          <h3 className="font-display font-bold text-lg text-blue-900 dark:text-blue-200 mb-2">🏛️ SWAYAM kya hai?</h3>
+          <h3 className="font-display font-bold text-lg text-blue-900 dark:text-blue-200 mb-2"><span aria-hidden="true">🏛️</span> SWAYAM kya hai?</h3>
           <p className="font-body text-blue-800 dark:text-blue-300 text-sm leading-relaxed">
             <strong>SWAYAM</strong> (Study Webs of Active–Learning for Young Aspiring Minds) India Government ki free online education platform hai.
             Isme IITs, IIMs, aur top universities ke professors top-quality courses dete hain — bilkul free mein!
             Course complete karne pe <strong>verified certificate</strong> bhi milta hai jo resume mein add kar sakte ho.
-            swayam.gov.in pe jaake register karo — no fees, no catch! 🎓
+            swayam.gov.in pe jaake register karo — no fees, no catch! <span aria-hidden="true">🎓</span>
           </p>
           <Button
             onClick={() => window.open("https://swayam.gov.in", "_blank")}

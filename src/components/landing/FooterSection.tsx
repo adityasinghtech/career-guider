@@ -22,13 +22,13 @@ const FooterSection = () => {
                 <span className="font-display font-bold text-xl">PathFinder</span>
               </div>
               <p className="text-secondary-foreground/60 text-sm leading-relaxed">
-                Aapka Future, Aapki Choice — India ka #1 FREE career guidance platform! Har confused student ko clarity dena humara mission hai. 🎯
+                Aapka Future, Aapki Choice — India ka #1 FREE career guidance platform! Har confused student ko clarity dena humara mission hai. <span aria-hidden="true">🎯</span>
               </p>
             </div>
             <div>
               <h4 className="font-display font-bold text-sm mb-4 text-secondary-foreground/80 uppercase tracking-wider">Quick Links</h4>
               <div className="space-y-3">
-                <Link to="/quiz" className="block text-sm text-secondary-foreground/60 hover:text-primary transition-colors">Free Career Quiz 🚀</Link>
+                <Link to="/quiz" className="block text-sm text-secondary-foreground/60 hover:text-primary transition-colors">Free Career Quiz <span aria-hidden="true">🚀</span></Link>
                 <Link to="/about" className="block text-sm text-secondary-foreground/60 hover:text-primary transition-colors">About PathFinder</Link>
                 <Link to="/contact" className="block text-sm text-secondary-foreground/60 hover:text-primary transition-colors">Help & Support</Link>
                 <button

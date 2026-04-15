@@ -23,11 +23,11 @@ const issueTypeOptions: {
   title: string;
   description: string;
 }[] = [
-  { id: "quiz", title: "🎯 Quiz Issue", description: "Quiz se related problem" },
-  { id: "login", title: "🔐 Login Issue", description: "Login ya signup mein dikkat" },
-  { id: "result", title: "📊 Result Issue", description: "Result ya recommendation se problem" },
-  { id: "career", title: "💬 Career Guidance", description: "Career advice chahiye" },
-  { id: "other", title: "❓ Other", description: "Kuch aur" },
+  { id: "quiz", title: "<span aria-hidden="true">🎯</span> Quiz Issue", description: "Quiz se related problem" },
+  { id: "login", title: "<span aria-hidden="true">🔐</span> Login Issue", description: "Login ya signup mein dikkat" },
+  { id: "result", title: "<span aria-hidden="true">📊</span> Result Issue", description: "Result ya recommendation se problem" },
+  { id: "career", title: "<span aria-hidden="true">💬</span> Career Guidance", description: "Career advice chahiye" },
+  { id: "other", title: "<span aria-hidden="true">❓</span> Other", description: "Kuch aur" },
 ];
 
 const faqs = [
@@ -67,7 +67,7 @@ const Contact = () => {
 
       if (!withColumn.error) {
         setSubmitted(true);
-        toast.success("Message bhej diya! ✅", { description: "Hum jald hi reply karenge" });
+        toast.success("Message bhej diya! <span aria-hidden="true">✅</span>", { description: "Hum jald hi reply karenge" });
         return;
       }
 
@@ -76,7 +76,7 @@ const Contact = () => {
         /issue_type|column|schema|42703|PGRST204/i.test(msg) || withColumn.error.code === "PGRST204";
 
       if (!likelyMissingColumn) {
-        toast.error("Message bhej nahi paaya 😔", { description: "Kripya dubara koshish karein" });
+        toast.error("Message bhej nahi paaya <span aria-hidden="true">😔</span>", { description: "Kripya dubara koshish karein" });
         return;
       }
 
@@ -87,12 +87,12 @@ const Contact = () => {
       });
 
       if (fallback.error) {
-        toast.error("Message bhej nahi paaya 😔", { description: "Kripya dubara koshish karein" });
+        toast.error("Message bhej nahi paaya <span aria-hidden="true">😔</span>", { description: "Kripya dubara koshish karein" });
         return;
       }
 
       setSubmitted(true);
-      toast.success("Message bhej diya! ✅", { description: "Hum jald hi reply karenge" });
+      toast.success("Message bhej diya! <span aria-hidden="true">✅</span>", { description: "Hum jald hi reply karenge" });
     } catch {
       const prefixedMessage = CONTACT_ISSUE_MESSAGE_PREFIX[formData.issueType] + formData.message;
       const fallback = await supabase.from("contact_messages").insert({
@@ -100,11 +100,11 @@ const Contact = () => {
         message: prefixedMessage,
       });
       if (fallback.error) {
-        toast.error("Message bhej nahi paaya 😔", { description: "Kripya dubara koshish karein" });
+        toast.error("Message bhej nahi paaya <span aria-hidden="true">😔</span>", { description: "Kripya dubara koshish karein" });
         return;
       }
       setSubmitted(true);
-      toast.success("Message bhej diya! ✅", { description: "Hum jald hi reply karenge" });
+      toast.success("Message bhej diya! <span aria-hidden="true">✅</span>", { description: "Hum jald hi reply karenge" });
     }
   };
 
@@ -120,7 +120,7 @@ const Contact = () => {
           className="text-center mb-12"
         >
           <h1 className="font-display font-900 text-4xl md:text-5xl text-foreground mb-4">
-            Madad Chahiye? Sampark Karein! 🤝
+            Madad Chahiye? Sampark Karein! <span aria-hidden="true">🤝</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Koi bhi sawaal ho — career guidance, quiz, colleges, ya scholarships — hum aapki madad ke liye hamesha taiyar hain!
@@ -141,7 +141,7 @@ const Contact = () => {
                   <MessageCircle className="w-5 h-5 text-primary-foreground" />
                 </div>
                 <div>
-                  <h3 className="font-display font-bold text-foreground">WhatsApp (Sabse Tez!) 💬</h3>
+                  <h3 className="font-display font-bold text-foreground">WhatsApp (Sabse Tez!) <span aria-hidden="true">💬</span></h3>
                   <p className="text-sm text-muted-foreground">Direct message karein — 2 ghante mein reply</p>
                 </div>
               </div>
@@ -161,7 +161,7 @@ const Contact = () => {
                   <Mail className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-display font-bold text-foreground">Email 📧</h3>
+                  <h3 className="font-display font-bold text-foreground">Email <span aria-hidden="true">📧</span></h3>
                   <p className="text-sm text-primary font-medium">help@pathfinder.app</p>
                 </div>
               </div>
@@ -173,7 +173,7 @@ const Contact = () => {
                   <Phone className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-display font-bold text-foreground">Phone 📞</h3>
+                  <h3 className="font-display font-bold text-foreground">Phone <span aria-hidden="true">📞</span></h3>
                   <p className="text-sm text-primary font-medium"> +91 9315861151</p>
                 </div>
               </div>
@@ -185,7 +185,7 @@ const Contact = () => {
                   <Clock className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-display font-bold text-foreground">Reply Time ⏰</h3>
+                  <h3 className="font-display font-bold text-foreground">Reply Time <span aria-hidden="true">⏰</span></h3>
                   <p className="text-sm text-muted-foreground">WhatsApp: 2 hours • Email: 24 hours</p>
                 </div>
               </div>
@@ -205,8 +205,8 @@ const Contact = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center py-10 px-2"
               >
-                <div className="text-5xl mb-4">✅</div>
-                <h3 className="font-display font-bold text-xl text-foreground mb-2">Message bhej diya! ✅</h3>
+                <div className="text-5xl mb-4"><span aria-hidden="true">✅</span></div>
+                <h3 className="font-display font-bold text-xl text-foreground mb-2">Message bhej diya! <span aria-hidden="true">✅</span></h3>
                 <p className="text-muted-foreground font-body mb-6">Hum jald hi reply karenge</p>
                 <a
                   href={`https://wa.me/${PLACEHOLDER_WHATSAPP_NUMBER}?text=${encodeURIComponent("Namaste PathFinder! Mujhe madad chahiye.")}`}
@@ -220,7 +220,7 @@ const Contact = () => {
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
-                <h3 className="font-display font-bold text-lg text-foreground mb-2">Message Bhejein ✍️</h3>
+                <h3 className="font-display font-bold text-lg text-foreground mb-2">Message Bhejein <span aria-hidden="true">✍️</span></h3>
 
                 <div>
                   <label className="text-sm font-display font-semibold text-foreground block mb-1">Aap kaun hain?</label>
@@ -236,7 +236,7 @@ const Contact = () => {
                             : "bg-muted text-muted-foreground hover:bg-muted/80"
                         }`}
                       >
-                        {type === "student" ? "Student 👨‍🎓" : type === "parent" ? "Parent 👨‍👩‍👦" : type === "school" ? "School 🏫" : "Other"}
+                        {type === "student" ? "Student <span aria-hidden="true">👨</span>‍<span aria-hidden="true">🎓</span>" : type === "parent" ? "Parent <span aria-hidden="true">👨</span>‍<span aria-hidden="true">👩</span>‍<span aria-hidden="true">👦</span>" : type === "school" ? "School <span aria-hidden="true">🏫</span>" : "Other"}
                       </button>
                     ))}
                   </div>
@@ -331,7 +331,7 @@ const Contact = () => {
                   type="submit"
                   className="w-full gradient-hero text-primary-foreground font-display font-bold py-3 rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
                 >
-                  <Send className="w-4 h-4" /> Message Bhejein 🚀
+                  <Send className="w-4 h-4" /> Message Bhejein <span aria-hidden="true">🚀</span>
                 </button>
               </form>
             )}
@@ -346,14 +346,14 @@ const Contact = () => {
           className="bg-card rounded-2xl p-6 md:p-8 shadow-card"
         >
           <h2 className="font-display font-bold text-2xl text-foreground mb-6 flex items-center gap-2">
-            <HelpCircle className="w-6 h-6 text-primary" /> Aksar Poochhe Jaane Wale Sawaal (FAQ) ❓
+            <HelpCircle className="w-6 h-6 text-primary" /> Aksar Poochhe Jaane Wale Sawaal (FAQ) <span aria-hidden="true">❓</span>
           </h2>
           <div className="space-y-4">
             {faqs.map((faq) => (
               <details key={faq.q} className="group bg-muted/50 rounded-xl">
                 <summary className="p-4 cursor-pointer font-display font-semibold text-foreground hover:text-primary transition-colors list-none flex items-center justify-between">
                   {faq.q}
-                  <span className="text-primary group-open:rotate-180 transition-transform">▼</span>
+                  <span className="text-primary group-open:rotate-180 transition-transform"><span aria-hidden="true">▼</span></span>
                 </summary>
                 <p className="px-4 pb-4 text-muted-foreground text-sm">{faq.a}</p>
               </details>

@@ -11,7 +11,7 @@ type StreamKey = "science" | "commerce" | "arts";
 const paths = [
   {
     id: "higher-edu",
-    emoji: "🎓",
+    emoji: "<span aria-hidden="true">🎓</span>",
     title: "Higher Education",
     subtitle: "College / University admission",
     color: "blue",
@@ -39,7 +39,7 @@ const paths = [
   },
   {
     id: "direct-job",
-    emoji: "💼",
+    emoji: "<span aria-hidden="true">💼</span>",
     title: "Direct Job / Skill Course",
     subtitle: "Earn karo jaldi, experience lo",
     color: "green",
@@ -55,7 +55,7 @@ const paths = [
   },
   {
     id: "gap-year",
-    emoji: "📅",
+    emoji: "<span aria-hidden="true">📅</span>",
     title: "Gap Year / Coaching",
     subtitle: "Prepare karo, target achieve karo",
     color: "purple",
@@ -96,9 +96,9 @@ export default function AfterTwelfth() {
       <div className="pt-24 pb-16 px-4 max-w-5xl mx-auto">
         {/* Hero */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
-          <div className="text-6xl mb-4">🚀</div>
+          <div className="text-6xl mb-4"><span aria-hidden="true">🚀</span></div>
           <h1 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-2">12th ke Baad Kya?</h1>
-          <p className="text-muted-foreground font-body text-lg">Tum decide karo — hum guide karenge 🗺️</p>
+          <p className="text-muted-foreground font-body text-lg">Tum decide karo — hum guide karenge <span aria-hidden="true">🗺️</span></p>
         </motion.div>
 
         {/* Path Cards */}
@@ -124,7 +124,7 @@ export default function AfterTwelfth() {
                       className={`w-full font-display font-semibold text-sm ${isActive ? "gradient-hero text-primary-foreground" : "variant-outline"}`}
                       variant={isActive ? "default" : "outline"}
                     >
-                      {isActive ? "Selected ✓" : "Details dekho"} <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                      {isActive ? "Selected <span aria-hidden="true">✓</span>" : "Details dekho"} <ArrowRight className="w-3.5 h-3.5 ml-1" />
                     </Button>
                   </CardContent>
                 </Card>
@@ -156,7 +156,7 @@ export default function AfterTwelfth() {
                           selectedStream === s ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
                         }`}
                       >
-                        {s === "science" ? "🔬" : s === "commerce" ? "📈" : "🎨"} {s.charAt(0).toUpperCase() + s.slice(1)}
+                        {s === "science" ? "<span aria-hidden="true">🔬</span>" : s === "commerce" ? "<span aria-hidden="true">📈</span>" : "<span aria-hidden="true">🎨</span>"} {s.charAt(0).toUpperCase() + s.slice(1)}
                       </button>
                     ))}
                   </div>
@@ -166,7 +166,7 @@ export default function AfterTwelfth() {
                     return (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Card>
-                          <CardHeader><CardTitle className="font-display text-base">📝 Exams to Target</CardTitle></CardHeader>
+                          <CardHeader><CardTitle className="font-display text-base"><span aria-hidden="true">📝</span> Exams to Target</CardTitle></CardHeader>
                           <CardContent>
                             <div className="flex flex-wrap gap-2">
                               {data.exams.map((e: string) => (
@@ -176,7 +176,7 @@ export default function AfterTwelfth() {
                           </CardContent>
                         </Card>
                         <Card>
-                          <CardHeader><CardTitle className="font-display text-base">🏛️ Top Colleges</CardTitle></CardHeader>
+                          <CardHeader><CardTitle className="font-display text-base"><span aria-hidden="true">🏛️</span> Top Colleges</CardTitle></CardHeader>
                           <CardContent>
                             <div className="flex flex-wrap gap-2">
                               {data.colleges.map((c: string) => (
@@ -186,7 +186,7 @@ export default function AfterTwelfth() {
                           </CardContent>
                         </Card>
                         <Card className="md:col-span-2">
-                          <CardHeader><CardTitle className="font-display text-base">📅 Timeline</CardTitle></CardHeader>
+                          <CardHeader><CardTitle className="font-display text-base"><span aria-hidden="true">📅</span> Timeline</CardTitle></CardHeader>
                           <CardContent>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                               {data.timeline.map((t: string, i: number) => (
@@ -200,7 +200,7 @@ export default function AfterTwelfth() {
                         </Card>
                         <Card className="md:col-span-2 bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-700">
                           <CardContent className="pt-4">
-                            <p className="font-body text-amber-900 dark:text-amber-200">💡 <strong>Tip:</strong> {data.tip}</p>
+                            <p className="font-body text-amber-900 dark:text-amber-200"><span aria-hidden="true">💡</span> <strong>Tip:</strong> {data.tip}</p>
                           </CardContent>
                         </Card>
                       </div>
@@ -221,7 +221,7 @@ export default function AfterTwelfth() {
                             <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 font-body text-xs">
                               <Clock className="w-3 h-3 mr-1" />{opt.duration}
                             </Badge>
-                            <Badge className="bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300 font-body text-xs">💰 {opt.salary}</Badge>
+                            <Badge className="bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300 font-body text-xs"><span aria-hidden="true">💰</span> {opt.salary}</Badge>
                           </div>
                           <p className="font-body text-sm text-muted-foreground">{opt.desc}</p>
                         </CardContent>
@@ -243,7 +243,7 @@ export default function AfterTwelfth() {
                             <p className="font-body text-sm text-muted-foreground">{opt.desc}</p>
                           </div>
                           <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300 font-body text-xs whitespace-nowrap shrink-0">
-                            📅 {opt.action}
+                            <span aria-hidden="true">📅</span> {opt.action}
                           </Badge>
                         </CardContent>
                       </Card>
@@ -262,7 +262,7 @@ export default function AfterTwelfth() {
               <BookOpen className="w-8 h-8 text-primary mx-auto mb-3" />
               <h3 className="font-display font-bold text-xl text-foreground mb-2">Aur guidance chahiye?</h3>
               <p className="text-muted-foreground font-body mb-4">AI chatbot se apne specific questions poochho — personalized answers milenge!</p>
-              <p className="text-muted-foreground font-body text-sm">👇 Neeche chatbot ka icon hai — click karo!</p>
+              <p className="text-muted-foreground font-body text-sm"><span aria-hidden="true">👇</span> Neeche chatbot ka icon hai — click karo!</p>
             </CardContent>
           </Card>
         </motion.div>

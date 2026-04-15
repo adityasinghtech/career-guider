@@ -77,17 +77,17 @@ const StudentRow = ({
                     ? 'bg-amber-500/15 text-amber-700 border-amber-500/30' 
                     : 'bg-green-500/15 text-green-700 border-green-500/30'
                 }`}>
-                  {studentStatus?.pendingReply ? '⏳ Reply Pending' : '✅ Replied'}
+                  {studentStatus?.pendingReply ? '<span aria-hidden="true">⏳</span> Reply Pending' : '<span aria-hidden="true">✅</span> Replied'}
                 </span>
               )}
               {studentResults.length > 0 && (
                 <span className="text-[10px] px-2 py-0.5 rounded-full font-display font-semibold bg-blue-500/15 text-blue-700 border border-blue-500/30">
-                  📝 Quiz Diya
+                  <span aria-hidden="true">📝</span> Quiz Diya
                 </span>
               )}
               {studentResults.length === 0 && (
                 <span className="text-[10px] px-2 py-0.5 rounded-full font-display font-semibold bg-muted text-muted-foreground border border-border">
-                  ⏸ Quiz Pending
+                  <span aria-hidden="true">⏸</span> Quiz Pending
                 </span>
               )}
             </div>
@@ -118,14 +118,14 @@ const StudentRow = ({
                   onClick={() => grantAdminRole(student.id)}
                   className="text-sm font-display font-semibold px-4 py-2 rounded-xl bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
                 >
-                  Confirm ✅
+                  Confirm <span aria-hidden="true">✅</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setConfirmAdmin(null)}
                   className="text-sm font-display font-semibold px-4 py-2 rounded-xl border-2 border-border text-foreground hover:bg-muted transition-colors"
                 >
-                  Cancel ❌
+                  Cancel <span aria-hidden="true">❌</span>
                 </button>
               </div>
             </div>

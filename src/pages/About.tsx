@@ -4,11 +4,11 @@ import Navbar from "@/components/Navbar";
 import { Link } from "react-router-dom";
 
 const values = [
-  { icon: Target, title: "Mission 🎯", desc: "Har Indian student ko sahi career guidance milni chahiye — chahe woh village se hon ya city se. Humara goal hai ki koi bhi student confusion mein na rahe." },
-  { icon: Users, title: "For Students 👨‍🎓", desc: "Class 9-12 ke students jo stream selection mein confused hain — unke liye humne ye platform banaya hai. Simple, free, aur effective." },
-  { icon: Heart, title: "Free Forever 💚", desc: "PathFinder hamesha free rahega students ke liye. Koi hidden charges nahi, koi premium wall nahi. Education guidance sabka adhikaar hai." },
-  { icon: BookOpen, title: "Data-Driven 📊", desc: "Humara quiz research-based hai — psychology aur career counseling ke principles pe based. Generic nahi, personalized results milte hain." },
-  { icon: Lightbulb, title: "Bihar & UP Focus 🏛️", desc: "Specifically Bihar aur UP ke students ke liye — local colleges, state scholarships, aur region-specific guidance sab included hai." },
+  { icon: Target, title: "Mission <span aria-hidden="true">🎯</span>", desc: "Har Indian student ko sahi career guidance milni chahiye — chahe woh village se hon ya city se. Humara goal hai ki koi bhi student confusion mein na rahe." },
+  { icon: Users, title: "For Students <span aria-hidden="true">👨</span>‍<span aria-hidden="true">🎓</span>", desc: "Class 9-12 ke students jo stream selection mein confused hain — unke liye humne ye platform banaya hai. Simple, free, aur effective." },
+  { icon: Heart, title: "Free Forever <span aria-hidden="true">💚</span>", desc: "PathFinder hamesha free rahega students ke liye. Koi hidden charges nahi, koi premium wall nahi. Education guidance sabka adhikaar hai." },
+  { icon: BookOpen, title: "Data-Driven <span aria-hidden="true">📊</span>", desc: "Humara quiz research-based hai — psychology aur career counseling ke principles pe based. Generic nahi, personalized results milte hain." },
+  { icon: Lightbulb, title: "Bihar & UP Focus <span aria-hidden="true">🏛️</span>", desc: "Specifically Bihar aur UP ke students ke liye — local colleges, state scholarships, aur region-specific guidance sab included hai." },
 ];
 
 const team = [
@@ -31,7 +31,7 @@ const About = () => {
             <Compass className="w-10 h-10 text-primary-foreground" />
           </div>
           <h1 className="font-display font-900 text-4xl md:text-5xl text-foreground mb-4">
-            PathFinder ke baare mein 🧭
+            PathFinder ke baare mein <span aria-hidden="true">🧭</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Hum ek student-first career guidance platform hain jo Bihar aur UP ke Class 9-12 students ko sahi stream choose karne mein madad karta hai — bilkul free!
@@ -45,7 +45,7 @@ const About = () => {
           transition={{ delay: 0.1 }}
           className="bg-card rounded-2xl p-6 md:p-8 shadow-card mb-8"
         >
-          <h2 className="font-display font-bold text-2xl text-foreground mb-4">Humari Kahani 📖</h2>
+          <h2 className="font-display font-bold text-2xl text-foreground mb-4">Humari Kahani <span aria-hidden="true">📖</span></h2>
           <div className="space-y-4 text-muted-foreground font-body">
             <p>
               Bahut saare students Class 10 ke baad confuse ho jaate hain — Science lein ya Commerce? Arts mein scope hai ya nahi? Parents kehte hain kuch aur, dost kehte hain kuch aur. Aur sahi guidance milti hi nahi.
@@ -66,7 +66,7 @@ const About = () => {
           transition={{ delay: 0.2 }}
           className="mb-8"
         >
-          <h2 className="font-display font-bold text-2xl text-foreground mb-6 text-center">Hum Kya Believe Karte Hain 💪</h2>
+          <h2 className="font-display font-bold text-2xl text-foreground mb-6 text-center">Hum Kya Believe Karte Hain <span aria-hidden="true">💪</span></h2>
           <div className="grid md:grid-cols-2 gap-4">
             {values.map((v, i) => (
               <motion.div
@@ -97,7 +97,7 @@ const About = () => {
           transition={{ delay: 0.3 }}
           className="bg-card rounded-2xl p-6 md:p-8 shadow-card mb-8"
         >
-          <h2 className="font-display font-bold text-2xl text-foreground mb-4 text-center">Humari Team 👥</h2>
+          <h2 className="font-display font-bold text-2xl text-foreground mb-4 text-center">Humari Team <span aria-hidden="true">👥</span></h2>
           {team.map((t) => (
             <div key={t.name} className="text-center">
               <div className="w-20 h-20 rounded-full gradient-hero flex items-center justify-center mx-auto mb-3">
@@ -117,13 +117,13 @@ const About = () => {
           transition={{ delay: 0.4 }}
           className="text-center"
         >
-          <h2 className="font-display font-bold text-2xl text-foreground mb-3">Kya aap taiyar hain apna future discover karne ke liye? 🚀</h2>
+          <h2 className="font-display font-bold text-2xl text-foreground mb-3">Kya aap taiyar hain apna future discover karne ke liye? <span aria-hidden="true">🚀</span></h2>
           <p className="text-muted-foreground mb-6">Sirf 3 minute mein pata chal jaayega!</p>
           <Link
             to="/quiz"
             className="inline-block gradient-hero text-primary-foreground font-display font-bold px-8 py-4 rounded-xl text-lg hover:opacity-90 transition-opacity"
           >
-            Abhi Quiz Shuru Karein 🚀
+            Abhi Quiz Shuru Karein <span aria-hidden="true">🚀</span>
           </Link>
         </motion.div>
       </div>

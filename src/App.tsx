@@ -22,6 +22,7 @@ import AfterTwelfth from "./pages/AfterTwelfth";
 import PracticeQuiz from "./pages/PracticeQuiz";
 import DeepAnalysis from "./pages/DeepAnalysis";
 import ChatBot from "./components/ChatBot";
+import VoiceAssistant from "./components/VoiceAssistant";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +54,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
           <ChatBot />
+          <VoiceAssistant />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

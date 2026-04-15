@@ -98,7 +98,7 @@ export default function PracticeQuiz() {
       <div className="pt-24 pb-16 px-4 max-w-2xl mx-auto">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
-          <div className="text-6xl mb-3">🧠</div>
+          <div className="text-6xl mb-3"><span aria-hidden="true">🧠</span></div>
           <h1 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-2">AI Practice Quiz</h1>
           <p className="text-muted-foreground font-body">AI se personalized practice questions generate karo!</p>
         </motion.div>
@@ -108,7 +108,7 @@ export default function PracticeQuiz() {
           {questions.length === 0 && (
             <motion.div key="setup" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-5">
               <Card>
-                <CardHeader><CardTitle className="font-display">1️⃣ Stream chuno</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="font-display">1<span aria-hidden="true">️</span>⃣ Stream chuno</CardTitle></CardHeader>
                 <CardContent>
                   <div className="flex gap-2">
                     {(["science", "commerce", "arts"] as StreamKey[]).map((s) => (
@@ -119,7 +119,7 @@ export default function PracticeQuiz() {
                           stream === s ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
                         }`}
                       >
-                        {s === "science" ? "🔬" : s === "commerce" ? "📈" : "🎨"} {s.charAt(0).toUpperCase() + s.slice(1)}
+                        {s === "science" ? "<span aria-hidden="true">🔬</span>" : s === "commerce" ? "<span aria-hidden="true">📈</span>" : "<span aria-hidden="true">🎨</span>"} {s.charAt(0).toUpperCase() + s.slice(1)}
                       </button>
                     ))}
                   </div>
@@ -127,7 +127,7 @@ export default function PracticeQuiz() {
               </Card>
 
               <Card>
-                <CardHeader><CardTitle className="font-display">2️⃣ Subject chuno</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="font-display">2<span aria-hidden="true">️</span>⃣ Subject chuno</CardTitle></CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
                     {subjectMap[stream].map((s) => (
@@ -146,7 +146,7 @@ export default function PracticeQuiz() {
               </Card>
 
               <Card>
-                <CardHeader><CardTitle className="font-display">3️⃣ Topic likho</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="font-display">3<span aria-hidden="true">️</span>⃣ Topic likho</CardTitle></CardHeader>
                 <CardContent>
                   <input
                     type="text"
@@ -165,7 +165,7 @@ export default function PracticeQuiz() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Card>
-                  <CardHeader><CardTitle className="font-display text-base">4️⃣ Difficulty</CardTitle></CardHeader>
+                  <CardHeader><CardTitle className="font-display text-base">4<span aria-hidden="true">️</span>⃣ Difficulty</CardTitle></CardHeader>
                   <CardContent>
                     <div className="flex gap-2">
                       {(["easy", "medium", "hard"] as Difficulty[]).map((d) => (
@@ -176,7 +176,7 @@ export default function PracticeQuiz() {
                             difficulty === d ? "gradient-hero text-primary-foreground" : "bg-muted text-muted-foreground border border-border"
                           }`}
                         >
-                          {d === "easy" ? "😊" : d === "medium" ? "🤔" : "🔥"} {d}
+                          {d === "easy" ? "<span aria-hidden="true">😊</span>" : d === "medium" ? "<span aria-hidden="true">🤔</span>" : "<span aria-hidden="true">🔥</span>"} {d}
                         </button>
                       ))}
                     </div>
@@ -184,7 +184,7 @@ export default function PracticeQuiz() {
                 </Card>
 
                 <Card>
-                  <CardHeader><CardTitle className="font-display text-base">5️⃣ Questions</CardTitle></CardHeader>
+                  <CardHeader><CardTitle className="font-display text-base">5<span aria-hidden="true">️</span>⃣ Questions</CardTitle></CardHeader>
                   <CardContent>
                     <div className="flex gap-2">
                       {[3, 5, 10].map((n) => (
@@ -210,7 +210,7 @@ export default function PracticeQuiz() {
               >
                 {loading ? (
                   <span className="flex items-center gap-2"><Loader2 className="w-5 h-5 animate-spin" /> Questions generate ho rahe hain...</span>
-                ) : "Questions Generate Karo ✨"}
+                ) : "Questions Generate Karo <span aria-hidden="true">✨</span>"}
               </Button>
             </motion.div>
           )}
@@ -271,7 +271,7 @@ export default function PracticeQuiz() {
 
                   {currentAnswer && !showExplanation && (
                     <Button onClick={() => setShowExplanation(true)} variant="outline" className="w-full font-display">
-                      💡 Explanation dekho
+                      <span aria-hidden="true">💡</span> Explanation dekho
                     </Button>
                   )}
 
@@ -286,7 +286,7 @@ export default function PracticeQuiz() {
                           ? <CheckCircle className="w-5 h-5 text-green-600" />
                           : <XCircle className="w-5 h-5 text-red-600" />}
                         <span className="font-display font-bold text-sm">
-                          {currentAnswer === currentQ.correct ? "Sahi jawab! 🎉" : `Galat — Sahi hai: ${currentQ.correct}`}
+                          {currentAnswer === currentQ.correct ? "Sahi jawab! <span aria-hidden="true">🎉</span>" : `Galat — Sahi hai: ${currentQ.correct}`}
                         </span>
                       </div>
                       <p className="font-body text-sm text-foreground">{currentQ.explanation}</p>
@@ -321,7 +321,7 @@ export default function PracticeQuiz() {
                     className="gradient-hero text-primary-foreground font-display"
                     disabled={Object.keys(userAnswers).length < questions.length}
                   >
-                    Submit 🏁
+                    Submit <span aria-hidden="true">🏁</span>
                   </Button>
                 )}
               </div>
@@ -337,7 +337,7 @@ export default function PracticeQuiz() {
                     <span className="font-display font-bold text-3xl text-primary-foreground">{score}/{questions.length}</span>
                   </div>
                   <h2 className="font-display font-bold text-2xl text-foreground mb-1">
-                    {score === questions.length ? "Perfect! 🎉" : score >= questions.length * 0.7 ? "Bahut accha! 👍" : "Practice karo! 💪"}
+                    {score === questions.length ? "Perfect! <span aria-hidden="true">🎉</span>" : score >= questions.length * 0.7 ? "Bahut accha! <span aria-hidden="true">👍</span>" : "Practice karo! <span aria-hidden="true">💪</span>"}
                   </h2>
                   <p className="text-muted-foreground font-body">
                     {score} sahi jawab out of {questions.length}
@@ -354,7 +354,7 @@ export default function PracticeQuiz() {
                     <div>
                       <p className="font-body text-sm text-foreground font-semibold">{q.question.slice(0, 80)}...</p>
                       {userAnswers[i] !== q.correct && (
-                        <p className="font-body text-xs text-green-700 dark:text-green-400 mt-0.5">✓ Sahi: {q.correct}</p>
+                        <p className="font-body text-xs text-green-700 dark:text-green-400 mt-0.5"><span aria-hidden="true">✓</span> Sahi: {q.correct}</p>
                       )}
                     </div>
                   </div>

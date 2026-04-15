@@ -3,17 +3,17 @@ import { motion } from "framer-motion";
 import { Sparkles, Zap, ArrowRight, Rocket } from "lucide-react";
 
 const stats = [
-  { number: "10K+", label: "Students Guided", emoji: "🎓" },
-  { number: "500+", label: "Schools Connected", emoji: "🏫" },
-  { number: "95%", label: "Accuracy Rate", emoji: "🎯" },
-  { number: "3 min", label: "Quiz Duration", emoji: "⚡" },
+  { number: "10K+", label: "Students Guided", emoji: "<span aria-hidden="true">🎓</span>" },
+  { number: "500+", label: "Schools Connected", emoji: "<span aria-hidden="true">🏫</span>" },
+  { number: "95%", label: "Accuracy Rate", emoji: "<span aria-hidden="true">🎯</span>" },
+  { number: "3 min", label: "Quiz Duration", emoji: "<span aria-hidden="true">⚡</span>" },
 ];
 
 const careerBadges = [
-  "AI Engineer 🤖",
-  "Doctor 👨‍⚕️",
-  "CA ₹50L 💰",
-  "IIT Topper 🏆",
+  "AI Engineer <span aria-hidden="true">🤖</span>",
+  "Doctor <span aria-hidden="true">👨</span>‍<span aria-hidden="true">⚕️</span>",
+  "CA ₹50L <span aria-hidden="true">💰</span>",
+  "IIT Topper <span aria-hidden="true">🏆</span>",
 ];
 
 const HeroSection = () => (
@@ -43,7 +43,7 @@ const HeroSection = () => (
             transition={{ delay: 0.2, duration: 0.5 }}
             className="inline-flex items-center gap-2 gradient-hero-subtle border border-primary/20 text-primary font-display font-semibold px-5 py-2.5 rounded-full text-sm mb-8"
           >
-            <Sparkles className="w-4 h-4" /> 🇮🇳 India ka #1 FREE Career Guidance Platform
+            <Sparkles className="w-4 h-4" /> <span aria-hidden="true">🇮🇳</span> India ka #1 FREE Career Guidance Platform
           </motion.div>
 
           <h1 className="font-display font-black text-4xl md:text-6xl lg:text-7xl text-foreground leading-[1.1] mb-8 tracking-tight">
@@ -52,7 +52,7 @@ const HeroSection = () => (
               Raasta Hum Dikhayenge
             </span>
             <br className="hidden sm:block" />
-            <span className="text-3xl md:text-5xl lg:text-6xl"> — Aapka Future, Aapki Choice! 🚀</span>
+            <span className="text-3xl md:text-5xl lg:text-6xl"> — Aapka Future, Aapki Choice! <span aria-hidden="true">🚀</span></span>
           </h1>
 
           {/* Clean Horizontal Badges Row */}
@@ -83,7 +83,7 @@ const HeroSection = () => (
           >
             15 sawaal ka <strong className="text-foreground">FREE quiz</strong> dijiye aur jaaniye — Science, Commerce ya Arts — aapke liye kaunsa stream{" "}
             <strong className="text-foreground">perfect</strong> hai.
-            Saath mein milega <strong className="text-foreground">15-year career roadmap</strong>, top colleges, scholarships aur free courses! 🎯
+            Saath mein milega <strong className="text-foreground">15-year career roadmap</strong>, top colleges, scholarships aur free courses! <span aria-hidden="true">🎯</span>
           </motion.p>
 
           <motion.p
@@ -92,7 +92,7 @@ const HeroSection = () => (
             transition={{ delay: 0.5 }}
             className="text-sm text-primary font-display font-semibold mb-0 flex items-center justify-center gap-1"
           >
-            <Zap className="w-4 h-4" /> 10,000+ students ne apna career clear kiya — ab aapki baari! ⚡
+            <Zap className="w-4 h-4" /> 10,000+ students ne apna career clear kiya — ab aapki baari! <span aria-hidden="true">⚡</span>
           </motion.p>
         </div>
 
@@ -113,7 +113,7 @@ const HeroSection = () => (
             href="#features"
             className="border-2 border-border text-foreground font-display font-semibold px-8 py-4 rounded-xl text-lg hover:bg-muted hover:border-primary/20 transition-all"
           >
-            Pehle Dekho Lein 👀
+            Pehle Dekho Lein <span aria-hidden="true">👀</span>
           </a>
         </motion.div>
 
@@ -125,7 +125,7 @@ const HeroSection = () => (
         >
           {["100% Free", "Instant Results", "Parents PDF Report", "15-Year Roadmap"].map((badge) => (
             <span key={badge} className="flex items-center gap-1 bg-muted/60 px-3 py-1.5 rounded-full border border-border/30">
-              ✅ {badge}
+              <span aria-hidden="true">✅</span> {badge}
             </span>
           ))}
         </motion.div>

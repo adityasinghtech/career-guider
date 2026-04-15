@@ -10,7 +10,7 @@ const ResultYouTube = ({ result }: { result: StreamResult }) => (
     className="bg-card rounded-2xl p-6 shadow-card"
   >
     <h2 className="font-display font-bold text-xl text-foreground mb-4 flex items-center gap-2">
-      <Youtube className="w-5 h-5 text-primary" /> Free Padhai — YouTube Channels 🎥
+      <Youtube className="w-5 h-5 text-primary" /> Free Padhai — YouTube Channels <span aria-hidden="true">🎥</span>
     </h2>
     <div className="space-y-2">
       {result.youtubeChannels.map((ch) => (

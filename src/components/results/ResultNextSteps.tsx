@@ -249,7 +249,7 @@ const ResultNextSteps = ({ fallbackStream = "science" }: ResultNextStepsProps) =
         </h2>
       </div>
       <p className="text-sm text-muted-foreground font-body mb-8">
-        Tumhari class, stream aur interest ke hisaab se short / mid / long term focus — timeline follow karo! 📌
+        Tumhari class, stream aur interest ke hisaab se short / mid / long term focus — timeline follow karo! <span aria-hidden="true">📌</span>
       </p>
 
       <div className="relative pl-1 sm:pl-0">
@@ -296,7 +296,7 @@ const ResultNextSteps = ({ fallbackStream = "science" }: ResultNextStepsProps) =
         onClick={() => navigate("/after-12th")}
         className="w-full mt-4 px-4 py-3 rounded-xl border-2 border-border bg-card font-display font-semibold text-sm text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all text-center"
       >
-        📅 12th ke baad complete guide →
+        <span aria-hidden="true">📅</span> 12th ke baad complete guide →
       </button>
     </motion.section>
   );

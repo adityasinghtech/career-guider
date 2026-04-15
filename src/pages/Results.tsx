@@ -95,7 +95,7 @@ const Results = () => {
             className="gradient-hero rounded-2xl p-8 md:p-10 text-primary-foreground text-center shadow-lg mb-10"
           >
             <h1 className="font-display font-bold text-3xl md:text-4xl mb-3">
-              Abhi Explore Karo! 🚀
+              Abhi Explore Karo! <span aria-hidden="true">🚀</span>
             </h1>
             <p className="font-body text-lg md:text-xl text-primary-foreground/95 max-w-2xl mx-auto leading-relaxed">
               Tum abhi {selectedClass} mein ho — yeh time hai naye fields discover karne ka!
@@ -166,7 +166,7 @@ const Results = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <p className="text-xl text-muted-foreground">Maaf kijiye! Stream nahi mila 😅</p>
+          <p className="text-xl text-muted-foreground">Maaf kijiye! Stream nahi mila <span aria-hidden="true">😅</span></p>
           <Link to="/quiz" className="text-primary underline mt-2 inline-block">
             Quiz dubara dijiye
           </Link>
@@ -219,7 +219,7 @@ const Results = () => {
         {/* Action buttons */}
         <div className="flex gap-3 mb-6 justify-end flex-wrap">
           <a
-            href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`🎯 PathFinder Career Report\n\nMera result: ${result.stream} Stream ${result.emoji}\n${result.tagline}\n\nAap bhi apna career path discover karein!\n${window.location.origin}/quiz`)}`}
+            href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`<span aria-hidden="true">🎯</span> PathFinder Career Report\n\nMera result: ${result.stream} Stream ${result.emoji}\n${result.tagline}\n\nAap bhi apna career path discover karein!\n${window.location.origin}/quiz`)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 bg-[hsl(142,70%,45%)] text-primary-foreground font-display font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-opacity"
@@ -245,7 +245,7 @@ const Results = () => {
           {show12thPassBanner && (
             <div className="rounded-2xl bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 p-6 md:p-8 text-white shadow-lg border border-amber-300/40">
               <h2 className="font-display font-bold text-xl md:text-2xl text-center mb-6 drop-shadow-sm">
-                🎯 12th Pass — Career Decide Karne Ka Time!
+                <span aria-hidden="true">🎯</span> 12th Pass — Career Decide Karne Ka Time!
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                 {TWELFTH_PASS_ACTIONS.map((action) => (

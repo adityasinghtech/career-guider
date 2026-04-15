@@ -56,7 +56,7 @@ const Install = () => {
           </div>
 
           <h1 className="font-display font-bold text-3xl text-foreground mb-3">
-            PathFinder Install Karein 📱
+            PathFinder Install Karein <span aria-hidden="true">📱</span>
           </h1>
           <p className="text-muted-foreground font-body mb-8">
             Apne phone pe app ki tarah install karein — bina Play Store ke!
@@ -70,7 +70,7 @@ const Install = () => {
             >
               <CheckCircle2 className="w-12 h-12 text-accent mx-auto mb-3" />
               <h2 className="font-display font-bold text-xl text-foreground mb-2">
-                Already Installed! ✅
+                Already Installed! <span aria-hidden="true">✅</span>
               </h2>
               <p className="text-muted-foreground text-sm">
                 PathFinder aapke phone pe already installed hai. Home screen pe dekhein!
@@ -82,14 +82,14 @@ const Install = () => {
               onClick={handleInstall}
               className="w-full gradient-hero text-primary-foreground font-display font-bold py-4 px-8 rounded-2xl text-lg shadow-elevated animate-pulse-glow flex items-center justify-center gap-3 mb-8"
             >
-              <Download className="w-6 h-6" /> Install Karein — FREE! 🚀
+              <Download className="w-6 h-6" /> Install Karein — FREE! <span aria-hidden="true">🚀</span>
             </motion.button>
           ) : (
             <div className="space-y-6 mb-8">
               {isIOS ? (
                 <div className="bg-card border-2 border-border rounded-2xl p-6 text-left">
                   <h3 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
-                    🍎 iPhone / iPad pe Install karein:
+                    <span aria-hidden="true">🍎</span> iPhone / iPad pe Install karein:
                   </h3>
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
@@ -107,7 +107,7 @@ const Install = () => {
                     <div className="flex items-start gap-3">
                       <div className="w-8 h-8 rounded-full gradient-hero flex items-center justify-center text-primary-foreground font-display font-bold text-sm flex-shrink-0">3</div>
                       <p className="text-sm text-muted-foreground pt-1">
-                        <strong className="text-foreground">"Add"</strong> pe tap karein — Done! 🎉
+                        <strong className="text-foreground">"Add"</strong> pe tap karein — Done! <span aria-hidden="true">🎉</span>
                       </p>
                     </div>
                   </div>
@@ -115,7 +115,7 @@ const Install = () => {
               ) : (
                 <div className="bg-card border-2 border-border rounded-2xl p-6 text-left">
                   <h3 className="font-display font-bold text-lg text-foreground mb-4 flex items-center gap-2">
-                    🤖 Android pe Install karein:
+                    <span aria-hidden="true">🤖</span> Android pe Install karein:
                   </h3>
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
@@ -133,7 +133,7 @@ const Install = () => {
                     <div className="flex items-start gap-3">
                       <div className="w-8 h-8 rounded-full gradient-hero flex items-center justify-center text-primary-foreground font-display font-bold text-sm flex-shrink-0">3</div>
                       <p className="text-sm text-muted-foreground pt-1">
-                        <strong className="text-foreground">"Install"</strong> pe tap karein — Done! 🎉
+                        <strong className="text-foreground">"Install"</strong> pe tap karein — Done! <span aria-hidden="true">🎉</span>
                       </p>
                     </div>
                   </div>
@@ -145,10 +145,10 @@ const Install = () => {
           {/* Benefits */}
           <div className="grid grid-cols-2 gap-3 text-left">
             {[
-              { emoji: "⚡", text: "Super Fast Loading" },
-              { emoji: "📴", text: "Offline Bhi Chale" },
-              { emoji: "🔔", text: "App Jaisa Feel" },
-              { emoji: "💾", text: "No Storage Use" },
+              { emoji: "<span aria-hidden="true">⚡</span>", text: "Super Fast Loading" },
+              { emoji: "<span aria-hidden="true">📴</span>", text: "Offline Bhi Chale" },
+              { emoji: "<span aria-hidden="true">🔔</span>", text: "App Jaisa Feel" },
+              { emoji: "<span aria-hidden="true">💾</span>", text: "No Storage Use" },
             ].map((b) => (
               <div key={b.text} className="bg-card border border-border/50 rounded-xl p-3 flex items-center gap-2">
                 <span className="text-lg">{b.emoji}</span>

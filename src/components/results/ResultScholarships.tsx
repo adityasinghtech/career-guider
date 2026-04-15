@@ -13,28 +13,28 @@ const categoryOrder = [
 ];
 
 const categoryLabels: Record<string, string> = {
-  Bihar: "🏛️ Bihar",
-  UP: "🏛️ UP",
-  National: "🇮🇳 National",
-  Delhi: "🏙️ Delhi",
-  Maharashtra: "🏙️ Maharashtra",
-  Karnataka: "🏙️ Karnataka",
-  "Tamil Nadu": "🏙️ Tamil Nadu",
-  "West Bengal": "🏙️ West Bengal",
-  Rajasthan: "🏛️ Rajasthan",
-  "Madhya Pradesh": "🏛️ MP",
-  Gujarat: "🏙️ Gujarat",
-  Telangana: "🏙️ Telangana",
-  Kerala: "🌴 Kerala",
-  Punjab: "🏛️ Punjab",
-  Haryana: "🏛️ Haryana",
-  Jharkhand: "🏛️ Jharkhand",
-  Uttarakhand: "🏔️ Uttarakhand",
-  Assam: "🌿 Assam",
-  Odisha: "🏛️ Odisha",
-  Chhattisgarh: "🏛️ Chhattisgarh",
-  "Andhra Pradesh": "🏛️ AP",
-  International: "🌍 International",
+  Bihar: "<span aria-hidden="true">🏛️</span> Bihar",
+  UP: "<span aria-hidden="true">🏛️</span> UP",
+  National: "<span aria-hidden="true">🇮🇳</span> National",
+  Delhi: "<span aria-hidden="true">🏙️</span> Delhi",
+  Maharashtra: "<span aria-hidden="true">🏙️</span> Maharashtra",
+  Karnataka: "<span aria-hidden="true">🏙️</span> Karnataka",
+  "Tamil Nadu": "<span aria-hidden="true">🏙️</span> Tamil Nadu",
+  "West Bengal": "<span aria-hidden="true">🏙️</span> West Bengal",
+  Rajasthan: "<span aria-hidden="true">🏛️</span> Rajasthan",
+  "Madhya Pradesh": "<span aria-hidden="true">🏛️</span> MP",
+  Gujarat: "<span aria-hidden="true">🏙️</span> Gujarat",
+  Telangana: "<span aria-hidden="true">🏙️</span> Telangana",
+  Kerala: "<span aria-hidden="true">🌴</span> Kerala",
+  Punjab: "<span aria-hidden="true">🏛️</span> Punjab",
+  Haryana: "<span aria-hidden="true">🏛️</span> Haryana",
+  Jharkhand: "<span aria-hidden="true">🏛️</span> Jharkhand",
+  Uttarakhand: "<span aria-hidden="true">🏔️</span> Uttarakhand",
+  Assam: "<span aria-hidden="true">🌿</span> Assam",
+  Odisha: "<span aria-hidden="true">🏛️</span> Odisha",
+  Chhattisgarh: "<span aria-hidden="true">🏛️</span> Chhattisgarh",
+  "Andhra Pradesh": "<span aria-hidden="true">🏛️</span> AP",
+  International: "<span aria-hidden="true">🌍</span> International",
 };
 
 const ResultScholarships = ({ result }: { result: StreamResult }) => {
@@ -56,13 +56,13 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
     "Bihar",
     "UP",
     "International",
-    ...(studentCategory && studentCategory !== "general" ? ["Aapke liye 🎯"] : []),
+    ...(studentCategory && studentCategory !== "general" ? ["Aapke liye <span aria-hidden="true">🎯</span>"] : []),
   ];
 
   // Pre-scoped pool based on top-level filter
   const scopedScholarships = useMemo(() => {
     if (activeFilter === "All") return result.scholarships;
-    if (activeFilter === "Aapke liye 🎯") {
+    if (activeFilter === "Aapke liye <span aria-hidden="true">🎯</span>") {
       return result.scholarships.filter(
         (s) =>
           s.category === "National" ||
@@ -103,7 +103,7 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
       className="bg-card rounded-2xl p-6 shadow-card"
     >
       <h2 className="font-display font-bold text-xl text-foreground mb-4 flex items-center gap-2">
-        <Award className="w-5 h-5 text-primary" /> Scholarships — State Wise 💸
+        <Award className="w-5 h-5 text-primary" /> Scholarships — State Wise <span aria-hidden="true">💸</span>
       </h2>
 
       {/* NSP Portal Quick Link */}
@@ -118,7 +118,7 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
           rel="noopener noreferrer"
           className="text-xs font-display font-semibold px-3 py-2 rounded-lg gradient-hero text-primary-foreground hover:opacity-90 transition-opacity whitespace-nowrap flex-shrink-0"
         >
-          Visit NSP 🔗
+          Visit NSP <span aria-hidden="true">🔗</span>
         </a>
       </div>
 
@@ -126,7 +126,7 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
       <div className="mb-4">
         <div className="flex gap-2 flex-wrap">
           {filterOptions.map((opt) => {
-            const isPersonalised = opt === "Aapke liye 🎯";
+            const isPersonalised = opt === "Aapke liye <span aria-hidden="true">🎯</span>";
             const isActive = activeFilter === opt;
             return (
               <button
@@ -137,7 +137,7 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
                   // Reset category to first available when filter changes
                   const first = categoryOrder.find((cat) =>
                     (opt === "All" ? result.scholarships : result.scholarships.filter(
-                      (s) => opt === "Aapke liye 🎯"
+                      (s) => opt === "Aapke liye <span aria-hidden="true">🎯</span>"
                         ? s.category === "National" || s.eligibility?.toLowerCase().includes(studentCategory?.toLowerCase() ?? "")
                         : s.category === opt
                     )).some((s) => s.category === cat)
@@ -207,7 +207,7 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
             {/* Amount — prominent */}
             {s.amount && (
               <span className="inline-block text-sm font-display font-bold text-green-700 dark:text-green-400">
-                💰 {s.amount}
+                <span aria-hidden="true">💰</span> {s.amount}
               </span>
             )}
 
@@ -220,7 +220,7 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
             <div className="flex flex-wrap items-center gap-2 pt-1">
               {s.deadline && (
                 <span className="text-xs text-amber-700 dark:text-amber-400 font-display font-semibold bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/30">
-                  ⏰ {s.deadline}
+                  <span aria-hidden="true">⏰</span> {s.deadline}
                 </span>
               )}
               <a
@@ -229,7 +229,7 @@ const ResultScholarships = ({ result }: { result: StreamResult }) => {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-xs font-display font-semibold px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
               >
-                Apply Now → 🔗
+                Apply Now → <span aria-hidden="true">🔗</span>
               </a>
             </div>
           </div>
